@@ -1,0 +1,8 @@
+# Python 3.11 · pin exact versions; add a library in your own PR (P3 approves)
+
+# ---- core (P3) ----
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-dotenv==1.2.3
+httpx==0.28.1
+pytest==9.1.1
