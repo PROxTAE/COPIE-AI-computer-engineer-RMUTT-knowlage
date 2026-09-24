@@ -1,0 +1,703 @@
+<title>COPIE 5-Day Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F3F5F8;
+    --surface: #FFFFFF;
+    --ink: #15202B;
+    --muted: #5A6677;
+    --line: #D8DEE6;
+    --line-soft: #E8ECF1;
+    --accent: #0E7C86;
+    --today: rgba(14, 124, 134, 0.08);
+    --c-meet: #7662C8;
+    --c-setup: #64758C;
+    --c-build: #2C68D6;
+    --c-integ: #BF8209;
+    --c-test: #C2405A;
+    --c-release: #1B8F5E;
+    --font-display: "Bai Jamjuree", "IBM Plex Sans Thai", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0E131A;
+      --surface: #151C25;
+      --ink: #E5EAF0;
+      --muted: #97A3B3;
+      --line: #2A3441;
+      --line-soft: #1E2731;
+      --accent: #3DC0CA;
+      --today: rgba(61, 192, 202, 0.09);
+      --c-meet: #A08FF0;
+      --c-setup: #93A3B8;
+      --c-build: #6A9CF5;
+      --c-integ: #E3AA3A;
+      --c-test: #EC7189;
+      --c-release: #4CC48E;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0E131A;
+    --surface: #151C25;
+    --ink: #E5EAF0;
+    --muted: #97A3B3;
+    --line: #2A3441;
+    --line-soft: #1E2731;
+    --accent: #3DC0CA;
+    --today: rgba(61, 192, 202, 0.09);
+    --c-meet: #A08FF0;
+    --c-setup: #93A3B8;
+    --c-build: #6A9CF5;
+    --c-integ: #E3AA3A;
+    --c-test: #EC7189;
+    --c-release: #4CC48E;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    padding-inline: 16px;
+    padding-block: 28px 56px;
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 28px; }
+
+  header { display: grid; gap: 10px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.15; margin: 0; text-wrap: balance;
+  }
+  h2 {
+    font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .lede { color: var(--muted); max-width: 70ch; margin: 0; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; }
+  .group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .group-label { font-size: 13px; color: var(--muted); margin-right: 4px; }
+  .seg {
+    font: 500 13px var(--font-body); color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer;
+  }
+  .seg[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .seg:focus-visible, .bar:focus-visible, .who:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+
+  /* ---------- Gantt ---------- */
+  .chart-scroll {
+    overflow-x: auto; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .chart { min-width: 1180px; position: relative; }
+  .row { display: grid; grid-template-columns: 210px 1fr; }
+  .row + .row { border-top: 1px solid var(--line-soft); }
+  .label-cell {
+    position: sticky; left: 0; z-index: 3; background: var(--surface);
+    border-right: 1px solid var(--line); padding: 8px 12px; display: flex; align-items: center;
+  }
+  .track { position: relative; }
+
+  .head .track { height: 58px; }
+  .day-h, .slot-h { position: absolute; text-align: center; }
+  .day-h {
+    top: 6px; font: 600 14px var(--font-display); border-left: 1px solid var(--line);
+  }
+  .slot-h {
+    top: 30px; font: 400 11px var(--font-mono); color: var(--muted); line-height: 1.25;
+  }
+  .ms-row .track { height: 70px; }
+  .ms {
+    position: absolute; transform: translateX(-5.5px); display: flex;
+    align-items: center; gap: 6px; white-space: nowrap;
+  }
+  .ms.end { transform: translateX(calc(-100% + 5.5px)); flex-direction: row-reverse; }
+  .ms i {
+    width: 11px; height: 11px; background: var(--accent); transform: rotate(45deg);
+    border-radius: 2px; display: block;
+  }
+  .ms b { font: 600 11.5px var(--font-body); color: var(--ink); }
+  .ms small { font: 400 10.5px var(--font-mono); color: var(--muted); }
+
+  .grid-bg { position: absolute; inset: 0; pointer-events: none; }
+  .grid-bg .col { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--line-soft); }
+  .grid-bg .col.day { border-left: 1px solid var(--line); }
+  .grid-bg .col.eve { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--line-soft) 6px 7px); }
+  .grid-bg .col.today { background-color: var(--today); }
+  .ms-line { position: absolute; top: 0; bottom: 0; border-left: 1.5px dashed var(--accent); opacity: .55; }
+
+  .lane .track { height: 62px; }
+  .who {
+    all: unset; cursor: pointer; display: grid; gap: 1px; width: 100%;
+  }
+  .who b { font: 600 14px var(--font-display); }
+  .who span { font-size: 12px; color: var(--muted); line-height: 1.3; }
+  .who em { font-style: normal; font: 400 11px var(--font-mono); color: var(--accent); }
+  .lane.dim .track, .lane.dim .label-cell { opacity: .32; }
+
+  .bar {
+    position: absolute; top: 7px; bottom: 7px; border-radius: 6px; cursor: pointer;
+    background: color-mix(in srgb, var(--c) 17%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+    color: var(--ink); font: 500 11.5px/1.3 var(--font-body); padding: 5px 7px;
+    overflow: hidden; text-align: left; display: flex; align-items: flex-start;
+  }
+  .bar:hover { background: color-mix(in srgb, var(--c) 28%, var(--surface)); }
+  .bar[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--c); }
+  .bar .txt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .ck {
+    position: absolute; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px;
+    background: var(--surface); border: 2px solid var(--accent); transform: rotate(45deg); z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ---------- Detail ---------- */
+  .detail {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+    display: grid; gap: 8px;
+  }
+  .detail .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 12.5px var(--font-mono); color: var(--muted); }
+  .detail h3 { margin: 0; font: 600 18px var(--font-display); }
+  .detail p { margin: 0; max-width: 75ch; }
+  .pill {
+    display: inline-block; font: 500 11.5px var(--font-body); padding: 1px 8px; border-radius: 999px;
+    background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--c) 50%, transparent);
+  }
+  code { font-family: var(--font-mono); font-size: .92em; }
+
+  /* ---------- Lower sections ---------- */
+  .cols { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+  .rhythm { list-style: none; margin: 0; padding: 0; display: grid; }
+  .rhythm li {
+    display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 9px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .rhythm li:first-child { border-top: 0; }
+  .rhythm time { font: 500 13px var(--font-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .rhythm b { font-weight: 600; }
+  .rhythm span { display: block; color: var(--muted); font-size: 13.5px; }
+
+  .tbl-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  th { font: 600 12.5px var(--font-body); color: var(--muted); background: var(--bg); white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td .sub { display: block; color: var(--muted); font: 400 11.5px var(--font-mono); }
+  .ck-table td { min-width: 150px; }
+  .ck-table td:first-child { min-width: 70px; font-weight: 600; }
+
+  footer { color: var(--muted); font-size: 13px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar { transition: background-color .15s ease, box-shadow .15s ease; }
+    .lane .track, .lane .label-cell { transition: opacity .2s ease; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">RMUTT CE · Advanced ML Mini Project · 8 people · 5 days</div>
+    <h1>COPIE 5-Day Sprint</h1>
+    <p class="lede">แผนเวลาของทั้งทีม: สร้างงานให้เสร็จใน Day 1–3, รวมระบบ Day 4, แก้บั๊กและซ้อม Demo Day 5 · กดที่แถบงานเพื่อดูรายละเอียด branch และชั่วโมง · กดชื่อคนเพื่อดูงานเฉพาะคนนั้น</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="group" role="group" aria-label="ไฮไลต์วัน">
+      <span class="group-label">วันนี้คือ</span>
+      <button class="seg" id="day-0" data-day="0" aria-pressed="true">ทั้งหมด</button>
+      <button class="seg" id="day-1" data-day="1" aria-pressed="false">Day 1</button>
+      <button class="seg" id="day-2" data-day="2" aria-pressed="false">Day 2</button>
+      <button class="seg" id="day-3" data-day="3" aria-pressed="false">Day 3</button>
+      <button class="seg" id="day-4" data-day="4" aria-pressed="false">Day 4</button>
+      <button class="seg" id="day-5" data-day="5" aria-pressed="false">Day 5</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="chart-scroll">
+    <div class="chart" id="chart"></div>
+  </div>
+
+  <section class="detail" id="detail" aria-live="polite">
+    <div class="meta">รายละเอียดงาน</div>
+    <h3>เลือกแถบงานใน Gantt</h3>
+    <p>แถบ ◇ ที่ขอบขวาของงาน = ต้อง <b>merge เข้า develop</b> ให้ทัน Milestone นั้น · ช่อง EVE (ลายเส้น) = เวลาเปิด PR, review และแก้ตาม comment</p>
+  </section>
+
+  <section>
+    <h2>Checkpoint รายคน — ต้อง merge อะไร ภายในเมื่อไหร่</h2>
+    <div class="tbl-wrap"><table class="ck-table" id="ck-table"></table></div>
+  </section>
+
+  <div class="cols">
+    <section>
+      <h2>จังหวะประจำวัน (ทุกวัน)</h2>
+      <ol class="rhythm">
+        <li><time>09:00</time><div><b>Daily Stand-up 15 นาที</b><span>ทุกคน · เมื่อวานทำอะไร / วันนี้จะ merge อะไร / ติดอะไร (Day 1 = Kickoff 09:00–11:00)</span></div></li>
+        <li><time>09:30</time><div><b>AM block</b><span>09:30–12:30 · ทำงานบน branch ของตัวเอง</span></div></li>
+        <li><time>13:00</time><div><b>Midday Status</b><span>โพสต์ 1 บรรทัดใน #status พร้อมสี 🟢 🟡 🔴</span></div></li>
+        <li><time>13:30</time><div><b>PM block</b><span>13:30–17:00 · ติดเกิน 1 ชม. → โพสต์ #blockers ทันที</span></div></li>
+        <li><time>17:00</time><div><b>PR Cutoff</b><span>ทุกคน push + เปิด PR เข้า develop (Draft ได้)</span></div></li>
+        <li><time>17:00</time><div><b>Review &amp; Merge Window</b><span>17:00–19:00 · P1 (frontend) / P3 (backend) + reviewer คู่</span></div></li>
+        <li><time>19:00</time><div><b>Smoke test บน develop</b><span>P8 รัน checklist (Day 3–5) · เจ้าของแก้ตามผลได้ถึง 21:00</span></div></li>
+        <li><time>21:00</time><div><b>Daily Report</b><span>ทุกคนโพสต์ ✅ เสร็จ / 🔨 กำลังทำ / ⛔ ติด / 📌 พรุ่งนี้</span></div></li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Milestones</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>เวลา</th><th>Milestone</th><th>ผ่านเมื่อ</th></tr></thead>
+          <tbody>
+            <tr><td class="num">D1 12:00</td><td><b>M0</b> Contract Freeze</td><td><code>contract.ts</code> + <code>contract.py</code> + mock fixtures merge แล้ว</td></tr>
+            <tr><td class="num">D1 17:00</td><td><b>M1</b> Skeleton</td><td>develop รันได้, <code>/api/chat</code> คืน mock, Dev Login ได้, stub ของทุกคนเข้าแล้ว</td></tr>
+            <tr><td class="num">D2 21:00</td><td><b>M2</b> Standalone</td><td>ทุก module ทำงานเดี่ยวได้ด้วย mock ของคนอื่น</td></tr>
+            <tr><td class="num">D3 21:00</td><td><b>M3</b> Core Wired</td><td>Agent ใช้ Tool จริงครบ 3 ตัว, frontend เรียก API จริง, Renderer ครบ 6 แบบ</td></tr>
+            <tr><td class="num">D4 18:00</td><td><b>M4</b> Integration · Feature Freeze</td><td>Demo 1–6 ผ่านบน develop → merge main เป็น <code>v0.9</code></td></tr>
+            <tr><td class="num">D5 15:00</td><td>Code Freeze</td><td>รับเฉพาะบั๊ก P0 ที่ P1 อนุมัติ</td></tr>
+            <tr><td class="num">D5 16:00</td><td><b>M5</b> Release</td><td><code>v1.0</code> บน main + ซ้อม Demo 2 รอบ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section>
+    <h2>ชั่วโมงงานโดยประมาณ</h2>
+    <div class="tbl-wrap"><table id="hours-table"></table></div>
+  </section>
+
+  <footer>ที่มา: IMPLEMENTATION_PLANS/01–08 (Implementation steps) · AM = 09:30–12:30 (3 ชม.) · PM = 13:30–17:00 (3.5 ชม.) · EVE = review/แก้ตาม comment (~1.5 ชม.)</footer>
+</div>
+
+<script>
+(function () {
+  const PHASES = {
+    meet:    { label: "Kickoff / ประชุม", c: "--c-meet" },
+    setup:   { label: "Setup / Contract", c: "--c-setup" },
+    build:   { label: "Build", c: "--c-build" },
+    integ:   { label: "Integration", c: "--c-integ" },
+    test:    { label: "Test / Bug fix", c: "--c-test" },
+    release: { label: "Release / Demo", c: "--c-release" }
+  };
+
+  const PEOPLE = [
+    { id: 1, role: "Tech Lead · Frontend · 3D COPIE", mod: "core, mascot" },
+    { id: 2, role: "Auth · Profile · History · Feedback", mod: "user" },
+    { id: 3, role: "Backend Lead · AI Agent · Docker", mod: "agent" },
+    { id: 4, role: "Department RAG · Knowledge", mod: "rag" },
+    { id: 5, role: "Curriculum · Skill Assessment", mod: "tools" },
+    { id: 6, role: "Dynamic Response Renderer", mod: "renderer" },
+    { id: 7, role: "Suggested Qs · Local Intent ML", mod: "suggest, intent-ml" },
+    { id: 8, role: "Copy/Export · QA & Eval · Docs", mod: "export, qa" }
+  ];
+
+  // s: 0 = AM, 1 = PM · span: number of work slots (AM+PM = 2) · ck: milestone to merge by
+  const TASKS = [
+    // P1
+    { p: 1, d: 1, s: 0, t: "setup", label: "Kickoff · Repo · App shell · contract.ts", br: "core/app-shell", ck: "M0",
+      info: "สร้าง repo, push governance files, ตั้ง Branch Protection, create-next-app@latest (Next.js 16) + rewrites /api/*, วาง types/contract.ts" },
+    { p: 1, d: 1, s: 1, t: "setup", label: "Design system · api.ts", br: "core/design-system", ck: "M1",
+      info: "Design tokens + ฟอนต์ไทย, components/ui (Button, Input, Card, Badge, Toast), lib/api.ts แนบ token + จัดการ 401" },
+    { p: 1, d: 2, s: 0, t: "build", label: "COPIE model (R3F)", br: "mascot/copie-model",
+      info: "CopieScene: camera, 3-point lighting, Environment, ContactShadows · CopieModel จาก primitive (หัว ตาเรืองแสง เสาอากาศ ตัว)" },
+    { p: 1, d: 2, s: 1, t: "build", label: "COPIE 5 states", br: "mascot/copie-states", ck: "M2",
+      info: "useFrame animation: idle, listening, thinking, responding, success · hook useCopieAnimation(state)" },
+    { p: 1, d: 3, s: 0, t: "build", label: "Workspace UI", br: "core/workspace",
+      info: "WorkspaceLayout, ChatInput, MessageList, chatStore (zustand) — ใช้ mock ของ P6" },
+    { p: 1, d: 3, s: 1, t: "integ", label: "Wire API + Renderer", br: "core/wire-chat-api", ck: "M3",
+      info: "ต่อ /api/chat + /api/assessment/submit จริง, map สถานะ → COPIE state, วาง ResponseRenderer, HistorySidebar, SuggestedPrompts" },
+    { p: 1, d: 4, s: 0, t: "integ", label: "Integration lead · E2E", br: "hotfix/*",
+      info: "รวม PR, แก้ conflict, ไล่ Demo 1–6 ร่วมกับ P8" },
+    { p: 1, d: 4, s: 1, t: "test", label: "Responsive · loading/error", br: "core/responsive", ck: "M4",
+      info: "Mobile layout, loading/error states, fallback เมื่อไม่มี WebGL" },
+    { p: 1, d: 5, s: 0, t: "test", label: "Polish UI", br: "core/polish",
+      info: "Transitions, micro-interactions, หน้า login เข้าธีม" },
+    { p: 1, d: 5, s: 1, t: "release", label: "Release v1.0 · ซ้อม Demo", br: "release/v1.0", ck: "M5",
+      info: "Code Freeze 15:00, merge develop → main + tag v1.0 16:00, ซ้อม Demo 2 รอบ" },
+
+    // P2
+    { p: 2, d: 1, s: 0, t: "meet", label: "Kickoff · ตั้งค่าเครื่อง", br: "–",
+      info: "Review contract ส่วน User/History/Feedback, ติดตั้ง env, hooks" },
+    { p: 2, d: 1, s: 1, t: "setup", label: "DB · JWT · Dev login · stubs", br: "user/db-and-dev-auth", ck: "M1",
+      info: "SQLModel 5 ตาราง, jwt.py, deps.get_current_user, POST /api/auth/dev, stub services ให้ P3 เรียก" },
+    { p: 2, d: 2, s: 0, t: "build", label: "Google login + Profile API", br: "user/google-login-api",
+      info: "POST /api/auth/google (verify id_token), GET /api/users/me, PUT /api/users/me/profile, ตั้ง OAuth Client" },
+    { p: 2, d: 2, s: 1, t: "build", label: "Login + Onboarding UI", br: "user/login-onboarding-ui", ck: "M2",
+      info: "/login (Google + Dev Login), lib/auth.ts, userStore, AuthGuard, /onboarding ฟอร์ม 4 ข้อ" },
+    { p: 2, d: 3, s: 0, t: "build", label: "History service + API", br: "user/history-service",
+      info: "history_service ของจริง, GET /api/conversations(/{id}), skill_store + GET /api/skills/me" },
+    { p: 2, d: 3, s: 1, t: "build", label: "History sidebar", br: "user/history-sidebar", ck: "M3",
+      info: "HistorySidebar: list, โหลดบทสนทนาเก่าเข้า chatStore, ปุ่ม New chat" },
+    { p: 2, d: 4, s: 0, t: "build", label: "Feedback API + UI", br: "user/feedback",
+      info: "POST /api/feedback (upsert), FeedbackBar 👍/👎 + ReasonDialog 5 เหตุผล" },
+    { p: 2, d: 4, s: 1, t: "integ", label: "Stats · E2E Demo 1,5,6", br: "user/stats", ck: "M4",
+      info: "GET /api/stats (optional), ทดสอบ login/history/feedback แบบ end-to-end" },
+    { p: 2, d: 5, s: 0, span: 2, t: "test", label: "Bug fix P0/P1 · redirect ทุกกรณี", br: "hotfix/*",
+      info: "แก้บั๊กที่ P8 เปิด Issue, ตรวจ user ใหม่/เก่า redirect ถูก" },
+
+    // P3
+    { p: 3, d: 1, s: 0, t: "setup", label: "Kickoff · FastAPI · contract.py · mock chat", br: "agent/backend-scaffold", ck: "M0",
+      info: "FastAPI scaffold, schemas/contract.py, /api/health, POST /api/chat คืน mock AgentResponse ตาม keyword" },
+    { p: 3, d: 1, s: 1, t: "setup", label: "LLM client · rule router · CI", br: "agent/llm-client", ck: "M1",
+      info: "generate_text / generate_json + timeout/retry, rule_router (regex ปี/เทอม/รหัสวิชา), .github/workflows/ci.yml" },
+    { p: 3, d: 2, s: 0, t: "build", label: "LLM intent router", br: "agent/intent-router",
+      info: "Prompt ให้ LLM คืน JSON {intent, year, semester, course_query, search_query} + few-shot 10 ตัวอย่าง + fallback" },
+    { p: 3, d: 2, s: 1, t: "build", label: "Orchestrator (stubs) · ถามกลับ", br: "agent/orchestrator", ck: "M2",
+      info: "Flow ครบตาม 02 §3.2 ด้วย stub ของ P2/P4/P5, missing-info → ถามกลับพร้อม action chips, test_agent.py 10 เคส" },
+    { p: 3, d: 3, s: 0, t: "integ", label: "Tool จริง · generator", br: "agent/real-tools",
+      info: "สลับ stub → RAG/Curriculum/Skill จริง, generator.py prompt RAG อ้าง [n] + persona COPIE" },
+    { p: 3, d: 3, s: 1, t: "build", label: "Skill flow · user context", br: "agent/skill-flow", ck: "M3",
+      info: "POST /api/assessment/submit → calculate → save → อธิบาย → skill_radar, ใช้ context + recent messages, บันทึก history" },
+    { p: 3, d: 4, s: 0, t: "integ", label: "Docker · error handling", br: "agent/docker",
+      info: "docker-compose + Dockerfile 2 ฝั่ง, LLM ล่ม → response_type error + rule_router" },
+    { p: 3, d: 4, s: 1, t: "test", label: "Local intent · prompt tuning", br: "agent/prompt-tuning", ck: "M4",
+      info: "ต่อ predict_intent ของ P7 หลัง flag, ปรับ prompt ตามผล eval ของ P8" },
+    { p: 3, d: 5, s: 0, span: 2, t: "test", label: "Tuning · latency < 8s · bug fix", br: "hotfix/*",
+      info: "Prompt tuning รอบสุดท้าย, วัด latency, แก้บั๊ก P0/P1" },
+
+    // P4
+    { p: 4, d: 1, s: 0, t: "meet", label: "Kickoff · เก็บเอกสาร", br: "–",
+      info: "รวบรวมเอกสารจากเว็บภาค/คณะ/มคอ.2 เก็บ URL ทุกแหล่ง" },
+    { p: 4, d: 1, s: 1, t: "build", label: "Clean → 8 ไฟล์ .md · stub", br: "rag/knowledge-v1", ck: "M1",
+      info: "เขียน data/knowledge/*.md + front-matter, stub search_department_knowledge คืน mock" },
+    { p: 4, d: 2, s: 0, t: "build", label: "Chunk · embed · Chroma", br: "rag/ingest-pipeline",
+      info: "chunker ตาม ## heading (~800 ตัวอักษร, overlap 100), ingest ด้วย multilingual-e5-small (passage: prefix)" },
+    { p: 4, d: 2, s: 1, t: "build", label: "Vector retriever · ครบ 12 ไฟล์", br: "rag/vector-retriever", ck: "M2",
+      info: "retriever (query: prefix), service คืน RetrievedChunk + Source ครบ, เติมเอกสารครบ 12 ไฟล์" },
+    { p: 4, d: 3, s: 0, t: "build", label: "BM25 + RRF hybrid", br: "rag/hybrid-search",
+      info: "rank-bm25 + pythainlp.word_tokenize, รวมผลด้วย RRF (k=60), threshold RAG_MIN_SCORE" },
+    { p: 4, d: 3, s: 1, t: "integ", label: "RAG prompt · test 20 คำถาม", br: "rag/eval-and-prompt", ck: "M3",
+      info: "เขียน prompt RAG ร่วมกับ P3, test_rag.py: เอกสารถูกใน top-4 ≥ 80%" },
+    { p: 4, d: 4, s: 0, span: 2, t: "test", label: "Tuning ตามผล eval · เติมข้อมูล", br: "rag/tuning", ck: "M4",
+      info: "จูน chunk size / top_k / threshold, เติม knowledge ที่ขาดจากคำถามที่ตอบไม่ได้" },
+    { p: 4, d: 5, s: 0, span: 2, t: "test", label: "Knowledge fix · ตรวจกับแหล่งจริง", br: "rag/data-fix",
+      info: "แก้ข้อมูลตาม feedback, ตรวจความถูกต้องกับเว็บต้นทางอีกรอบ" },
+
+    // P5
+    { p: 5, d: 1, s: 0, t: "meet", label: "Kickoff · หาเล่มหลักสูตร", br: "–",
+      info: "หาเล่มหลักสูตร/แผนการเรียน CE RMUTT ฉบับล่าสุด" },
+    { p: 5, d: 1, s: 1, t: "build", label: "Curriculum ปี 1–2 · stubs", br: "tools/curriculum-data-v1", ck: "M1",
+      info: "กรอก curriculum.json ปี 1–2, stub functions ทั้งหมดตาม signature" },
+    { p: 5, d: 2, s: 0, t: "build", label: "ปี 3–4 · validate", br: "tools/curriculum-data-v2",
+      info: "กรอกปี 3–4 + description, สคริปต์ตรวจรหัสซ้ำ/หน่วยกิตรวม" },
+    { p: 5, d: 2, s: 1, t: "build", label: "Curriculum service", br: "tools/curriculum-service", ck: "M2",
+      info: "get_courses, get_total_credits, get_course_detail (rapidfuzz), get_curriculum_overview + tests" },
+    { p: 5, d: 3, s: 0, t: "build", label: "คำถาม Skill · สูตร", br: "tools/skill-assessment",
+      info: "12 ข้อ (6 skill × 2) + weights, สูตรคะแนนตาม 02 §8.3" },
+    { p: 5, d: 3, s: 1, t: "build", label: "Scoring · tests", br: "tools/skill-scoring", ck: "M3",
+      info: "get_assessment, calculate_skill, top_skills + test edge cases" },
+    { p: 5, d: 4, s: 0, span: 2, t: "integ", label: "ทดสอบผ่าน /api/chat · ส่งสรุปให้ RAG", br: "tools/integration-fix", ck: "M4",
+      info: "ช่วย P3 ทดสอบ flow curriculum/skill, ส่งข้อความสรุปหลักสูตรให้ P4" },
+    { p: 5, d: 5, s: 0, span: 2, t: "test", label: "สุ่มตรวจ 20 วิชา · แก้ข้อมูล", br: "tools/data-fix",
+      info: "ตรวจข้อมูลกับเล่มหลักสูตรอีกรอบ" },
+
+    // P6
+    { p: 6, d: 1, s: 0, t: "meet", label: "Kickoff · review contract", br: "–",
+      info: "ตรวจว่าข้อมูลใน Contract พอสำหรับ UI ทุกแบบ, ตกลง props ของ Renderer กับ P1" },
+    { p: 6, d: 1, s: 1, t: "setup", label: "Mocks · Renderer core · /dev", br: "renderer/core-and-mocks", ck: "M1",
+      info: "Mock fixtures 6 แบบ, ResponseRenderer (switch + never check), หน้า /dev playground" },
+    { p: 6, d: 2, s: 0, t: "build", label: "Text + Sources", br: "renderer/text-and-sources",
+      info: "TextResponse (react-markdown + gfm, [n] badge), SourceViewer (chip ขยาย snippet + ลิงก์)" },
+    { p: 6, d: 2, s: 1, t: "build", label: "CourseTable + Cards", br: "renderer/table-and-cards", ck: "M2",
+      info: "CourseTable (sticky header, หน่วยกิตรวม, mobile card list), InfoCards (grid + lucide icon)" },
+    { p: 6, d: 3, s: 0, t: "build", label: "AssessmentForm", br: "renderer/assessment-form",
+      info: "ทีละข้อ + progress + ย้อนกลับได้, onSubmit(answers)" },
+    { p: 6, d: 3, s: 1, t: "build", label: "SkillRadar · ActionChips", br: "renderer/skill-radar", ck: "M3",
+      info: "Recharts RadarChart 6 แกน + top skills + summary, ActionChips (ask / open_url)" },
+    { p: 6, d: 4, s: 0, t: "integ", label: "Animation · ใน Workspace", br: "renderer/animation",
+      info: "motion (Framer Motion) fade/slide + stagger, ทำงานกับ P1 ให้ Renderer เข้าที่" },
+    { p: 6, d: 4, s: 1, t: "test", label: "Error state · responsive", br: "renderer/responsive", ck: "M4",
+      info: "response_type error + ปุ่มลองใหม่, responsive ทุก component" },
+    { p: 6, d: 5, s: 0, span: 2, t: "test", label: "Polish · bug fix", br: "renderer/polish",
+      info: "เก็บงานความสวยงามและบั๊กที่ P8 เจอ" },
+
+    // P7
+    { p: 7, d: 1, s: 0, t: "meet", label: "Kickoff · ตั้งค่าเครื่อง", br: "–",
+      info: "ติดตั้ง env, อ่าน Contract ส่วน Intent" },
+    { p: 7, d: 1, s: 1, t: "build", label: "Suggested prompts", br: "suggest/prompt-chips", ck: "M1",
+      info: "config/suggested-prompts.ts ตาม user_type/ชั้นปี + SuggestedPrompts component โชว์ใน /dev" },
+    { p: 7, d: 2, s: 0, t: "integ", label: "Prompts → Workspace", br: "suggest/workspace-integration",
+      info: "ต่อเข้าหน้า /chat ร่วมกับ P1" },
+    { p: 7, d: 2, s: 1, t: "build", label: "Intent dataset ~240 ประโยค", br: "intent-ml/dataset", ck: "M2",
+      info: "ใช้ eval set ของ P8 + เขียนเพิ่มให้ได้ ~40 ประโยค/intent" },
+    { p: 7, d: 3, s: 0, t: "build", label: "Train TF-IDF + LR", br: "intent-ml/tfidf-classifier",
+      info: "TF-IDF char_wb n-gram 2–4 + LogisticRegression, train/test split, model.joblib" },
+    { p: 7, d: 3, s: 1, t: "build", label: "predict_intent · report", br: "intent-ml/predict-api", ck: "M3",
+      info: "predict_intent(text) → (intent, confidence), tests, accuracy/F1/confusion matrix" },
+    { p: 7, d: 4, s: 0, span: 2, t: "integ", label: "ต่อ Router · เทียบ ML vs LLM", br: "intent-ml/router-integration", ck: "M4",
+      info: "เปิด USE_LOCAL_INTENT กับ P3, เปรียบเทียบ accuracy และ latency บน eval set" },
+    { p: 7, d: 5, s: 0, span: 2, t: "test", label: "ช่วย QA · ทำ slide ส่วน ML", br: "–",
+      info: "ช่วย P8 ทดสอบ, เตรียมผลโมเดลสำหรับนำเสนอ" },
+
+    // P8
+    { p: 8, d: 1, s: 0, t: "meet", label: "Kickoff · ตั้งค่าเครื่อง", br: "–",
+      info: "ติดตั้ง env, อ่าน Demo 1–6" },
+    { p: 8, d: 1, s: 1, t: "build", label: "Eval set 60 ข้อ", br: "qa/eval-set", ck: "M1",
+      info: "data/eval/questions.jsonl: intent, expected_type, must_contain — ส่งให้ P7 ก่อน D2 12:00" },
+    { p: 8, d: 2, s: 0, t: "build", label: "CopyButton", br: "export/copy-button",
+      info: "copy message + ตารางเป็นข้อความ, fallback เมื่อ clipboard ใช้ไม่ได้" },
+    { p: 8, d: 2, s: 1, t: "build", label: "ExportMenu TXT/JSON", br: "export/export-menu", ck: "M2",
+      info: "Export ทั้งบทสนทนาจาก chatStore" },
+    { p: 8, d: 3, s: 0, t: "build", label: "run_eval.py", br: "qa/eval-script",
+      info: "Dev login → ยิง /api/chat ทุกข้อ → intent accuracy, response_type, must_contain, latency → EVAL_REPORT.md" },
+    { p: 8, d: 3, s: 1, t: "build", label: "Demo checklist · README ร่าง", br: "qa/demo-checklist", ck: "M3",
+      info: "DEMO_CHECKLIST.md ทีละ step ของ Demo 1–6, README ร่าง" },
+    { p: 8, d: 4, s: 0, span: 2, t: "test", label: "QA 11:00 + 16:00 · เปิด Issues", br: "–", ck: "M4",
+      info: "รัน checklist + eval บน develop 2 รอบ, เปิด GitHub Issues (P0/P1/P2 + module)" },
+    { p: 8, d: 5, s: 0, t: "test", label: "Regression · README", br: "qa/readme",
+      info: "ทดสอบซ้ำหลังแก้บั๊ก, README ฉบับสมบูรณ์" },
+    { p: 8, d: 5, s: 1, t: "release", label: "Smoke test main · จับเวลาซ้อม", br: "–",
+      info: "ทดสอบบน main หลัง release, จับเวลาซ้อม Demo" }
+  ];
+
+  const MILESTONES = [
+    { id: "M0", name: "Contract Freeze", d: 1, h: 12, row: 0 },
+    { id: "M1", name: "Skeleton", d: 1, h: 17, row: 1 },
+    { id: "M2", name: "Standalone", d: 2, h: 21, row: 0 },
+    { id: "M3", name: "Core Wired", d: 3, h: 21, row: 1 },
+    { id: "M4", name: "Feature Freeze", d: 4, h: 18, row: 0 },
+    { id: "CF", name: "Code Freeze", d: 5, h: 15, row: 1, end: true },
+    { id: "M5", name: "Release v1.0", d: 5, h: 16, row: 2, end: true }
+  ];
+
+  const SLOTS = [
+    { k: "AM", w: 3, start: 9.5, end: 12.5, time: "09:30–12:30", hours: 3 },
+    { k: "PM", w: 3.5, start: 13.5, end: 17, time: "13:30–17:00", hours: 3.5 },
+    { k: "EVE", w: 2, start: 17, end: 21, time: "17–21", hours: 1.5 }
+  ];
+  const DAY_W = SLOTS.reduce((a, s) => a + s.w, 0);
+  const TOTAL = DAY_W * 5;
+  const pct = (u) => (u / TOTAL * 100) + "%";
+  const slotLeft = (d, s) => (d - 1) * DAY_W + SLOTS.slice(0, s).reduce((a, x) => a + x.w, 0);
+  const slotsWidth = (s, span) => SLOTS.slice(s, s + span).reduce((a, x) => a + x.w, 0);
+  function xAt(d, hour) {
+    let acc = (d - 1) * DAY_W;
+    for (const s of SLOTS) {
+      if (hour <= s.end) return acc + Math.max(0, (hour - s.start) / (s.end - s.start)) * s.w;
+      acc += s.w;
+    }
+    return acc;
+  }
+  const fmtH = (h) => String(Math.floor(h)).padStart(2, "0") + ":" + (h % 1 ? "30" : "00");
+  const taskHours = (t) => {
+    const span = t.span || 1;
+    let h = 0;
+    for (let i = t.s; i < t.s + span; i++) h += SLOTS[i].hours;
+    if (t.d === 1 && t.s === 0) h = 1.5; // Kickoff 09:00–11:00 takes most of Day 1 AM
+    return h;
+  };
+
+  const chart = document.getElementById("chart");
+  let today = 0;
+  try { today = Number(localStorage.getItem("copie-gantt-day")) || 0; } catch (e) { today = 0; }
+
+  function el(tag, cls, html) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+
+  function gridBg() {
+    const g = el("div", "grid-bg");
+    for (let d = 1; d <= 5; d++) {
+      SLOTS.forEach((s, i) => {
+        const c = el("div", "col" + (i === 0 ? " day" : "") + (s.k === "EVE" ? " eve" : "") + (today === d ? " today" : ""));
+        c.style.left = pct(slotLeft(d, i));
+        c.style.width = pct(s.w);
+        g.appendChild(c);
+      });
+    }
+    MILESTONES.forEach((m) => {
+      const l = el("div", "ms-line");
+      l.style.left = pct(xAt(m.d, m.h));
+      g.appendChild(l);
+    });
+    return g;
+  }
+
+  function render() {
+    chart.innerHTML = "";
+
+    // header
+    const head = el("div", "row head");
+    head.appendChild(el("div", "label-cell", '<span class="group-label">คน / ช่วงเวลา</span>'));
+    const ht = el("div", "track");
+    ht.appendChild(gridBg());
+    for (let d = 1; d <= 5; d++) {
+      const dh = el("div", "day-h", "Day " + d);
+      dh.style.left = pct(slotLeft(d, 0));
+      dh.style.width = pct(DAY_W);
+      ht.appendChild(dh);
+      SLOTS.forEach((s, i) => {
+        const sh = el("div", "slot-h", s.k + "<br>" + s.time);
+        sh.style.left = pct(slotLeft(d, i));
+        sh.style.width = pct(s.w);
+        ht.appendChild(sh);
+      });
+    }
+    head.appendChild(ht);
+    chart.appendChild(head);
+
+    // milestones
+    const msr = el("div", "row ms-row");
+    msr.appendChild(el("div", "label-cell", '<span class="group-label">Milestones</span>'));
+    const mt = el("div", "track");
+    mt.appendChild(gridBg());
+    MILESTONES.forEach((m) => {
+      const n = el("div", "ms" + (m.end ? " end" : ""), "<i></i><b>" + m.id + " " + m.name + "</b><small>D" + m.d + " " + fmtH(m.h) + "</small>");
+      n.style.left = pct(xAt(m.d, m.h));
+      n.style.top = (6 + m.row * 21) + "px";
+      mt.appendChild(n);
+    });
+    msr.appendChild(mt);
+    chart.appendChild(msr);
+
+    // lanes
+    PEOPLE.forEach((p) => {
+      const total = TASKS.filter((t) => t.p === p.id).reduce((a, t) => a + taskHours(t), 0) + 2 + 5 * SLOTS[2].hours;
+      const lane = el("div", "row lane");
+      lane.dataset.person = p.id;
+      const lc = el("div", "label-cell");
+      const who = el("button", "who",
+        "<b>P" + p.id + "</b><span>" + p.role + "</span><em>" + p.mod + " · ~" + total + " ชม.</em>");
+      who.id = "who-" + p.id;
+      who.setAttribute("aria-pressed", "false");
+      who.addEventListener("click", () => focusPerson(p.id));
+      lc.appendChild(who);
+      lane.appendChild(lc);
+
+      const tr = el("div", "track");
+      tr.appendChild(gridBg());
+      TASKS.filter((t) => t.p === p.id).forEach((t, idx) => {
+        const span = t.span || 1;
+        const b = el("button", "bar", '<span class="txt">' + t.label + "</span>");
+        b.id = "bar-" + p.id + "-" + idx;
+        b.style.setProperty("--c", "var(" + PHASES[t.t].c + ")");
+        b.style.left = "calc(" + pct(slotLeft(t.d, t.s)) + " + 3px)";
+        b.style.width = "calc(" + pct(slotsWidth(t.s, span)) + " - 6px)";
+        b.setAttribute("aria-pressed", "false");
+        b.setAttribute("aria-label", "P" + p.id + " Day " + t.d + ": " + t.label);
+        b.addEventListener("click", () => showDetail(p, t, b));
+        tr.appendChild(b);
+        if (t.ck) {
+          const ck = el("div", "ck");
+          ck.style.left = "calc(" + pct(slotLeft(t.d, t.s) + slotsWidth(t.s, span)) + " - 3px)";
+          ck.title = "merge ก่อน " + t.ck;
+          tr.appendChild(ck);
+        }
+      });
+      lane.appendChild(tr);
+      chart.appendChild(lane);
+    });
+    applyFocus();
+  }
+
+  let focused = 0;
+  function focusPerson(id) {
+    focused = focused === id ? 0 : id;
+    applyFocus();
+  }
+  function applyFocus() {
+    chart.querySelectorAll(".lane").forEach((l) => {
+      const id = Number(l.dataset.person);
+      l.classList.toggle("dim", focused !== 0 && focused !== id);
+      const w = l.querySelector(".who");
+      if (w) w.setAttribute("aria-pressed", String(focused === id));
+    });
+  }
+
+  const detail = document.getElementById("detail");
+  function showDetail(p, t, btn) {
+    chart.querySelectorAll(".bar[aria-pressed='true']").forEach((b) => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
+    const span = t.span || 1;
+    const slotTxt = span > 1 ? "AM + PM (09:30–17:00)" : SLOTS[t.s].k + " (" + SLOTS[t.s].time + ")";
+    const ms = t.ck ? MILESTONES.find((m) => m.id === t.ck) : null;
+    detail.innerHTML =
+      '<div class="meta"><span>P' + p.id + " · " + p.role + "</span><span>Day " + t.d + " · " + slotTxt + "</span><span>~" + taskHours(t) + " ชม.</span></div>" +
+      "<h3>" + t.label + "</h3>" +
+      "<p>" + t.info + "</p>" +
+      '<div class="meta"><span class="pill" style="--c: var(' + PHASES[t.t].c + ')">' + PHASES[t.t].label + "</span>" +
+      "<span>branch: <code>" + t.br + "</code></span>" +
+      (ms ? "<span>◇ merge เข้า develop ก่อน " + ms.id + " " + ms.name + " (D" + ms.d + " " + fmtH(ms.h) + ")</span>" : "") +
+      "</div>";
+  }
+
+  function renderLegend() {
+    const lg = document.getElementById("legend");
+    lg.innerHTML = Object.values(PHASES).map((ph) =>
+      '<span><i class="sw" style="--c: var(' + ph.c + ')"></i>' + ph.label + "</span>").join("") +
+      '<span><i class="sw" style="--c: var(--accent); transform: rotate(45deg) scale(.8)"></i>Milestone / merge checkpoint</span>';
+  }
+
+  function renderCheckpoints() {
+    const ids = ["M0", "M1", "M2", "M3", "M4", "M5"];
+    const t = document.getElementById("ck-table");
+    let html = "<thead><tr><th>คน</th>" + ids.map((id) => {
+      const m = MILESTONES.find((x) => x.id === id);
+      return "<th>" + id + " · D" + m.d + " " + fmtH(m.h) + "</th>";
+    }).join("") + "</tr></thead><tbody>";
+    PEOPLE.forEach((p) => {
+      html += "<tr><td>P" + p.id + "</td>" + ids.map((id) => {
+        const task = TASKS.find((x) => x.p === p.id && x.ck === id);
+        return "<td>" + (task ? task.label + '<span class="sub">' + task.br + "</span>" : '<span class="sub">–</span>') + "</td>";
+      }).join("") + "</tr>";
+    });
+    t.innerHTML = html + "</tbody>";
+  }
+
+  function renderHours() {
+    const t = document.getElementById("hours-table");
+    let html = "<thead><tr><th>คน</th><th>บทบาท</th>" +
+      [1, 2, 3, 4, 5].map((d) => "<th>Day " + d + "</th>").join("") + "<th>รวม</th></tr></thead><tbody>";
+    PEOPLE.forEach((p) => {
+      let sum = 0;
+      const cells = [1, 2, 3, 4, 5].map((d) => {
+        let h = TASKS.filter((x) => x.p === p.id && x.d === d).reduce((a, x) => a + taskHours(x), 0) + SLOTS[2].hours;
+        if (d === 1) h += 2; // kickoff
+        sum += h;
+        return '<td class="num">' + h + "</td>";
+      }).join("");
+      html += "<tr><td><b>P" + p.id + "</b></td><td>" + p.role + "</td>" + cells + '<td class="num"><b>' + sum + "</b></td></tr>";
+    });
+    t.innerHTML = html + "</tbody>";
+  }
+
+  document.querySelectorAll(".seg[data-day]").forEach((b) => {
+    b.setAttribute("aria-pressed", String(Number(b.dataset.day) === today));
+    b.addEventListener("click", () => {
+      today = Number(b.dataset.day);
+      try { localStorage.setItem("copie-gantt-day", String(today)); } catch (e) { /* storage unavailable */ }
+      document.querySelectorAll(".seg[data-day]").forEach((x) =>
+        x.setAttribute("aria-pressed", String(Number(x.dataset.day) === today)));
+      render();
+    });
+  });
+
+  renderLegend();
+  render();
+  renderCheckpoints();
+  renderHours();
+})();
+</script>

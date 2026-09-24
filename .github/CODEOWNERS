@@ -1,0 +1,50 @@
+# แทน @p1-github ... @p8-github ด้วย GitHub username จริงใน Roster (IMPLEMENTATION_PLANS/00_GIT_DELIVERY_RULES.md §2)
+# กฎของ GitHub: pattern ที่อยู่ "ล่างสุด" ที่ match จะชนะ
+
+# ---------- Default ----------
+*                                              @p1-github @p3-github
+
+# ---------- Repo governance ----------
+/.gitignore                                    @p1-github
+/.gitattributes                                @p1-github
+/.githooks/                                    @p1-github
+/.github/                                      @p1-github
+/.github/workflows/                            @p3-github
+/scripts/check-ai-watermark.sh                 @p1-github
+/docker-compose.yml                            @p3-github
+/.env.example                                  @p3-github
+/IMPLEMENTATION_PLANS/                         @p1-github @p3-github
+/docs/                                         @p1-github @p3-github
+/README.md                                     @p8-github @p1-github
+/assets/                                       @p1-github
+
+# ---------- Data ----------
+/data/knowledge/                               @p4-github
+/data/curriculum/                              @p5-github
+/data/assessment/                              @p5-github
+/data/eval/                                    @p8-github
+/scripts/eval/                                 @p8-github
+
+# ---------- Frontend (one Next.js app) ----------
+/frontend/                                     @p1-github
+/frontend/src/modules/core/                    @p1-github
+/frontend/src/modules/mascot/                  @p1-github
+/frontend/src/modules/user/                    @p2-github
+/frontend/src/app/login/                       @p2-github
+/frontend/src/app/onboarding/                  @p2-github
+/frontend/src/modules/renderer/                @p6-github
+/frontend/src/app/dev/                         @p6-github
+/frontend/src/modules/suggest/                 @p7-github
+/frontend/src/modules/export/                  @p8-github
+
+# ---------- Backend (one FastAPI app) ----------
+/backend/                                      @p3-github
+/backend/app/modules/user/                     @p2-github
+/backend/app/modules/agent/                    @p3-github
+/backend/app/modules/rag/                      @p4-github
+/backend/app/modules/tools/                    @p5-github
+/backend/app/modules/intent_ml/                @p7-github
+
+# ---------- LOCKED contract (ตามกติกาต้องได้ approve จากทั้ง P1 และ P3) ----------
+/frontend/src/types/contract.ts                @p1-github @p3-github
+/backend/app/schemas/contract.py               @p1-github @p3-github

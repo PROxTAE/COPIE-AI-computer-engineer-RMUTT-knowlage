@@ -1,0 +1,47 @@
+# ---------- Secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- AI tool folders / configs (never commit — see IMPLEMENTATION_PLANS/00_GIT_DELIVERY_RULES.md §9) ----------
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.continue/
+.codeium/
+.copilot/
+.github/copilot-instructions.md
+.aider*
+.gemini/
+GEMINI.md
+AGENTS.md
+
+# ---------- Frontend ----------
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
+
+# ---------- Backend ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+backend/storage/
+*.db
+*.sqlite3
+
+# ---------- OS / Editor ----------
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/

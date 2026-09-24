@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
+  echo "✖ ห้าม commit บน $branch โดยตรง — สร้าง branch <module>/<feature> ก่อน:"
+  echo "    git switch -c <module>/<feature>"
+  exit 1
+fi
+exec bash "$(git rev-parse --show-toplevel)/scripts/check-ai-watermark.sh" --staged
