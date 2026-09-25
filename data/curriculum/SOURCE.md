@@ -4,9 +4,7 @@
 - Edition: revised curriculum B.E. 2568 (title on PDF page 2).
 - Official department listing: https://cpe.engineer.rmutt.ac.th/document/
 - Official curriculum download page: https://cpe.engineer.rmutt.ac.th/download/%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%AA%E0%B8%B9%E0%B8%95%E0%B8%A368-%E0%B8%A7%E0%B8%B4%E0%B8%A8%E0%B8%A7%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4-2/
-- Inspected local copy: `C:\COPIE\data.zip`, entry `data/curriculum/หลักสูตร-683.pdf` (outside this repository).
-- Local PDF SHA-256: `4E0F8104162A294BF0C47A8E2B512AB8F227D73321A450A12DFE14C0803B8E8C`.
-- The PDF downloaded from the official curriculum download page on 2026-09-25 has the same SHA-256 hash as the ZIP copy.
+- Verified official PDF SHA-256: `4E0F8104162A294BF0C47A8E2B512AB8F227D73321A450A12DFE14C0803B8E8C` (downloaded 2026-09-25).
 
 | Fact | Printed page | PDF page |
 |---|---:|---:|

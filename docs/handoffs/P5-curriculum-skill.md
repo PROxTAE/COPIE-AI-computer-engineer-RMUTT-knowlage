@@ -6,35 +6,35 @@
 |---|---|
 | ผู้รับผิดชอบ | P5 — Racharnon Srichai |
 | แผนงาน | `IMPLEMENTATION_PLANS/05_CURRICULUM_SKILL_TOOLS.md` |
-| PR ที่เกี่ยวข้อง | #5 (merged), #6 (ข้อมูลปี 3–4), #7 (curriculum service), #8 (skill), PR Phase 4–5 นี้ |
-| Final commit SHA | รอ PR #6–#8 และ PR นี้ merge |
+| PR ที่เกี่ยวข้อง | #5–#8 และ #11 merge แล้ว; PR แก้ course search/รายงานตาม review นี้ |
+| Final commit SHA | PR #11 merge commit `442b94a`; PR แก้ตาม review รอ merge |
 | Reviewer | P3 สำหรับ tools; P4 สำหรับ `study-plan-overview.md` |
 | วันที่ตรวจ | 2026-09-25 |
 
 ## 2. สรุป
 
-ข้อมูลแผนการศึกษา พ.ศ. 2568 ทั้ง 4 ปีอยู่ใน PR #5 และ #6; curriculum service อยู่ใน PR #7; แบบประเมินและสูตรคะแนน 6 ด้านอยู่ใน PR #8 ข้อมูลรายเทอมรวม 141 หน่วยกิตตรงกับเล่มหลักสูตร ตรวจตัวอย่าง 20 วิชาเทียบตารางในเล่มแล้วตรงทั้งรหัส ชื่อไทย หน่วยกิต และชั้นปี/ภาคการศึกษา เอกสาร `data/knowledge/study-plan-overview.md` สรุปแผนเพื่อให้ P4 ตรวจและนำไป ingest หลัง merge การทดสอบผ่าน `/api/chat` ยังรอ P3 เปลี่ยน endpoint จาก mock เป็น orchestrator ที่เรียก tools จริง
+ข้อมูลแผนการศึกษา พ.ศ. 2568 ทั้ง 4 ปี, curriculum service, แบบประเมินและสูตรคะแนน 6 ด้าน merge เข้า `develop` แล้วจาก PR #5–#8 ข้อมูลรายเทอมรวม 141 หน่วยกิตตรงกับเล่มหลักสูตร ตรวจตัวอย่าง 20 วิชาเทียบตารางในเล่มแล้วตรงทั้งรหัส ชื่อไทย หน่วยกิต และชั้นปี/ภาคการศึกษา เอกสาร `data/knowledge/study-plan-overview.md` merge จาก PR #11 แล้ว; P4 ยังต้องตรวจและนำไป ingest P3 ต่อ `/api/chat` กับ orchestrator แล้ว แต่ยังรอผลทดสอบ API ด้วยข้อมูลจริงครบกรณี
 
 ## 3. Acceptance checklist
 
 - [x] ข้อมูล 4 ปีและที่มา — PR #5, #6; เล่มหน้า 20 และ 30–33
 - [x] Curriculum functions คืนข้อมูลตาม contract เมื่อเรียกโดยตรง — PR #7
 - [x] แบบประเมิน 12 ข้อ คะแนน deterministic และผลลัพธ์ตาม contract — PR #8
-- [x] สรุปหลักสูตรสำหรับ RAG — `data/knowledge/study-plan-overview.md` ใน PR นี้; รอ P4 review และ ingest
-- [ ] ทดสอบข้อมูลจริงผ่าน `/api/chat` — endpoint ยังคืน mock; รอ P3 orchestrator/real-tools
+- [x] สรุปหลักสูตรสำหรับ RAG — `data/knowledge/study-plan-overview.md` merge ใน PR #11; รอ P4 review และ ingest
+- [ ] ทดสอบข้อมูลจริงผ่าน `/api/chat` — P3 ต่อ orchestrator แล้ว; รอผลทดสอบ integration ครบกรณี
 - [ ] ทีมทบทวนถ้อยคำคำถามและตัวเลือกระดับคะแนน — ยังไม่มีผล review จากเพื่อน
 
 ## 4. สิ่งที่ทำ
 
 | Feature | Entry point | สถานะ |
 |---|---|---|
-| Curriculum data 4 ปี | `data/curriculum/curriculum.json`, `SOURCE.md` | PR #5 merged; PR #6 รอ review |
-| Curriculum queries | `backend/app/modules/tools/curriculum/service.py` | PR #7 รอ review; ทดสอบรวมในเครื่องผ่าน |
-| Skill assessment/scoring | `data/assessment/skill_v1.json`, `backend/app/modules/tools/skill/service.py` | PR #8 รอ review; ทดสอบรวมในเครื่องผ่าน |
-| Study-plan overview | `data/knowledge/study-plan-overview.md` | PR นี้ รอ P4 review |
-| API integration | `/api/chat`, `/api/assessment/submit` | รอ P3 ต่อ orchestrator; endpoint ปัจจุบันยังเป็น mock |
+| Curriculum data 4 ปี | `data/curriculum/curriculum.json`, `SOURCE.md` | PR #5, #6 merged |
+| Curriculum queries | `backend/app/modules/tools/curriculum/service.py` | PR #7 merged; แก้ fuzzy search ตาม review ใน PR นี้ |
+| Skill assessment/scoring | `data/assessment/skill_v1.json`, `backend/app/modules/tools/skill/service.py` | PR #8 merged |
+| Study-plan overview | `data/knowledge/study-plan-overview.md` | PR #11 merged; รอ P4 ingest |
+| API integration | `/api/chat`, `/api/assessment/submit` | P3 ต่อ orchestrator แล้ว; รอผลทดสอบ API จริงครบกรณี |
 
-Flow ที่ต้องการ: `คำถาม → P3 route/dispatch → P5 tool → AgentResponse`; ปัจจุบันทดสอบถึงขั้น P5 tool ได้ แต่ API ยังใช้ mock
+Flow: `คำถาม → P3 route/dispatch → P5 tool → AgentResponse`; P3 ต่อ orchestrator แล้ว แต่ผลทดสอบ API จริงครบกรณียังไม่ยืนยัน
 
 ## 5. โครงสร้างโค้ด
 
@@ -60,7 +60,8 @@ Flow ที่ต้องการ: `คำถาม → P3 route/dispatch → 
 ## 7. วิธีรันและทดสอบ
 
 ```powershell
-# เมื่อ PR #6, #7 และ #8 อยู่ใน checkout เดียวกัน; รันจาก backend
+# หลัง PR #21 เพิ่ม rapidfuzz ใน requirements; รันจาก backend
+python -m pip install -r requirements.txt
 python -m pytest -q app/modules/tools/tests
 python -m app.modules.tools.curriculum.validate
 ```
@@ -69,7 +70,7 @@ python -m app.modules.tools.curriculum.validate
 
 ### 8.1 ข้อมูลหลักสูตรและผลตรวจ
 
-แหล่งข้อมูลคือ **หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมคอมพิวเตอร์ ฉบับปรับปรุง พ.ศ. 2568** จาก [หน้าเอกสารภาควิชา](https://cpe.engineer.rmutt.ac.th/document/) และ [หน้าโหลดเล่มหลักสูตร](https://cpe.engineer.rmutt.ac.th/download/%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%AA%E0%B8%B9%E0%B8%95%E0%B8%A368-%E0%B8%A7%E0%B8%B4%E0%B8%A8%E0%B8%A7%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4-2/) ไฟล์ใน `C:\COPIE\data.zip` ชื่อ `data/curriculum/หลักสูตร-683.pdf` มี SHA-256 `4E0F8104162A294BF0C47A8E2B512AB8F227D73321A450A12DFE14C0803B8E8C` และตรงกับ PDF ที่ดาวน์โหลดจากหน้าทางการ รายละเอียดหน้าอยู่ใน `data/curriculum/SOURCE.md` ของ PR #6
+แหล่งข้อมูลคือ **หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมคอมพิวเตอร์ ฉบับปรับปรุง พ.ศ. 2568** จาก [หน้าเอกสารภาควิชา](https://cpe.engineer.rmutt.ac.th/document/) และ [หน้าโหลดเล่มหลักสูตร](https://cpe.engineer.rmutt.ac.th/download/%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%AA%E0%B8%B9%E0%B8%95%E0%B8%A368-%E0%B8%A7%E0%B8%B4%E0%B8%A8%E0%B8%A7%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4-2/) PDF ทางการมี SHA-256 `4E0F8104162A294BF0C47A8E2B512AB8F227D73321A450A12DFE14C0803B8E8C` รายละเอียดหน้าอยู่ใน `data/curriculum/SOURCE.md`
 
 | ปี / ภาค | หน่วยกิต JSON | หน่วยกิตเล่ม | หน้าเล่ม / PDF | ผล |
 |---|---:|---:|---:|---|
@@ -135,48 +136,48 @@ python -m app.modules.tools.curriculum.validate
 
 ### 8.3 Integration handoff ให้ P3 และ P4
 
-| คำถามผ่าน `/api/chat` | ผลที่ควรได้หลัง P3 ต่อ tools จริง | สถานะบน `develop` วันที่ตรวจ |
+| คำถามผ่าน `/api/chat` | ผลที่ควรได้จาก tools จริง | ผลทดสอบเดิมก่อน P3 ต่อ orchestrator |
 |---|---|---|
 | ปี 1 เทอม 2 เรียนอะไรบ้าง | `course_table`, 7 แถว, 21 หน่วยกิต จาก `get_courses(1, 2)` | HTTP 200 แต่ข้อมูล `[MOCK]` |
 | วิชา Data Structure เรียนอะไร | `course_detail` ใช้ `get_course_detail`, พบ `04-622-201` โครงสร้างข้อมูลและอัลกอริทึม | HTTP 200 `cards` แต่เนื้อหา `[MOCK]` |
 | หลักสูตรมีกี่หน่วยกิต | ตอบ 141 จาก `get_total_credits()` | HTTP 200 `text` แต่เนื้อหา `[MOCK]` |
 | ประเมิน skill | `assessment_form` จาก `get_assessment()`, 12 ข้อ | HTTP 200 แต่แบบฟอร์ม `[MOCK]` 2 ข้อ |
 
-P3 ต้องต่อ `app.modules.tools` ใน orchestrator และทดสอบสี่กรณีนี้อีกครั้ง รวมทั้ง `/api/assessment/submit` ที่ต้องใช้ `calculate_skill` จริง P4 ควรตรวจเอกสาร `study-plan-overview.md` ก่อน ingest และแยกคำตอบภาพรวมจากการค้นตารางรายวิชารายเทอม
+P3 ต่อ `app.modules.tools` ใน orchestrator แล้ว แต่ยังต้องยืนยันผล API จริงของสี่กรณีนี้อีกครั้ง รวมทั้ง `/api/assessment/submit` ที่ต้องใช้ `calculate_skill` P4 ควรตรวจเอกสาร `study-plan-overview.md` ก่อน ingest และแยกคำตอบภาพรวมจากการค้นตารางรายวิชารายเทอม
 
 ### 8.4 ผลทดสอบ
 
 การตรวจเอกสารใน PR นี้: อ่าน `curriculum.json` ของ PR #6, รวมหน่วยกิตแยกปี/ภาค, แล้วเทียบตัวเลขกับเล่มหน้า 30–33; ตรวจตัวอย่าง 20 แถวด้วยข้อความที่สกัดจาก PDF หน้า 36–39 โดยจับรหัส ชื่อไทย และหน่วยกิตในหน้าของปีที่ระบุ ผล **20/20 ตรง** และยอดรวม **141/141**
 
-รวม PR #6, #7 และ #8 เข้ากับ `origin/develop` ใน worktree ชั่วคราวเฉพาะเครื่องเพื่อทดสอบร่วมกัน โดยไม่แก้ PR หรือ branch ของทีม: `pytest -q app/modules/tools/tests` ได้ **11 passed in 0.21s**; `python -m app.modules.tools.curriculum.validate` ผ่านและพิมพ์ยอดทั้ง 8 ภาคตามตารางด้านบน เรียก functions โดยตรงได้ `get_courses(1, 2)` = 7 แถว / 21 หน่วยกิต, `get_course_detail("Data Structure")` = `04-622-201`, `get_total_credits()` = 141, `get_assessment()` = 12 ข้อ, และตัวอย่าง `calculate_skill` = frontend 50 คะแนน
+หลังแก้ fuzzy search บน branch ที่แตกจาก `develop` ล่าสุดและใช้ `rapidfuzz==3.14.6` ใน environment ทดสอบ: `pytest -q app/modules/tools/tests` ได้ **12 passed in 0.22s**; `python -m app.modules.tools.curriculum.validate` ผ่านและพิมพ์ยอดทั้ง 8 ภาคตามตารางด้านบน เรียก functions โดยตรงได้ `get_courses(1, 2)` = 7 แถว / 21 หน่วยกิต, `get_course_detail("Data Structure")` และ `get_course_detail("data structure")` = `04-622-201`, `get_total_credits()` = 141, `get_assessment()` = 12 ข้อ, และตัวอย่าง `calculate_skill` = frontend 50 คะแนน Dependency นี้อยู่ใน PR #21 ของ P3; ต้อง merge ก่อน PR แก้ service นี้
 
-การเรียก `/api/chat` ด้วย FastAPI TestClient บน `develop` สำหรับสี่คำถามในตารางด้านบนได้ HTTP 200 ทุกข้อ แต่ยังคืน mock ทั้งหมด การทดสอบนี้ยืนยันเพียงสถานะ endpoint ปัจจุบัน ไม่ใช่ความสำเร็จของ Phase 4 integration
+การเรียก `/api/chat` ด้วย FastAPI TestClient ก่อน P3 merge orchestrator ได้ HTTP 200 แต่คืน mock ทั้งสี่คำถามในตารางด้านบน ผลนี้เป็นประวัติการตรวจครั้งแรก ไม่ใช่สถานะ API ปัจจุบัน; ยังต้องทดสอบ integration จริงหลัง PR #21 merge
 
 ## 9. ปัญหาที่เจอและวิธีจัดการ
 
 | ปัญหา | สาเหตุ | วิธีจัดการ |
 |---|---|---|
-| `/api/chat` คืนข้อมูล `[MOCK]` | P3 ยังไม่ต่อ orchestrator กับ tools | ส่งกรณีทดสอบและผลที่คาดไว้ให้ P3 |
+| คำค้นสั้นใน environment ที่ไม่มี `rapidfuzz` คืน `None` | dependency ขาดและ fallback `SequenceMatcher` ไม่รองรับ partial match | P3 เพิ่ม dependency ใน PR #21; PR นี้ลบ fallback และเพิ่ม tests |
 | `04-623-202` มีชั่วโมงเรียนขัดกันในเล่ม | ตารางแผนและคำอธิบายรายวิชาไม่ตรงกัน | คง 3 หน่วยกิตที่ตรงกันและเว้น `credit_detail` รอภาควิชา |
 | PDF ตัดบรรทัดกลางชื่อวิชาบางรายการ | การจัดหน้าเอกสาร | เทียบข้อความหลังตัด whitespace โดยยังตรวจรหัสและหน่วยกิตในหน้าปีที่ถูกต้อง |
 
 ## 10. ข้อจำกัด / สิ่งที่ควรทำต่อ
 
-- PR #6, #7, #8 ต้อง merge เข้า `develop` ก่อนทดสอบ integration จาก branch กลาง; P3 ต้องเชื่อม orchestrator กับ tools และส่งผลทดสอบ API จริง
-- P4 (`Peemaxnaja`) ตรวจ `data/knowledge/study-plan-overview.md` และ ingest หลัง merge
+- PR #21 ต้อง merge ก่อน PR แก้ service นี้; P3 ต้องส่งผลทดสอบ API จริงผ่าน `/api/chat` และ `/api/assessment/submit`
+- P4 (`Peemaxnaja`) ตรวจ `data/knowledge/study-plan-overview.md` และ ingest
 - ทีมต้องทบทวนคำถาม 12 ข้อและระดับคะแนน 0–4 กับผู้ใช้ตัวอย่าง; แก้ข้อที่กำกวมใน PR ถัดไปหลังมี feedback
 - ภาควิชาควรยืนยันว่าหลักสูตร 2568 ใช้กับรุ่นนักศึกษาที่กำลังถาม และชี้แจงชั่วโมงของ `04-623-202`
-- ยังไม่มีการยืนยันว่าโค้ดทั้งหมด merge แล้ว; PR นี้เป็นเอกสารและผลตรวจ Phase 4–5 ที่รอ review
+- การค้นคำกำกวมที่ตรงหลายวิชา เช่น `Network` อาจต้องให้ Agent ถามกลับ; ยังไม่มี contract สำหรับคืนหลายตัวเลือก
 
 ## 11. Handoff
 
-- P3: ใช้ตารางใน §8.3 ทดสอบ `/api/chat` หลังต่อ real tools และตรวจ `/api/assessment/submit`
+- P3: ใช้ตารางใน §8.3 ทดสอบ `/api/chat` ด้วย real tools และตรวจ `/api/assessment/submit` หลัง PR #21 merge
 - P4: ตรวจเนื้อหาและแหล่งอ้างอิงของ `study-plan-overview.md` ก่อน ingest
-- P6: ใช้ `get_courses(1, 2)` = 7 แถว / 21 หน่วยกิต และแบบประเมิน 12 ข้อเป็นตัวอย่างข้อมูลจริงหลัง PR ที่เกี่ยวข้อง merge
+- P6: ใช้ `get_courses(1, 2)` = 7 แถว / 21 หน่วยกิต และแบบประเมิน 12 ข้อจาก `develop` เป็นตัวอย่างข้อมูลจริง
 - จุดที่ reviewer ควรตรวจ: แผน 141 หน่วยกิต, การแยก placeholder `xxx`, ความชัดเจนของคำถาม q2/q5/q8/q12 และ dependency ของ API
 
 ## 12. ยืนยัน
 
-- [ ] PR #6–#8 และ PR นี้ merge เข้า `develop` แล้ว
+- [x] PR #6–#8 และ #11 merge เข้า `develop` แล้ว
 - [x] PR นี้ไม่มี secret หรือไฟล์ตั้งค่าเครื่องมือ; ไม่แก้ mock ใน flow จริง
-- [x] หลักฐานและข้อจำกัดในรายงานแยกผลทดสอบตรงจากผล API ที่ยังเป็น mock
+- [x] หลักฐานและข้อจำกัดในรายงานแยกผลทดสอบ tools ตรงจากผล API เดิมก่อน P3 ต่อ orchestrator
