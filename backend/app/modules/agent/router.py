@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 
 from app.modules.agent import orchestrator, services
-from app.modules.agent.mock import mock_assessment_submit, mock_chat
+from app.modules.agent.mock import mock_chat
 from app.schemas.contract import AgentResponse, AssessmentSubmit, ChatRequest, User
 
 router = APIRouter(prefix="/api", tags=["agent"])
@@ -21,6 +21,5 @@ def chat(req: ChatRequest, user: CurrentUser, db: Session) -> AgentResponse:
 
 
 @router.post("/assessment/submit", response_model=AgentResponse)
-def assessment_submit(req: AssessmentSubmit) -> AgentResponse:
-    # TODO(agent/skill-flow): require auth + call orchestrator.handle_assessment_submit
-    return mock_assessment_submit(req)
+def assessment_submit(req: AssessmentSubmit, user: CurrentUser, db: Session) -> AgentResponse:
+    return orchestrator.handle_assessment_submit(db, user, req)
