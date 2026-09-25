@@ -68,7 +68,7 @@ Renderer **ไม่เรียก API เอง** ทุกการกระ�
 
 | เรื่อง | รอใคร |
 |---|---|
-| ข้อมูลรายวิชา หน่วยกิต และแบบประเมินใน fixture เป็น placeholder (รหัสใช้รูปแบบ `04-xxx-2xx`) | P5 — `data/curriculum/curriculum.json`, `data/assessment/skill_v1.json` |
+| fixture แบบประเมิน 12 ข้อยังเป็น placeholder (ตาราง `course_table` ใช้ข้อมูลจริงจาก `data/curriculum/curriculum.json` แล้ว) | P5 — `data/assessment/skill_v1.json` |
 | `Source.url` เป็น `null` ทั้งหมด การ์ดจึงขึ้นข้อความแทนลิงก์ | P4 — `source_url` จริงใน `data/knowledge/*.md` |
 | ยังไม่ได้ใช้ HeroUI และ class `copie-*` จากชุด asset (ตอนนี้สไตล์ด้วย token ใน `globals.css`) | P1 — `@heroui/react` + `theme.css` + `copie-ui.css` |
 | ปุ่มคัดลอกและ thumbs feedback ใต้คำตอบ (อยู่ในม็อกอัพ 05) ยังไม่ได้ทำ | P1 / P2 — `FeedbackRequest` เป็นของ P2 |

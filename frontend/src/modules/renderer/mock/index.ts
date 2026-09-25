@@ -32,7 +32,7 @@ export const MOCK_LABELS: { key: MockKey; label: string; note: string }[] = [
   { key: "text", label: "text", note: "ไม่มีแหล่งอ้างอิง" },
   { key: "text-with-sources", label: "text + sources", note: "5 แหล่ง + citation [n] + ตาราง markdown" },
   { key: "clarify", label: "text (clarify)", note: "ถามกลับ + ตัวเลือก 4 ปุ่ม" },
-  { key: "course-table", label: "course_table", note: "7 วิชา · มีชื่อวิชายาวมาก" },
+  { key: "course-table", label: "course_table", note: "ข้อมูลจริง 8 วิชา · 20 หน่วยกิต" },
   { key: "cards", label: "cards", note: "3 ใบ · มี icon ที่ต้อง fallback" },
   { key: "assessment-form", label: "assessment_form", note: "12 ข้อ · 5 ระดับ" },
   { key: "skill-radar", label: "skill_radar", note: "คะแนนปกติ · top 2 ด้าน" },
