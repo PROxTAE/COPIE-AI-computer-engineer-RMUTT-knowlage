@@ -1,7 +1,7 @@
 // cards · รายละเอียดกลุ่มวิชา — ทดสอบ grid 3 ใบ, icon ที่ไม่มีจริง (ต้อง fallback), tags ว่าง
 //
 // PLACEHOLDER DATA — เนื้อหาของจริงมาจาก curriculum.get_course_detail /
-// get_curriculum_overview ของ P5 และเอกสารภาคของ P4
+// get_curriculum_overview ของ P5 (ลิงก์ท้ายการ์ดเป็นเว็บภาควิชาจริง)
 import type { AgentResponse, InfoCard } from "@/types/contract";
 import { base } from "./base";
 
@@ -33,7 +33,7 @@ export const cardsMock: AgentResponse = {
     intent: "course_detail",
     tool: "curriculum.get_curriculum_overview",
     latency_ms: 1520,
-    actions: [{ type: "open_url", label: "เว็บไซต์ภาควิชา", payload: { url: "https://www.en.rmutt.ac.th/" } }],
+    actions: [{ type: "open_url", label: "เว็บไซต์ภาควิชา", payload: { url: "https://cpe.engineer.rmutt.ac.th/" } }],
   }),
   response_type: "cards",
   data: { cards },

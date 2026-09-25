@@ -42,7 +42,7 @@ export function DevPlayground() {
         <h1 className="font-display text-3xl font-bold text-deep-navy">Renderer playground</h1>
         <p className="text-muted">แสดง mock ของทุก response_type โดยไม่ต้องมี backend</p>
         <p className="text-sm text-warning">
-          รายวิชามาจาก data/curriculum/curriculum.json ของจริง · แหล่งอ้างอิงและแบบประเมินยังเป็น placeholder รอ P4 / P5
+          รายวิชาและแหล่งอ้างอิงมาจากไฟล์ข้อมูลจริงใน data/ · เหลือแบบประเมินที่ยังเป็นชุดตัวอย่าง รอ skill_v1.json จาก P5
         </p>
       </header>
 

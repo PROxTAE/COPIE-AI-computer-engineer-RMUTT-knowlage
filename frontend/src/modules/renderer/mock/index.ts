@@ -30,7 +30,7 @@ export type MockKey = keyof typeof MOCKS;
 // ป้ายกำกับในหน้า /dev — เรียงตามลำดับที่อยากให้เห็นในรายการ
 export const MOCK_LABELS: { key: MockKey; label: string; note: string }[] = [
   { key: "text", label: "text", note: "ไม่มีแหล่งอ้างอิง" },
-  { key: "text-with-sources", label: "text + sources", note: "5 แหล่ง + citation [n] + ตาราง markdown" },
+  { key: "text-with-sources", label: "text + sources", note: "5 แหล่งจริง + citation [n] + ตาราง" },
   { key: "clarify", label: "text (clarify)", note: "ถามกลับ + ตัวเลือก 4 ปุ่ม" },
   { key: "course-table", label: "course_table", note: "ข้อมูลจริง 8 วิชา · 20 หน่วยกิต" },
   { key: "cards", label: "cards", note: "3 ใบ · มี icon ที่ต้อง fallback" },
