@@ -18,7 +18,13 @@ from app.modules.rag.guard import contains_profanity
 from app.modules.rag.service import KNOWLEDGE_DIR, SNIPPET_CHARS
 from app.schemas.contract import RetrievedChunk
 
-from .retrieval_cases import HELD_OUT, IN_SCOPE, OUT_OF_SCOPE
+from .retrieval_cases import (
+    HELD_OUT,
+    HELD_OUT_2,
+    IN_SCOPE,
+    OUT_OF_SCOPE,
+    OUT_OF_SCOPE_2,
+)
 
 KNOWLEDGE_FILES = [p for p in sorted(KNOWLEDGE_DIR.glob("*.md")) if has_front_matter(p)]
 
@@ -143,16 +149,28 @@ def _hit_rates(cases: list[tuple[str, set[str]]]) -> tuple[float, float]:
     return hit1 / len(cases), hit4 / len(cases)
 
 
-@pytest.mark.parametrize("cases", [IN_SCOPE, HELD_OUT], ids=["tuning", "held_out"])
-def test_retrieval_accuracy(cases: list[tuple[str, set[str]]]) -> None:
+# Floors are the measured results, so a change that makes retrieval worse fails.
+# held_out_2 was 85% hit@1 with 10 documents; adding study-plan-overview (11 documents)
+# measured 80%, because its broad year-by-year text outranks narrower pages.
+@pytest.mark.parametrize(
+    ("cases", "min_hit1", "min_hit4"),
+    [(IN_SCOPE, 0.9, 1.0), (HELD_OUT, 0.9, 1.0), (HELD_OUT_2, 0.8, 0.9)],
+    ids=["tuning", "held_out", "held_out_2"],
+)
+def test_retrieval_accuracy(cases: list[tuple[str, set[str]]], min_hit1: float, min_hit4: float) -> None:
     hit1, hit4 = _hit_rates(cases)
-    assert hit4 >= 0.9, f"hit@4 {hit4:.1%}"
-    assert hit1 >= 0.85, f"hit@1 {hit1:.1%}"
+    assert hit4 >= min_hit4, f"hit@4 {hit4:.1%}"
+    assert hit1 >= min_hit1, f"hit@1 {hit1:.1%}"
 
 
-def test_out_of_scope_questions_are_rejected() -> None:
-    rejected = sum(not search_department_knowledge(q) for q in OUT_OF_SCOPE)
-    assert rejected / len(OUT_OF_SCOPE) >= 0.9
+@pytest.mark.parametrize(
+    ("questions", "min_rejected"),
+    [(OUT_OF_SCOPE, 0.9), (OUT_OF_SCOPE_2, 0.6)],
+    ids=["tuning", "held_out_2"],
+)
+def test_out_of_scope_questions_are_rejected(questions: list[str], min_rejected: float) -> None:
+    rejected = sum(not search_department_knowledge(q) for q in questions)
+    assert rejected / len(questions) >= min_rejected
 
 
 # ---------- profanity guard ----------

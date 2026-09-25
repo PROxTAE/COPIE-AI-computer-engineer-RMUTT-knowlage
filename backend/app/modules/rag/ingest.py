@@ -4,9 +4,11 @@
     python -m app.modules.rag.ingest --rebuild  # drop the collection and embed everything again
 
 Running it twice never duplicates chunks: ids are stable ("<doc_id>#<n>"),
-existing ids are upserted and ids that no longer exist are deleted.
+ids that no longer exist are deleted, and only chunks whose content changed
+(tracked by a hash in the metadata) are embedded again.
 """
 import argparse
+import hashlib
 import time
 from collections.abc import Callable, Sequence
 from functools import lru_cache
@@ -17,8 +19,7 @@ from chromadb.api.models.Collection import Collection
 
 from app.core.config import settings
 
-from .chunker import Chunk, load_chunks
-from .service import KNOWLEDGE_DIR
+from .chunker import KNOWLEDGE_DIR, Chunk, load_chunks
 
 COLLECTION_NAME = "ce_knowledge"
 BATCH_SIZE = 32
@@ -31,9 +32,19 @@ def passage_text(chunk: Chunk) -> str:
     return f"passage: {chunk.title} | {chunk.section or ''}\n{chunk.text}"
 
 
+def content_hash(chunk: Chunk) -> str:
+    return hashlib.sha1(passage_text(chunk).encode() + chunk.url.encode()).hexdigest()
+
+
 def chunk_metadata(chunk: Chunk) -> dict[str, str]:
     # Chroma metadata values cannot be None, so a missing section is stored as "".
-    return {"doc_id": chunk.doc_id, "title": chunk.title, "section": chunk.section or "", "url": chunk.url}
+    return {
+        "doc_id": chunk.doc_id,
+        "title": chunk.title,
+        "section": chunk.section or "",
+        "url": chunk.url,
+        "hash": content_hash(chunk),
+    }
 
 
 @lru_cache(maxsize=1)
@@ -57,18 +68,28 @@ def open_collection(chroma_dir: str | Path = settings.chroma_dir, rebuild: bool 
     return client.get_or_create_collection(COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
 
 
+def stored_hashes(collection: Collection) -> dict[str, str | None]:
+    stored = collection.get(include=["metadatas"])
+    return {cid: (meta or {}).get("hash") for cid, meta in zip(stored["ids"], stored["metadatas"])}
+
+
 def build_index(chunks: list[Chunk], collection: Collection, embed: Embedder) -> int:
-    """Make the collection hold exactly `chunks`. Returns the collection size."""
+    """Make the collection hold exactly `chunks`. Returns the collection size.
+
+    `embed` is only called for new or changed chunks.
+    """
     ids = [chunk.chunk_id for chunk in chunks]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate chunk ids — check for two files with the same doc_id")
 
-    stale = set(collection.get(include=[])["ids"]) - set(ids)
+    have = stored_hashes(collection)
+    stale = set(have) - set(ids)
     if stale:
         collection.delete(ids=sorted(stale))
 
-    for start in range(0, len(chunks), BATCH_SIZE):
-        batch = chunks[start : start + BATCH_SIZE]
+    changed = [c for c in chunks if have.get(c.chunk_id) != content_hash(c)]
+    for start in range(0, len(changed), BATCH_SIZE):
+        batch = changed[start : start + BATCH_SIZE]
         collection.upsert(
             ids=[c.chunk_id for c in batch],
             embeddings=embed([passage_text(c) for c in batch]),
@@ -86,7 +107,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     started = time.perf_counter()
     chunks = load_chunks(KNOWLEDGE_DIR)
     collection = open_collection(rebuild=args.rebuild)
-    total = build_index(chunks, collection, load_embedder())
+    total = build_index(chunks, collection, lambda texts: load_embedder()(texts))
     docs = len({c.doc_id for c in chunks})
     print(
         f"indexed {total} chunks from {docs} documents into '{COLLECTION_NAME}' "

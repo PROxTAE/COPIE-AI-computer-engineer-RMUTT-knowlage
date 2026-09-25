@@ -107,10 +107,13 @@ class LexicalIndex:
             for chunk_grams in self.gate_sets
         )
 
-    def search(self, query: str, top_k: int, min_coverage: float) -> list[Hit]:
-        expanded = expand_query(query)
-        if not self.chunks or self.coverage(expanded) < min_coverage:
+    def in_scope(self, query: str, min_coverage: float) -> bool:
+        return bool(self.chunks) and self.coverage(expand_query(query)) >= min_coverage
+
+    def search(self, query: str, top_k: int, min_coverage: float = 0.0) -> list[Hit]:
+        if not self.in_scope(query, min_coverage):
             return []
+        expanded = expand_query(query)
         query_vec = _unit(
             {t: tf * self.rank_idf[t] for t, tf in ngrams(expanded, RANK_NGRAMS).items() if t in self.rank_idf}
         )

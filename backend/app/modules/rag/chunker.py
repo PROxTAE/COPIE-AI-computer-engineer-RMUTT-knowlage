@@ -4,9 +4,13 @@ Each file starts with a front-matter block (doc_id, title, source_url, updated)
 and is split into one chunk per "## " heading. A section longer than MAX_CHARS
 is cut into overlapping pieces so every chunk fits the embedding model well.
 """
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
+KNOWLEDGE_DIR = Path(
+    os.getenv("KNOWLEDGE_DIR", Path(__file__).resolve().parents[4] / "data" / "knowledge")
+)
 REQUIRED_KEYS = ("doc_id", "title", "source_url", "updated")
 FRONT_MATTER_FENCE = "---"
 MAX_CHARS = 800

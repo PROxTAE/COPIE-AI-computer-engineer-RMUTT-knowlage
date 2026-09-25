@@ -18,6 +18,7 @@
 | contact | contact.md | https://cpe.engineer.rmutt.ac.th/contact/ | – |
 | staff | staff.md | https://cpe.engineer.rmutt.ac.th/staffs/ | – |
 | faq-current-student | faq-current-student.md | https://cpe.engineer.rmutt.ac.th/document/ | หน้าปฏิทินการศึกษาของภาควิชา, https://sites.google.com/en.rmutt.ac.th/cpe-faq |
+| study-plan-overview | study-plan-overview.md (จาก P5, PR #11) | หน้าดาวน์โหลด "หลักสูตร68-วิศวกรรมคอมพิวเตอร์" บน https://cpe.engineer.rmutt.ac.th/document/ | อ้างเลขหน้าในเล่มหลักสูตร 68 (หน้า 20, 30–33) |
 
 ## เอกสารต้นฉบับ (PDF) ที่ยืนยันที่มาแล้ว — ใช้ใน PR ingest ถัดไป
 
@@ -39,7 +40,6 @@
 | ทุนการศึกษา | ยังไม่พบแหล่งทางการ |
 | รอบรับสมัคร / TCAS | ยังไม่พบประกาศรับสมัครของปีปัจจุบัน |
 | กิจกรรม/ชมรม, FAQ ผู้สนใจเข้าศึกษา | ยังไม่ได้รวบรวม |
-| study-plan-overview | รอข้อความสรุปหลักสูตรจาก P5 (Day 4) |
 
 ## ข้อมูลที่แหล่งต่างกันระบุไม่ตรงกัน
 
