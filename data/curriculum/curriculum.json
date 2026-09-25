@@ -35,6 +35,32 @@
     {"code":"04-622-203","name_th":"การเขียนโปรแกรมเชิงวัตถุ","name_en":"Object-Oriented Programming","credits":3,"credit_detail":"3(2-3)","category":"หมวดวิชาเฉพาะ","year":2,"semester":2},
     {"code":"04-623-202","name_th":"ระบบเครือข่ายแบบทีซีพีไอพี","name_en":"TCP/IP Networks","credits":3,"credit_detail":null,"category":"หมวดวิชาเฉพาะ","year":2,"semester":2},
     {"code":"04-xxx-xxx","name_th":"หมวดวิชาเฉพาะ-กลุ่มวิชาเลือก (1)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาเฉพาะ","year":2,"semester":2},
-    {"code":"xx-xxx-xxx","name_th":"หมวดวิชาศึกษาทั่วไป-กลุ่มวิชาเทคโนโลยีและการสร้างเสริมนวัตกรรม (2)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาศึกษาทั่วไป","year":2,"semester":2}
+    {"code":"xx-xxx-xxx","name_th":"หมวดวิชาศึกษาทั่วไป-กลุ่มวิชาเทคโนโลยีและการสร้างเสริมนวัตกรรม (2)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาศึกษาทั่วไป","year":2,"semester":2},
+
+    {"code":"04-620-301","name_th":"สัมมนาทางวิศวกรรมคอมพิวเตอร์","name_en":"Seminar in Computer Engineering","credits":1,"credit_detail":"1(0-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"04-621-301","name_th":"องค์ประกอบและสถาปัตยกรรมคอมพิวเตอร์","name_en":"Computer Organization and Architecture","credits":3,"credit_detail":"3(3-0)","category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"04-621-302","name_th":"อินเตอร์เน็ตของสรรพสิ่ง","name_en":"Internet of Things","credits":3,"credit_detail":"3(2-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"04-622-301","name_th":"การพัฒนาเว็บเต็มรูปแบบ","name_en":"Full-stack Web Development","credits":3,"credit_detail":"3(2-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"04-623-301","name_th":"ปฏิบัติการเครือข่ายคอมพิวเตอร์","name_en":"Computer Network Laboratory","credits":1,"credit_detail":"1(0-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"04-xxx-xxx","name_th":"หมวดวิชาเฉพาะ-กลุ่มวิชาเลือก (2)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"09-122-103","name_th":"สถิติทั่วไป","name_en":"General Statistics","credits":3,"credit_detail":"3(3-0)","category":"หมวดวิชาเฉพาะ","year":3,"semester":1},
+    {"code":"xx-xxx-xxx","name_th":"หมวดวิชาศึกษาทั่วไป-กลุ่มวิชาความเป็นพลเมืองไทยและพลเมืองโลก (2)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาศึกษาทั่วไป","year":3,"semester":1},
+
+    {"code":"04-000-301","name_th":"การเตรียมความพร้อมฝึกประสบการณ์วิชาชีพ","name_en":"Preparation for Professional Experience","credits":1,"credit_detail":"1(0-2)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-620-302","name_th":"ปฏิบัติการบูรณาการระบบคอมพิวเตอร์","name_en":"Computer System Integration Laboratory","credits":2,"credit_detail":"2(0-6)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-620-303","name_th":"การเตรียมโครงงานวิศวกรรมคอมพิวเตอร์","name_en":"Computer Engineering Pre-Project","credits":1,"credit_detail":"1(0-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-621-303","name_th":"ระบบปฏิบัติการ","name_en":"Operating Systems","credits":3,"credit_detail":"3(3-0)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-622-302","name_th":"วิศวกรรมซอฟต์แวร์","name_en":"Software Engineering","credits":3,"credit_detail":"3(2-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-622-303","name_th":"การโปรแกรมอุปกรณ์เคลื่อนที่สำหรับอุตสาหกรรมดิจิทัล","name_en":"Mobile Device Programming for Digital Industry","credits":3,"credit_detail":"3(2-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-624-301","name_th":"การประมวลผลภาพและการมองเห็นของคอมพิวเตอร์","name_en":"Image Processing and Computer Vision","credits":3,"credit_detail":"3(2-3)","category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+    {"code":"04-xxx-xxx","name_th":"หมวดวิชาเฉพาะ-กลุ่มวิชาเลือก (3)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาเฉพาะ","year":3,"semester":2},
+
+    {"code":"04-000-401","name_th":"สหกิจศึกษา","name_en":"Cooperative Education","credits":6,"credit_detail":"6(0-40)","category":"หมวดวิชาเฉพาะ","year":4,"semester":1},
+
+    {"code":"04-620-401","name_th":"โครงงานวิศวกรรมคอมพิวเตอร์","name_en":"Computer Engineering Project","credits":3,"credit_detail":"3(1-6)","category":"หมวดวิชาเฉพาะ","year":4,"semester":2},
+    {"code":"04-xxx-xxx","name_th":"หมวดวิชาเฉพาะ-กลุ่มวิชาเลือก (4)","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาเฉพาะ","year":4,"semester":2},
+    {"code":"xx-xxx-xxx","name_th":"หมวดวิชาศึกษาทั่วไป-กลุ่มวิชาส่งเสริมความเป็นผู้ประกอบการ","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาศึกษาทั่วไป","year":4,"semester":2},
+    {"code":"xx-xxx-xxx","name_th":"เลือกเสรี","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาเลือกเสรี","year":4,"semester":2},
+    {"code":"xx-xxx-xxx","name_th":"เลือกเสรี","name_en":"","credits":3,"credit_detail":null,"category":"หมวดวิชาเลือกเสรี","year":4,"semester":2}
   ]
 }

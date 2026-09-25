@@ -1,6 +1,7 @@
 """The only place that talks to the LLM provider (Gemini). Swap providers here.
 
-Every call has a timeout (LLM_TIMEOUT_S) and is retried once on API/network errors.
+Every call has a timeout (LLM_TIMEOUT_S) and is retried once on server/network errors
+(not on 4xx such as a bad key or an exhausted quota, where retrying cannot help).
 Any failure is raised as LLMError so callers can fall back without crashing.
 """
 import json
@@ -9,7 +10,7 @@ import time
 from functools import lru_cache
 
 from google import genai
-from google.genai import types
+from google.genai import errors, types
 
 from app.core.config import settings
 
@@ -49,10 +50,18 @@ def _generate(system: str, prompt: str, temperature: float, json_mode: bool) -> 
                 raise LLMError("empty response")
             log.info("llm ok model=%s json=%s latency_ms=%d", settings.llm_model, json_mode, _ms(started))
             return text
-        except Exception as exc:  # noqa: BLE001 — SDK/network errors vary; all are retried once
+        except errors.ClientError as exc:
             last_error = exc
-            log.warning("llm attempt %d failed after %dms: %s", attempt, _ms(started), exc)
-    raise LLMError(f"LLM call failed: {last_error}") from last_error
+            log.warning("llm request rejected after %dms: %s", _ms(started), _short(exc))
+            break
+        except Exception as exc:  # noqa: BLE001 — server/network errors vary; all are retried once
+            last_error = exc
+            log.warning("llm attempt %d failed after %dms: %s", attempt, _ms(started), _short(exc))
+    raise LLMError(f"LLM call failed: {_short(last_error)}") from last_error
+
+
+def _short(exc: Exception | None) -> str:
+    return str(exc)[:200]
 
 
 def _ms(started: float) -> int:
