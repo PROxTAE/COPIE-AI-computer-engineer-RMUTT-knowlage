@@ -27,6 +27,13 @@ def test_course_detail_accepts_code_and_near_name() -> None:
     assert get_course_detail("not a course") is None
 
 
+def test_course_detail_matches_short_names_and_case() -> None:
+    assert get_course_detail("Data Structure").code == "04-622-201"
+    assert get_course_detail("data structure").code == "04-622-201"
+    assert get_course_detail("โครงสร้างข้อมูล").code == "04-622-201"
+    assert get_course_detail("Database").code == "04-622-202"
+
+
 def test_credits_and_overview_use_data_file() -> None:
     assert get_total_credits() == 141
     assert get_total_credits(year=1, semester=1) == 19
