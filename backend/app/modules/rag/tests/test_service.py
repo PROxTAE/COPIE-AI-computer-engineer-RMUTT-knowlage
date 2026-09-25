@@ -71,7 +71,7 @@ def test_no_evaluation_question_is_flagged_as_other_unit() -> None:
 
 def test_rerank_orders_by_score() -> None:
     idx = service._indexes()
-    fee = next(c for c in idx.chunks if "16,000" in c.text)
+    fee = next(c for c in idx.chunks if c.doc_id == "tuition-fees" and "16,000" in c.text)
     chunks = [idx.by_id["contact#0"], fee]
     ranked = reranker.rerank("ค่าเทอม", chunks, keyword_scorer)
     assert [c.doc_id for c, _ in ranked] == ["tuition-fees", "contact"]
@@ -80,7 +80,8 @@ def test_rerank_orders_by_score() -> None:
 def test_scores_come_from_reranker_and_irrelevant_chunks_are_dropped(fake_reranker) -> None:
     results = service.search_department_knowledge("ค่าเทอมเท่าไหร่")
     assert results
-    assert all(r.source.doc_id == "tuition-fees" and r.source.score == 1.0 for r in results)
+    # The fee page and the FAQ answer that restates it both contain the 16,000 baht fee.
+    assert all(r.source.doc_id in {"tuition-fees", "faq-prospective"} and r.source.score == 1.0 for r in results)
     assert all("16,000" in r.text for r in results)
 
 

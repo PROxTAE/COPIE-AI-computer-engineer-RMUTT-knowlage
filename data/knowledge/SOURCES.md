@@ -38,7 +38,7 @@
 | Regulations-rules-and-announcements_2026-05-19.pdf | ยังไม่พบ URL ต้นทาง |
 | REG-01 ถึง REG-13 (ขอสำเร็จการศึกษา, ลาพัก, ลาออก ฯลฯ) จากโปรเจกต์เดิม | เป็นเอกสารที่เรียบเรียงขึ้นใหม่ ไม่ใช่ประกาศทางการ และไม่มี URL ต้นทาง ต้องหาประกาศต้นฉบับของงานทะเบียนคณะก่อนใช้ |
 | จำนวนรับต่อรอบของสาขาวิศวกรรมคอมพิวเตอร์ | ยังไม่พบในประกาศที่เปิดอ่านได้ |
-| กิจกรรม/ชมรม, FAQ ผู้สนใจเข้าศึกษา | ยังไม่ได้รวบรวม |
+| กิจกรรม/ชมรม | ยังไม่ได้รวบรวม |
 
 ## ข้อมูลที่แหล่งต่างกันระบุไม่ตรงกัน
 
@@ -63,3 +63,4 @@ staff.md ใส่เฉพาะชื่อ ตำแหน่ง และว
 | student-projects | student-projects.md | https://cpe.engineer.rmutt.ac.th/%e0%b9%82%e0%b8%84%e0%b8%a3%e0%b8%87%e0%b8%87%e0%b8%b2%e0%b8%99%e0%b8%99%e0%b8%b1%e0%b8%81%e0%b8%a8%e0%b8%b6%e0%b8%81%e0%b8%a9%e0%b8%b2/ | สรุปจากบทคัดย่อ 10 เรื่องบนหน้าโครงงานนักศึกษา |
 | admission-schedule-2570 | admission-schedule-2570.md | https://oreg.rmutt.ac.th/?p=27101 | ข้อความจากประกาศกำหนดการรับสมัคร ปีการศึกษา 2570 ของสำนักส่งเสริมวิชาการและงานทะเบียน |
 | scholarships | scholarships.md | https://engineer.rmutt.ac.th/news-all/37205/ | ข่าวทุนของคณะ + https://engineer.rmutt.ac.th/news-all/38026/ + https://engineer.rmutt.ac.th/scholarship/ + https://sd.rmutt.ac.th/?page_id=2051 |
+| faq-prospective | faq-prospective.md | https://cpe.engineer.rmutt.ac.th/about/ | ถาม-ตอบที่เรียบเรียงจากเอกสารในคลังนี้เท่านั้น แต่ละข้อมี "ที่มา:" ของหน้าต้นทาง (ตรวจแล้ว: ตัวเลขและ URL ทุกตัวอยู่ในเอกสารที่ยืนยันแล้ว) |

@@ -3,8 +3,13 @@
 Each file starts with a front-matter block (doc_id, title, source_url, updated)
 and is split into one chunk per "## " heading. A section longer than MAX_CHARS
 is cut into overlapping pieces so every chunk fits the embedding model well.
+
+A section whose first line is "ที่มา: <url>" came from another page than the
+file's source_url; its chunks link to that page instead, so a citation always
+opens the page that contains the text.
 """
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,6 +20,7 @@ REQUIRED_KEYS = ("doc_id", "title", "source_url", "updated")
 FRONT_MATTER_FENCE = "---"
 MAX_CHARS = 800
 OVERLAP_CHARS = 100
+SECTION_SOURCE_RE = re.compile(r"^ที่มา:\s*(https?://\S+)\s*(?:\n|$)")
 
 
 @dataclass(frozen=True)
@@ -95,23 +101,30 @@ def split_long_text(text: str, max_chars: int = MAX_CHARS, overlap: int = OVERLA
     return [piece for piece in pieces if piece]
 
 
+def section_source(text: str, default_url: str) -> tuple[str, str]:
+    """(url, text): the section's own "ที่มา:" url with that line removed, else the file url."""
+    match = SECTION_SOURCE_RE.match(text)
+    if not match:
+        return default_url, text
+    return match.group(1), text[match.end():].strip()
+
+
 def chunk_file(path: Path) -> list[Chunk]:
     meta, body = parse_front_matter(path.read_text(encoding=ENCODING), path.name)
-    pieces = [
-        (heading, piece)
-        for heading, text in split_sections(body)
-        for piece in split_long_text(text)
-    ]
+    pieces = []
+    for heading, section_text in split_sections(body):
+        url, text = section_source(section_text, meta["source_url"])
+        pieces.extend((heading, url, piece) for piece in split_long_text(text) if piece)
     return [
         Chunk(
             chunk_id=f"{meta['doc_id']}#{i}",
             doc_id=meta["doc_id"],
             title=meta["title"],
             section=heading,
-            url=meta["source_url"],
+            url=url,
             text=text,
         )
-        for i, (heading, text) in enumerate(pieces)
+        for i, (heading, url, text) in enumerate(pieces)
     ]
 
 
