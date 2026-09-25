@@ -8,6 +8,10 @@ httpx==0.28.1
 pytest==9.1.1
 google-genai==2.25.0
 
+# ---- user (P2) ----
+sqlmodel==0.0.47
+PyJWT==2.15.0
+
 # ---- rag (P4) ----
 chromadb==1.5.9
 sentence-transformers==6.1.0
