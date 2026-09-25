@@ -9,6 +9,7 @@ import time
 from dataclasses import dataclass, field
 from uuid import uuid4
 
+from fastapi import HTTPException
 from pydantic import ValidationError
 
 from app.modules.agent import generator, intent_router, services
@@ -18,6 +19,7 @@ from app.schemas.contract import (
     Action,
     ActionPayload,
     AgentResponse,
+    AssessmentSubmit,
     CardsData,
     ChatRequest,
     Course,
@@ -32,6 +34,8 @@ from app.schemas.contract import (
 log = logging.getLogger(__name__)
 
 STUDENT_TYPES = ("current_student", "near_graduate")
+RETAKE_WORDS = ("ใหม่", "อีกครั้ง", "อีกรอบ", "ทำซ้ำ")
+SUBMIT_TEXT = "ส่งแบบประเมิน skill"
 TERM_WORDS = ("เทอม", "ภาคเรียน", "ปีนี้", "ปีหน้า")  # asks about a specific term, not the whole program
 SNIPPET_CHARS = 300
 
@@ -119,7 +123,7 @@ def dispatch(db, route: RouteResult, message: str, profile: User, skill, recent:
     if route.intent == "department_info":
         return department_info(route.search_query or message)
     if route.intent == "skill_analysis":
-        return skill_analysis(db, profile, skill)
+        return skill_analysis(db, profile, skill, retake=any(w in message for w in RETAKE_WORDS))
     if route.intent == "clarify":
         return clarify()
     return general(message, profile, recent)
@@ -237,11 +241,13 @@ def department_info(query: str) -> Reply:
 # ---------- skill ----------
 
 
-def skill_analysis(db, profile: User, skill: SkillProfile | None) -> Reply:
-    skill = skill or services.get_latest_skill(db, profile.id)
+def skill_analysis(db, profile: User, skill: SkillProfile | None, retake: bool = False) -> Reply:
+    skill = None if retake else skill or services.get_latest_skill(db, profile.id)
     if skill is None:
         return Reply(
-            "ยังไม่มีข้อมูล skill ของคุณ ลองตอบแบบประเมินนี้ก่อนนะครับ",
+            "ทำแบบประเมินใหม่ได้เลยครับ ผลล่าสุดจะใช้แทนผลเดิม"
+            if retake
+            else "ยังไม่มีข้อมูล skill ของคุณ ลองตอบแบบประเมินนี้ก่อนนะครับ",
             "skill_analysis",
             "assessment_form",
             services.get_assessment(),
@@ -264,6 +270,42 @@ def skill_radar(skill: SkillProfile, profile: User, tool: str) -> Reply:
         tool,
         actions=[ask("ทำแบบประเมินใหม่", "ขอทำแบบประเมิน skill ใหม่")],
     )
+
+
+def handle_assessment_submit(db, user: User, req: AssessmentSubmit) -> AgentResponse:
+    """Score the answers with the skill tool (formula, not the LLM), save the profile, return a radar."""
+    started = time.perf_counter()
+    conversation_id = services.get_or_create_conversation(db, user.id, req.conversation_id, SUBMIT_TEXT)
+    try:
+        form = services.get_assessment()
+    except Exception:  # the tool may be unavailable; answer with an error instead of a 500
+        log.exception("get_assessment failed")
+        return build_response(conversation_id, error_reply("tool_failed", "skill_analysis"), started)
+    check_answers(req, {q.id for q in form.questions}, form.assessment_id)
+
+    services.add_user_message(db, conversation_id, SUBMIT_TEXT)
+    profile: User = _field(services.get_user_context(db, user.id), "user") or user
+    try:
+        scores = services.calculate_skill(req.answers)
+        skill = services.save_skill_profile(db, user.id, scores, req.answers)
+        reply = skill_radar(skill, profile, "skill.calculate_skill")
+    except Exception:  # scoring or saving failed; the UI shows a retry button
+        log.exception("assessment submit failed")
+        reply = error_reply("tool_failed", "skill_analysis")
+    response = build_response(conversation_id, reply, started)
+    try:
+        services.add_assistant_message(db, conversation_id, response)
+    except Exception:  # the answer is still valid if saving history fails
+        log.exception("could not save assistant message")
+    return response
+
+
+def check_answers(req: AssessmentSubmit, question_ids: set[str], assessment_id: str) -> None:
+    if req.assessment_id != assessment_id:
+        raise HTTPException(status_code=422, detail="แบบประเมินนี้ไม่ใช่เวอร์ชันปัจจุบัน กรุณาเริ่มทำใหม่")
+    answered = [a.question_id for a in req.answers]
+    if len(answered) != len(set(answered)) or set(answered) != question_ids:
+        raise HTTPException(status_code=422, detail="กรุณาตอบแบบประเมินให้ครบทุกข้อ ข้อละหนึ่งคำตอบ")
 
 
 # ---------- general / clarify ----------

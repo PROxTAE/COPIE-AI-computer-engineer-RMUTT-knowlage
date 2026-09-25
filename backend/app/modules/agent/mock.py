@@ -14,7 +14,6 @@ from app.schemas.contract import (
     AssessmentFormData,
     AssessmentOption,
     AssessmentQuestion,
-    AssessmentSubmit,
     CardsData,
     ChatRequest,
     Course,
@@ -191,7 +190,3 @@ def mock_chat(req: ChatRequest) -> AgentResponse:
     else:
         parts = _text()
     return _build(req.conversation_id, parts)
-
-
-def mock_assessment_submit(req: AssessmentSubmit) -> AgentResponse:
-    return _build(req.conversation_id, _skill_radar())
