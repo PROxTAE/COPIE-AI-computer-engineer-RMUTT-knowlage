@@ -5,8 +5,9 @@
 
 import { useEffect, useRef } from "react";
 import { BookOpen, ChevronDown, ExternalLink, FileText } from "lucide-react";
-import { useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { Source } from "@/types/contract";
+import { FOCUS_RING } from "./styles";
 
 interface SourceViewerProps {
   sources: Source[];
@@ -32,6 +33,7 @@ export function SourceViewer({ sources, activeIndex, onActiveChange }: SourceVie
             key={`${source.doc_id}-${position}`}
             source={source}
             index={position + 1}
+            order={position}
             open={activeIndex === position + 1}
             onToggle={() => onActiveChange(activeIndex === position + 1 ? null : position + 1)}
           />
@@ -44,11 +46,13 @@ export function SourceViewer({ sources, activeIndex, onActiveChange }: SourceVie
 function SourceCard({
   source,
   index,
+  order,
   open,
   onToggle,
 }: {
   source: Source;
   index: number;
+  order: number;
   open: boolean;
   onToggle: () => void;
 }) {
@@ -65,9 +69,12 @@ function SourceCard({
   const panelId = `source-panel-${index}`;
 
   return (
-    <li
+    <motion.li
       ref={item}
       id={`source-${index}`}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, delay: order * 0.04 }}
       className={`flex flex-col rounded-lg border bg-surface transition ${
         open ? "border-copie-teal" : "border-deep-navy/12"
       }`}
@@ -77,7 +84,7 @@ function SourceCard({
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex items-start gap-2 p-3 text-left"
+        className="flex items-start gap-2 rounded-lg p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
       >
         <FileText aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-copie-teal" />
         <span className="min-w-0 flex-1">
@@ -101,7 +108,7 @@ function SourceCard({
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 self-start text-sm font-medium text-copie-teal underline underline-offset-2"
+              className={`inline-flex items-center gap-1.5 self-start rounded text-sm font-medium text-copie-teal underline underline-offset-2 ${FOCUS_RING}`}
             >
               <ExternalLink aria-hidden="true" className="size-4" />
               เปิดเอกสารต้นทาง
@@ -111,6 +118,6 @@ function SourceCard({
           )}
         </div>
       )}
-    </li>
+    </motion.li>
   );
 }

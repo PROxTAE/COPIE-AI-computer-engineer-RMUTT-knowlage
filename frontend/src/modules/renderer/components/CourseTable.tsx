@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 import { BarChart3, ChevronDown, ChevronRight, FileText } from "lucide-react";
+import { motion } from "motion/react";
 import type { Course, CourseTableData } from "@/types/contract";
 
 type SortKey = "code" | "name_th" | "credits" | "category";
@@ -58,7 +59,7 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
                     type="button"
                     onClick={() => toggleSort(column.key)}
                     disabled={disabled}
-                    className="inline-flex items-center gap-1 disabled:opacity-50"
+                    className="inline-flex items-center gap-1 rounded disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
                   >
                     {column.label}
                     <ChevronDown
@@ -76,13 +77,16 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
             </tr>
           </thead>
           <tbody>
-            {courses.map((course) => {
+            {courses.map((course, index) => {
               const active = course.code === selected;
               return (
-                <tr
+                <motion.tr
                   key={course.code}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: index * 0.04 }}
                   onClick={() => toggleRow(course.code)}
-                  aria-selected={active}
+                  data-selected={active}
                   className={`cursor-pointer border-t border-deep-navy/8 transition ${
                     active ? "bg-copie-teal/8" : "hover:bg-mist/50"
                   }`}
@@ -100,14 +104,26 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
                   <td className="px-4 py-3 text-right tabular-nums text-ink">{course.credits}</td>
                   <td className="px-4 py-3 text-ink">{course.category ?? "—"}</td>
                   <td className="px-2 py-3 text-right">
-                    <ChevronRight
-                      aria-hidden="true"
-                      className={`inline size-4 transition-transform ${
-                        active ? "rotate-90 text-copie-teal" : "text-muted"
-                      }`}
-                    />
+                    {/* ปุ่มจริงเพื่อให้กดด้วยคีย์บอร์ดได้ — แถวทั้งแถวกดได้เฉพาะด้วยเมาส์ */}
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        toggleRow(course.code);
+                      }}
+                      aria-expanded={active}
+                      aria-label={`ดูรายละเอียด ${course.name_th}`}
+                      className="rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
+                    >
+                      <ChevronRight
+                        aria-hidden="true"
+                        className={`inline size-4 transition-transform ${
+                          active ? "rotate-90 text-copie-teal" : "text-muted"
+                        }`}
+                      />
+                    </button>
                   </td>
-                </tr>
+                </motion.tr>
               );
             })}
           </tbody>
@@ -116,15 +132,20 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
 
       {/* มือถือ: การ์ดต่อหนึ่งวิชา กดที่การ์ดเพื่อกางรายละเอียด */}
       <ul className="flex flex-col gap-2 @2xl:hidden">
-        {courses.map((course) => {
+        {courses.map((course, index) => {
           const active = course.code === selected;
           return (
-            <li key={course.code}>
+            <motion.li
+              key={course.code}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: index * 0.04 }}
+            >
               <button
                 type="button"
                 onClick={() => toggleRow(course.code)}
                 aria-expanded={active}
-                className={`flex w-full flex-col gap-1 rounded-lg border p-3 text-left transition ${
+                className={`flex w-full flex-col gap-1 rounded-lg border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal ${
                   active ? "border-copie-teal bg-copie-teal/8" : "border-deep-navy/12 bg-surface"
                 }`}
               >
@@ -136,7 +157,7 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
                 <span className="text-xs text-muted">{course.name_en}</span>
                 {course.category && <span className="text-xs text-muted">{course.category}</span>}
               </button>
-            </li>
+            </motion.li>
           );
         })}
       </ul>
