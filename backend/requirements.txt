@@ -13,3 +13,6 @@ chromadb==1.5.9
 sentence-transformers==6.1.0
 rank-bm25==0.2.2
 pythainlp==5.3.8
+
+# ---- tools (P5) ----
+rapidfuzz==3.14.6
