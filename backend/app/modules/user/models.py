@@ -29,7 +29,7 @@ class User(SQLModel, table=True):
 
     id: str = Field(default_factory=new_id, primary_key=True)
     google_sub: str | None = Field(default=None, unique=True, index=True)
-    email: str = Field(index=True)
+    email: str = Field(index=True, unique=True)
     name: str
     picture_url: str | None = None
     display_name: str | None = None

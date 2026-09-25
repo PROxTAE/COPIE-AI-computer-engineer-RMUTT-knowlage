@@ -4,6 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
 from app.core.config import settings
@@ -38,9 +39,19 @@ def dev_login(req: DevAuthRequest, db: Annotated[Session, Depends(get_session)])
     if user is None:
         user = UserRow(email=email, name=name)
         db.add(user)
+        try:
+            db.commit()
+        except IntegrityError:
+            db.rollback()
+            user = db.exec(select(UserRow).where(UserRow.email == email)).first()
+            if user is None:
+                raise
+            is_new_user = False
+            user.name = name
+            db.commit()
     else:
         user.name = name
-    db.commit()
+        db.commit()
     db.refresh(user)
 
     return AuthResponse(
