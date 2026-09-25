@@ -1,0 +1,31 @@
+# docker compose up --build        → web http://localhost:3000 · api http://localhost:8000
+# docker compose up --build api    → backend only (frontend/Dockerfile is owned by P1)
+services:
+  api:
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: sqlite:///./storage/app.db
+      CHROMA_DIR: ./storage/chroma
+    volumes:
+      - ./backend/storage:/app/backend/storage   # app.db + chroma/ survive restarts
+      - ./data:/app/data:ro                      # knowledge, curriculum, assessment
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        API_URL: http://api:8000                 # target of the /api/* rewrite, baked in at build time
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
