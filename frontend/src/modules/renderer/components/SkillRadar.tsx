@@ -8,6 +8,7 @@ import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, Responsi
 import type { SkillKey, SkillRadarData } from "@/types/contract";
 import { Markdown } from "./Markdown";
 import { SKILL_LABELS, SKILL_ORDER } from "./skillLabels";
+import { FOCUS_RING } from "./styles";
 
 const RETAKE_QUESTION = "ขอทำแบบประเมิน skill ใหม่";
 
@@ -115,7 +116,7 @@ export function SkillRadar({ data, onAsk, disabled = false }: SkillRadarProps) {
           type="button"
           onClick={() => onAsk(RETAKE_QUESTION)}
           disabled={disabled}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-copie-teal px-4 py-2.5 font-medium text-surface disabled:opacity-50"
+          className={`inline-flex items-center justify-center gap-2 rounded-lg bg-copie-teal px-4 py-2.5 font-medium text-surface disabled:opacity-50 ${FOCUS_RING}`}
         >
           <RefreshCw aria-hidden="true" className="size-4" />
           ทำแบบประเมินใหม่

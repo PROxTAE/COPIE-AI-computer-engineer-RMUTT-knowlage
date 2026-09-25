@@ -4,6 +4,7 @@
 
 import { CircleAlert, RotateCcw } from "lucide-react";
 import type { Action, ErrorData } from "@/types/contract";
+import { FOCUS_RING } from "./styles";
 
 const MESSAGES: Record<ErrorData["code"], string> = {
   llm_unavailable: "ตอนนี้ระบบ AI ไม่พร้อมใช้งานชั่วคราว ลองส่งคำถามอีกครั้งในอีกสักครู่ครับ",
@@ -38,7 +39,7 @@ export function ErrorResponse({ data, actions, onAsk, disabled = false }: ErrorR
           type="button"
           onClick={() => onAsk(retry.payload.text as string)}
           disabled={disabled}
-          className="inline-flex items-center gap-2 self-start rounded-lg border border-danger/40 px-4 py-2 text-sm font-medium text-danger disabled:opacity-50"
+          className={`inline-flex items-center gap-2 self-start rounded-lg border border-danger/40 px-4 py-2 text-sm font-medium text-danger disabled:opacity-50 ${FOCUS_RING}`}
         >
           <RotateCcw aria-hidden="true" className="size-4" />
           ลองใหม่อีกครั้ง

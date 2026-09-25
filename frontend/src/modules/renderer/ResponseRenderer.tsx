@@ -6,6 +6,7 @@
 "use client";
 
 import { useState } from "react";
+import { MotionConfig, motion } from "motion/react";
 import type { AgentResponse } from "@/types/contract";
 import { ActionChips } from "./components/ActionChips";
 import { AssessmentForm } from "./components/AssessmentForm";
@@ -49,23 +50,35 @@ export function ResponseRenderer({ response, onAsk, onSubmitAssessment, disabled
   const chipActions = retryAction ? response.actions.filter((item) => item !== retryAction) : response.actions;
 
   return (
-    <article className="@container flex flex-col gap-5" data-response-type={response.response_type} aria-busy={disabled}>
-      {response.message.trim().length > 0 && (
-        <TextResponse
-          message={response.message}
-          citationCount={response.sources.length}
-          onCitationClick={setActiveSource}
-          animate={isText}
-          showEyebrow={isText}
-        />
-      )}
+    // reducedMotion="user" = ถ้าผู้ใช้ตั้งค่าลดการเคลื่อนไหว motion จะข้ามการเลื่อน/ย่อขยายให้เอง
+    <MotionConfig reducedMotion="user">
+      <motion.article
+        // key ที่ message_id ทำให้คำตอบใหม่เล่นแอนิเมชันเข้าใหม่ทุกครั้ง
+        key={response.message_id}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="@container flex flex-col gap-5"
+        data-response-type={response.response_type}
+        aria-busy={disabled}
+      >
+        {response.message.trim().length > 0 && (
+          <TextResponse
+            message={response.message}
+            citationCount={response.sources.length}
+            onCitationClick={setActiveSource}
+            animate={isText}
+            showEyebrow={isText}
+          />
+        )}
 
-      <ResponseBody response={response} onAsk={onAsk} onSubmitAssessment={onSubmitAssessment} disabled={disabled} />
+        <ResponseBody response={response} onAsk={onAsk} onSubmitAssessment={onSubmitAssessment} disabled={disabled} />
 
-      <SourceViewer sources={response.sources} activeIndex={activeSource} onActiveChange={setActiveSource} />
+        <SourceViewer sources={response.sources} activeIndex={activeSource} onActiveChange={setActiveSource} />
 
-      <ActionChips actions={chipActions} onAsk={onAsk} disabled={disabled} />
-    </article>
+        <ActionChips actions={chipActions} onAsk={onAsk} disabled={disabled} />
+      </motion.article>
+    </MotionConfig>
   );
 }
 

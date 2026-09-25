@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { MOCKS, MOCK_LABELS, type MockKey } from "./mock";
 import { ResponseRenderer, type AssessmentAnswer } from "./ResponseRenderer";
+import { FOCUS_RING } from "./components/styles";
 
 type Viewport = "desktop" | "mobile";
 
@@ -42,7 +43,7 @@ export function DevPlayground() {
         <h1 className="font-display text-3xl font-bold text-deep-navy">Renderer playground</h1>
         <p className="text-muted">แสดง mock ของทุก response_type โดยไม่ต้องมี backend</p>
         <p className="text-sm text-warning">
-          รายวิชามาจาก data/curriculum/curriculum.json ของจริง · แหล่งอ้างอิงและแบบประเมินยังเป็น placeholder รอ P4 / P5
+          รายวิชาและแหล่งอ้างอิงมาจากไฟล์ข้อมูลจริงใน data/ · เหลือแบบประเมินที่ยังเป็นชุดตัวอย่าง รอ skill_v1.json จาก P5
         </p>
       </header>
 
@@ -56,7 +57,7 @@ export function DevPlayground() {
                 type="button"
                 onClick={() => setSelected(item.key)}
                 aria-current={active ? "true" : undefined}
-                className={`rounded-lg border px-3 py-2 text-left transition ${
+                className={`rounded-lg border px-3 py-2 text-left transition ${FOCUS_RING} ${
                   active
                     ? "border-copie-teal bg-copie-teal/10 text-deep-navy"
                     : "border-transparent bg-surface text-ink hover:border-deep-navy/15"
@@ -141,7 +142,7 @@ function ToggleButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`rounded-lg border px-3 py-1.5 transition ${
+      className={`rounded-lg border px-3 py-1.5 transition ${FOCUS_RING} ${
         active ? "border-copie-teal bg-copie-teal/10 text-deep-navy" : "border-deep-navy/15 text-muted hover:text-ink"
       }`}
     >

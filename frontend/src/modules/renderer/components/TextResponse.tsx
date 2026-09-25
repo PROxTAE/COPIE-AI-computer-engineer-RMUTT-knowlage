@@ -6,6 +6,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useReducedMotion } from "motion/react";
 import { Markdown } from "./Markdown";
+import { FOCUS_RING } from "./styles";
 
 const TYPING_MS_PER_CHAR = 20; // ตามแผน P6
 
@@ -51,7 +52,7 @@ export function TextResponse({
         <button
           type="button"
           onClick={skip}
-          className="self-start text-xs text-muted underline underline-offset-2 hover:text-ink"
+          className={`self-start rounded text-xs text-muted underline underline-offset-2 hover:text-ink ${FOCUS_RING}`}
         >
           ข้ามการพิมพ์
         </button>

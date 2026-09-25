@@ -7,6 +7,7 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, CircleCheck, Info, ListChecks } from "lucide-react";
 import type { AssessmentFormData } from "@/types/contract";
 import { SKILL_ORDER } from "./skillLabels";
+import { FOCUS_RING } from "./styles";
 
 type Stage = "intro" | "questions" | "later" | "done";
 
@@ -49,7 +50,7 @@ export function AssessmentForm({ data, onSubmit, disabled = false }: AssessmentF
         <button
           type="button"
           onClick={() => setStage("intro")}
-          className="font-medium text-copie-teal underline underline-offset-2"
+          className={`rounded font-medium text-copie-teal underline underline-offset-2 ${FOCUS_RING}`}
         >
           กลับมาทำเมื่อไหร่ก็ได้
         </button>
@@ -78,7 +79,7 @@ export function AssessmentForm({ data, onSubmit, disabled = false }: AssessmentF
             type="button"
             onClick={() => setStage("questions")}
             disabled={locked}
-            className="inline-flex items-center gap-2 rounded-lg bg-copie-teal px-4 py-2.5 font-medium text-surface disabled:opacity-50"
+            className={`inline-flex items-center gap-2 rounded-lg bg-copie-teal px-4 py-2.5 font-medium text-surface disabled:opacity-50 ${FOCUS_RING}`}
           >
             <ListChecks aria-hidden="true" className="size-4" />
             เริ่มแบบประเมิน
@@ -88,7 +89,7 @@ export function AssessmentForm({ data, onSubmit, disabled = false }: AssessmentF
             type="button"
             onClick={() => setStage("later")}
             disabled={locked}
-            className="rounded-lg border border-deep-navy/15 px-4 py-2.5 text-deep-navy disabled:opacity-40"
+            className={`rounded-lg border border-deep-navy/15 px-4 py-2.5 text-deep-navy disabled:opacity-40 ${FOCUS_RING}`}
           >
             ไว้ทีหลัง
           </button>
@@ -130,7 +131,7 @@ export function AssessmentForm({ data, onSubmit, disabled = false }: AssessmentF
           return (
             <label
               key={option.value}
-              className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition ${
+              className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-copie-teal ${
                 selected ? "border-copie-teal bg-copie-teal/8" : "border-deep-navy/12 hover:border-copie-teal/40"
               }`}
             >
@@ -159,7 +160,7 @@ export function AssessmentForm({ data, onSubmit, disabled = false }: AssessmentF
           type="button"
           onClick={() => setCurrent((index) => Math.max(0, index - 1))}
           disabled={locked || current === 0}
-          className="inline-flex items-center gap-2 rounded-lg border border-deep-navy/15 px-4 py-2.5 text-deep-navy disabled:opacity-40"
+          className={`inline-flex items-center gap-2 rounded-lg border border-deep-navy/15 px-4 py-2.5 text-deep-navy disabled:opacity-40 ${FOCUS_RING}`}
         >
           <ArrowLeft aria-hidden="true" className="size-4" />
           ย้อนกลับ
@@ -169,7 +170,7 @@ export function AssessmentForm({ data, onSubmit, disabled = false }: AssessmentF
           type="button"
           onClick={isLast ? submit : () => setCurrent((index) => Math.min(total - 1, index + 1))}
           disabled={locked || answered === undefined}
-          className="inline-flex items-center gap-2 rounded-lg bg-copie-teal px-4 py-2.5 font-medium text-surface disabled:opacity-50"
+          className={`inline-flex items-center gap-2 rounded-lg bg-copie-teal px-4 py-2.5 font-medium text-surface disabled:opacity-50 ${FOCUS_RING}`}
         >
           {isLast ? (submitting ? "กำลังส่ง..." : "ดูผล") : "ข้อถัดไป"}
           <ArrowRight aria-hidden="true" className="size-4" />

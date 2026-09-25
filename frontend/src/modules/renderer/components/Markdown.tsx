@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { Children, isValidElement } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { FOCUS_RING } from "./styles";
 
 interface MarkdownProps {
   children: string;
@@ -125,7 +126,7 @@ function splitCitations(text: string, onClick: (index: number) => void, count: n
         type="button"
         onClick={() => onClick(index)}
         aria-label={`ดูแหล่งอ้างอิงที่ ${index}`}
-        className="mx-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded border border-copie-teal/40 bg-copie-teal/10 px-1 align-[2px] text-xs font-semibold tabular-nums text-copie-teal transition hover:bg-copie-teal/20"
+        className={`mx-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded border border-copie-teal/40 bg-copie-teal/10 px-1 align-[2px] text-xs font-semibold tabular-nums text-copie-teal transition hover:bg-copie-teal/20 ${FOCUS_RING}`}
       >
         {index}
       </button>,
