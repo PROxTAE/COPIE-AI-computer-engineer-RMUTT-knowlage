@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COPIE Web UI Asset Preview</title>
+  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/copie-ui.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .demo-header { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 26px 4vw; border-bottom: 1px solid #e4eefb; }
+    .demo-header-right { display: flex; align-items: center; gap: 26px; color: #155ff2; font: 600 12px Arial, sans-serif; letter-spacing: .13em; }
+    .demo-stage { position: relative; min-height: 760px; display: grid; grid-template-columns: minmax(0,1fr) minmax(340px,1.35fr) minmax(0,1fr); align-items: center; gap: 2vw; padding: 34px 5vw 120px; }
+    .demo-stage .copie-floor { z-index: -1; }
+    .demo-copy { position: relative; z-index: 2; }
+    .demo-copy h1, .demo-copy h2 { font-size: clamp(27px, 3vw, 48px); }
+    .demo-copy p { color: #263a59; font-size: 18px; line-height: 1.7; }
+    .demo-center { position: relative; display: grid; place-items: center; align-self: stretch; }
+    .demo-center .copie-halo { position: absolute; width: min(55vw, 660px); }
+    .demo-center .copie-mascot { position: relative; z-index: 1; width: min(39vw, 510px); max-height: 650px; }
+    .demo-input { position: absolute; z-index: 3; left: 50%; bottom: 48px; width: min(680px, 70vw); transform: translateX(-50%); }
+    .demo-input button img, .demo-header button img { width: 20px; height: 20px; }
+    .demo-input button { width: 46px; height: 46px; }
+    .demo-history { position: absolute; z-index: 3; left: 4vw; bottom: 48px; }
+    .asset-gallery { position: relative; z-index: 1; padding: 50px 5vw 70px; border-top: 1px solid #d7e5f8; background: white; }
+    .asset-gallery h2 { font: 700 32px Arial, sans-serif; }
+    .asset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 14px; }
+    .asset-cell { min-height: 150px; padding: 18px; border: 1px solid #d7e5f8; border-radius: 16px; display: grid; place-items: center; background: #fbfdff; }
+    .asset-cell img { display: block; max-width: 90%; max-height: 85px; }
+    .asset-cell span { font: 600 12px Arial, sans-serif; color: #5f7088; }
+    .icon-gallery { display: flex; flex-wrap: wrap; gap: 8px; }
+    .icon-gallery figure { width: 80px; margin: 0; padding: 12px 5px; border: 1px solid #d7e5f8; border-radius: 10px; text-align: center; font: 11px Arial, sans-serif; color: #5f7088; }
+    .icon-gallery img { display: block; width: 26px; height: 26px; margin: 0 auto 8px; }
+    @media (max-width: 900px) {
+      .demo-stage { display: flex; flex-direction: column; min-height: 980px; gap: 20px; }
+      .demo-center .copie-mascot { width: min(80vw, 440px); }
+      .demo-copy { width: 100%; }
+      .demo-input { width: min(680px, 90vw); bottom: 110px; }
+      .demo-history { bottom: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="copie-ui">
+    <header class="demo-header">
+      <strong class="copie-wordmark">COPIE</strong>
+      <div class="demo-header-right">
+        <span><span class="copie-status-dot"></span> AI // ACTIVE</span>
+        <button class="copie-icon-button" aria-label="โปรไฟล์"><img src="icons/profile.svg" alt=""></button>
+      </div>
+    </header>
+    <section class="demo-stage">
+      <div class="copie-floor"></div>
+      <div class="demo-copy copie-answer-enter">
+        <span class="copie-eyebrow">COPIE / ANSWER</span>
+        <h1 class="copie-heading">ภาพรวมหลักสูตร</h1>
+        <div class="copie-response-rule"></div>
+        <p>พื้นที่คำตอบด้านซ้ายใช้ข้อความจริงจาก Agent และคงระยะอ่านที่สบายตา</p>
+      </div>
+      <div class="demo-center">
+        <div class="copie-halo"></div>
+        <img class="copie-mascot copie-mascot-breathe" src="mascot/states/copie-front-laptop.png" alt="COPIE มาสคอต">
+      </div>
+      <div class="demo-copy copie-answer-enter">
+        <span class="copie-eyebrow">AI RESPONSE</span>
+        <h2 class="copie-heading">หัวข้อสำคัญ</h2>
+        <div class="copie-response-rule"></div>
+        <p>การเขียนโปรแกรม<br>ระบบคอมพิวเตอร์<br>AI และซอฟต์แวร์</p>
+      </div>
+      <form class="copie-input demo-input" onsubmit="return false">
+        <img src="icons/search.svg" alt="" width="20" height="20">
+        <input aria-label="พิมพ์คำถาม" placeholder="พิมพ์คำถามของคุณ...">
+        <button class="copie-icon-button copie-button--primary" aria-label="ส่ง"><img src="icons/send.svg" alt=""></button>
+      </form>
+      <button class="copie-button demo-history"><img src="icons/history.svg" alt="" width="20" height="20">History</button>
+    </section>
+    <section class="asset-gallery">
+      <h2>Reusable assets</h2>
+      <div class="asset-grid">
+        <div class="asset-cell"><img src="backgrounds/grid-light.svg" alt=""><span>grid-light</span></div>
+        <div class="asset-cell"><img src="backgrounds/mascot-halo.svg" alt=""><span>mascot-halo</span></div>
+        <div class="asset-cell"><img src="frames/corner-accent.svg" alt=""><span>corner-accent</span></div>
+        <div class="asset-cell"><img src="effects/data-streak.svg" alt=""><span>data-streak</span></div>
+      </div>
+      <h2>Icons</h2>
+      <div class="icon-gallery">
+        <figure><img src="icons/profile.svg" alt="">profile</figure><figure><img src="icons/history.svg" alt="">history</figure>
+        <figure><img src="icons/send.svg" alt="">send</figure><figure><img src="icons/search.svg" alt="">search</figure>
+        <figure><img src="icons/document.svg" alt="">document</figure><figure><img src="icons/book-open.svg" alt="">book-open</figure>
+        <figure><img src="icons/chart-bars.svg" alt="">chart-bars</figure><figure><img src="icons/graduation-cap.svg" alt="">graduation-cap</figure>
+        <figure><img src="icons/copy.svg" alt="">copy</figure><figure><img src="icons/eye-off.svg" alt="">eye-off</figure>
+        <figure><img src="icons/refresh.svg" alt="">refresh</figure><figure><img src="icons/spark.svg" alt="">spark</figure>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

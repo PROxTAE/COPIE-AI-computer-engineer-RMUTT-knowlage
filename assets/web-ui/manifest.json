@@ -1,0 +1,63 @@
+{
+  "name": "COPIE white cyberism web UI assets",
+  "version": 1,
+  "brand": [
+    "brand/copie-mark.svg",
+    "brand/favicon.svg"
+  ],
+  "backgrounds": [
+    "backgrounds/cyan-wash.svg",
+    "backgrounds/floor-perspective.svg",
+    "backgrounds/grid-light.svg",
+    "backgrounds/mascot-halo.svg"
+  ],
+  "frames": [
+    "frames/corner-accent.svg",
+    "frames/response-rule.svg",
+    "frames/side-rail.svg"
+  ],
+  "effects": [
+    "effects/data-streak.svg",
+    "effects/signal-dots.svg"
+  ],
+  "icons": [
+    "icons/arrow-left.svg",
+    "icons/book-open.svg",
+    "icons/calendar.svg",
+    "icons/chart-bars.svg",
+    "icons/chevron-right.svg",
+    "icons/close.svg",
+    "icons/copy.svg",
+    "icons/document.svg",
+    "icons/eye-off.svg",
+    "icons/filter.svg",
+    "icons/graduation-cap.svg",
+    "icons/history.svg",
+    "icons/info.svg",
+    "icons/menu.svg",
+    "icons/profile.svg",
+    "icons/refresh.svg",
+    "icons/search.svg",
+    "icons/send.svg",
+    "icons/spark.svg",
+    "icons/thumb-down.svg",
+    "icons/thumb-up.svg"
+  ],
+  "mascot_states": [
+    "mascot/states/copie-front-laptop.png",
+    "mascot/states/copie-idle.png",
+    "mascot/states/copie-listening.png",
+    "mascot/states/copie-thinking.png",
+    "mascot/states/copie-responding.png",
+    "mascot/states/copie-success.png",
+    "mascot/states/copie-no-answer.png",
+    "mascot/states/copie-skill-guide.png"
+  ],
+  "styles": [
+    "styles/tokens.css",
+    "styles/copie-ui.css",
+    "styles/motion.css"
+  ],
+  "guide": "ASSET_GUIDE.md",
+  "preview": "preview.html"
+}

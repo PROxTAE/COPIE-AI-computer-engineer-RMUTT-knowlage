@@ -1,0 +1,96 @@
+/*
+ * White Cyberism theme. Owner: P1.
+ * Maps the design kit tokens (kit/tokens.css) onto Tailwind utilities and HeroUI variables.
+ * Font faces come from next/font in app/layout.tsx as --ff-heading, --ff-body, --ff-label, --ff-wordmark.
+ */
+
+/* ---- Tailwind utilities: bg-cyber-blue, text-cyber-ink, font-display, font-label ... ---- */
+@theme inline {
+  --color-cyber-blue: var(--copie-cyber-blue);
+  --color-cyber-blue-hover: #0b50d8;
+  --color-cyber-cyan: var(--copie-cyber-cyan);
+  --color-cyber-ink: var(--copie-cyber-ink);
+  --color-cyber-muted: var(--copie-cyber-muted);
+  --color-cyber-line: var(--copie-cyber-line);
+  --color-cyber-paper: var(--copie-cyber-paper);
+  --color-cyber-focus: var(--copie-cyber-focus);
+
+  /* Earlier token names still used by /mascot-demo — prefer cyber-* in new code */
+  --color-deep-navy: #13233a;
+  --color-copie-teal: #0e9aa7;
+}
+
+@theme inline {
+  --font-sans: var(--ff-body), "IBM Plex Sans Thai", system-ui, sans-serif;
+  --font-display: var(--ff-heading), "Kanit", system-ui, sans-serif;
+  --font-label: var(--ff-label), "Chakra Petch", ui-monospace, sans-serif;
+  --font-wordmark: var(--ff-wordmark), "Unbounded", var(--ff-heading), sans-serif;
+}
+
+/* ---- Kit + HeroUI variables (unlayered, so they win over HeroUI's @layer base defaults) ---- */
+:root {
+  /* read by kit/tokens.css */
+  --font-heading: var(--ff-heading);
+  --font-body: var(--ff-body);
+
+  /* HeroUI v3 theme */
+  --background: var(--copie-cyber-white);
+  --foreground: var(--copie-cyber-ink);
+  --muted: var(--copie-cyber-muted);
+  --accent: var(--copie-cyber-blue);
+  --accent-foreground: #ffffff;
+  --accent-hover: #0b50d8;
+  --focus: var(--copie-cyber-focus);
+  --link: var(--copie-cyber-blue);
+  --border: var(--copie-cyber-line);
+  --separator: var(--copie-cyber-line);
+  --surface: var(--copie-cyber-white);
+  --surface-secondary: var(--copie-cyber-paper);
+  --field-background: var(--copie-cyber-white);
+  --field-border: #a9bee0;
+  --field-border-hover: #7f9fd3;
+  --field-border-focus: #0c58ee;
+  --field-border-width: 1px;
+  --radius: 0.625rem;
+  --field-radius: 0.75rem;
+}
+
+body {
+  background: var(--copie-cyber-white);
+  color: var(--copie-cyber-ink);
+}
+
+/* ---- Typography roles on top of the kit classes ---- */
+.copie-ui .copie-wordmark {
+  font-family: var(--ff-wordmark), "Unbounded", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.copie-ui .copie-heading {
+  font-family: var(--ff-heading), "Kanit", sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.copie-ui .copie-eyebrow {
+  font-family: var(--ff-label), "Chakra Petch", sans-serif;
+}
+
+/* Small uppercase status text such as "AI // ACTIVE" or "COPIE / LISTENING" */
+.copie-ui .copie-status {
+  color: var(--copie-cyber-blue);
+  font: 600 0.8rem/1.2 var(--ff-label), "Chakra Petch", sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Numbered points "01 /" and big figures in answers */
+.copie-ui .copie-index {
+  color: var(--copie-cyber-blue);
+  font-family: var(--ff-heading), "Kanit", sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,17 +1,31 @@
 import type { Metadata } from "next";
-import { Bai_Jamjuree, IBM_Plex_Sans_Thai } from "next/font/google";
+import { Chakra_Petch, IBM_Plex_Sans_Thai, Kanit, Unbounded } from "next/font/google";
 import "./globals.css";
 
-const bodyFont = IBM_Plex_Sans_Thai({
-  variable: "--font-body",
+// White Cyberism type system (00_SHARED_PROJECT_CONTEXT.md §3)
+const heading = Kanit({
+  variable: "--ff-heading",
+  subsets: ["thai", "latin"],
+  weight: ["500", "600", "700", "800"],
+  style: ["normal", "italic"],
+});
+
+const body = IBM_Plex_Sans_Thai({
+  variable: "--ff-body",
   subsets: ["thai", "latin"],
   weight: ["400", "500", "600"],
 });
 
-const headingFont = Bai_Jamjuree({
-  variable: "--font-heading",
+const label = Chakra_Petch({
+  variable: "--ff-label",
   subsets: ["thai", "latin"],
   weight: ["500", "600", "700"],
+});
+
+const wordmark = Unbounded({
+  variable: "--ff-wordmark",
+  subsets: ["latin"],
+  weight: ["800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -21,7 +35,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="th" className={`${bodyFont.variable} ${headingFont.variable} h-full antialiased`}>
+    <html
+      lang="th"
+      data-theme="light"
+      className={`light ${heading.variable} ${body.variable} ${label.variable} ${wordmark.variable} h-full antialiased`}
+    >
       <body className="min-h-full font-sans">{children}</body>
     </html>
   );
