@@ -74,12 +74,23 @@ Renderer **ไม่เรียก API เอง** ทุกการกระ�
 ข้ามข้อ 4 แล้ว `npm run build` จะแดงทันทีจาก `const _exhaustive: never = response;`
 — นี่คือกันลืมของโมดูลนี้ ห้ามเอาออก
 
+## ที่มาของข้อมูลใน fixture
+
+fixture ทุกตัวอ้างอิงไฟล์ข้อมูลจริงในรีโปแล้ว ไม่มีตัวเลขหรือชื่อที่แต่งขึ้นเอง
+
+| fixture | ที่มา |
+|---|---|
+| `course-table` | `data/curriculum/curriculum.json` (ปี 2 เทอม 1 · 8 วิชา 20 หน่วยกิต) + `SOURCE.md` |
+| `assessment-form` | `data/assessment/skill_v1.json` (12 ข้อ 6 ด้าน สเกล 5 ระดับ) |
+| `text-with-sources` | `data/knowledge/*.md` — `doc_id`, `section`, `source_url` ของจริง |
+| `skill-radar` | คะแนนสมมติเพื่อทดสอบการแสดงผล (ของจริงคำนวณโดย `skill.calculate_skill` ตามสูตรใน §6.3) |
+
+ถ้าไฟล์ต้นทางเปลี่ยน ให้แก้เฉพาะไฟล์ใน `mock/` — ตัว component อ่าน type จาก contract อยู่แล้วจึงไม่ต้องแตะ
+
 ## ข้อจำกัดที่ยังค้าง
 
 | เรื่อง | รอใคร |
 |---|---|
-| fixture แบบประเมิน 12 ข้อยังเป็น placeholder (ตาราง `course_table` ใช้ข้อมูลจริงจาก `data/curriculum/curriculum.json` แล้ว) | P5 — `data/assessment/skill_v1.json` |
-| `Source.url` เป็น `null` ทั้งหมด การ์ดจึงขึ้นข้อความแทนลิงก์ | P4 — `source_url` จริงใน `data/knowledge/*.md` |
 | ยังไม่ได้ใช้ HeroUI และ class `copie-*` จากชุด asset (ตอนนี้สไตล์ด้วย token ใน `globals.css`) | P1 — `@heroui/react` + `theme.css` + `copie-ui.css` |
 | ปุ่มคัดลอกและ thumbs feedback ใต้คำตอบ (อยู่ในม็อกอัพ 05) ยังไม่ได้ทำ | P1 / P2 — `FeedbackRequest` เป็นของ P2 |
 

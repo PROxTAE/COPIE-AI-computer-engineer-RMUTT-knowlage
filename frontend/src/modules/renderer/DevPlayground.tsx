@@ -42,8 +42,8 @@ export function DevPlayground() {
         <p className="text-sm text-muted">/dev · P6 (renderer)</p>
         <h1 className="font-display text-3xl font-bold text-deep-navy">Renderer playground</h1>
         <p className="text-muted">แสดง mock ของทุก response_type โดยไม่ต้องมี backend</p>
-        <p className="text-sm text-warning">
-          รายวิชาและแหล่งอ้างอิงมาจากไฟล์ข้อมูลจริงใน data/ · เหลือแบบประเมินที่ยังเป็นชุดตัวอย่าง รอ skill_v1.json จาก P5
+        <p className="text-sm text-muted">
+          ทุก fixture อ้างอิงไฟล์ข้อมูลจริงใน data/ แล้ว · ใช้ได้เฉพาะหน้านี้และ tests ห้าม import ใน /chat
         </p>
       </header>
 
