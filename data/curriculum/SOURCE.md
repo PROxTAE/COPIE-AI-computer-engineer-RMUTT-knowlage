@@ -13,8 +13,10 @@
 | Program total: 141 credits | 20 | 26 |
 | Year 1, semesters 1 and 2: 19 and 21 credits | 30 | 36 |
 | Year 2, semesters 1 and 2: 20 and 21 credits | 31 | 37 |
+| Year 3, semesters 1 and 2: 20 and 19 credits | 32 | 38 |
+| Year 4, semesters 1 and 2: 6 and 15 credits | 33 | 39 |
 | Course names in English and credit notation | 21–29, 53–70 | 27–35, 59–76 |
 
-`curriculum.json` contains only the year 1–2 rows on printed pages 30–31. Its `total_credits` is the full-program requirement from printed page 20, not the sum of the partial `courses` array. Generic rows retain the source's `xxx` codes; their exact course and English names are not specified, so `name_en` is empty and `credit_detail` is null. These placeholder codes repeat across semesters by design.
+`curriculum.json` contains the year 1–4 rows on printed pages 30–33. Its `total_credits` is the full-program requirement from printed page 20 and matches the sum of all eight terms. Generic rows retain the source's `xxx` codes; their exact course and English names are not specified, so `name_en` is empty and `credit_detail` is null. These placeholder codes repeat across semesters by design.
 
 Printed page 31 lists `04-623-202` as 3 lecture / 0 practice hours, while the course description lists `3(2-3)`. Its `credit_detail` remains null pending clarification; both places agree it is 3 credits. The team should confirm the edition applies to the intended student cohort before release.
