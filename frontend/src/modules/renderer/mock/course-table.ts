@@ -118,3 +118,17 @@ export const courseTableMock: AgentResponse = {
     total_credits: courses.reduce((sum, course) => sum + course.credits, 0),
   },
 };
+
+// edge case: เทอมที่ไม่มีรายวิชาในเล่มหลักสูตร (API จริงคืนแบบนี้ได้)
+export const courseTableEmptyMock: AgentResponse = {
+  ...base({
+    message_id: "dev-course-table-02",
+    message: "ผมไม่พบรายวิชาของ **ปี 4 เทอม 2** ในเล่มหลักสูตรครับ",
+    intent: "curriculum",
+    tool: "curriculum.get_courses",
+    latency_ms: 610,
+    actions: [{ type: "ask", label: "ดูปี 4 เทอม 1", payload: { text: "ปี 4 เทอม 1 เรียนอะไรบ้าง" } }],
+  }),
+  response_type: "course_table",
+  data: { year: 4, semester: 2, courses: [], total_credits: 0 },
+};

@@ -13,12 +13,58 @@ import { ResponseRenderer } from "@/modules/renderer";
   onAsk={(text) => chatStore.send(text)}
   onSubmitAssessment={(answers) => chatStore.submitAssessment(answers)}
   disabled={chatStore.pending}
+  animate                              // ดูหัวข้อ "แสดงประวัติการสนทนา" ด้านล่าง
 />;
 ```
 
 Renderer **ไม่เรียก API เอง** ทุกการกระทำของผู้ใช้ออกทาง callback เท่านั้น
 
+| prop | ต้องส่งอะไร |
+|---|---|
+| `response` | `AgentResponse` ตรงจาก API ไม่ต้องแปลงอะไรก่อน |
+| `onAsk(text)` | ยิงข้อความใหม่เข้าห้องแชตเหมือนผู้ใช้พิมพ์เอง — มาจาก ActionChips, ปุ่ม "ดูรายละเอียด" ในการ์ด, ปุ่ม "ลองใหม่" ตอน error และปุ่ม "ทำแบบประเมินใหม่" |
+| `onSubmitAssessment(answers)` | ต้องคืน `Promise` — renderer รอ promise เพื่อ disable ปุ่มระหว่างส่ง และแสดง "ส่งแล้ว" เมื่อ resolve · ถ้า reject ฟอร์มจะขึ้นข้อความให้กดส่งใหม่ โดยคำตอบที่กรอกไว้ยังอยู่ครบ |
+| `disabled` | `true` ระหว่างมี request ค้าง ปุ่มทุกปุ่มจะกดไม่ได้ |
+| `animate` | `false` สำหรับคำตอบเก่า (ดูด้านล่าง) · ไม่ส่ง = `true` |
+
 ลำดับการแสดงผลคงที่ทุก type: `message` (markdown) → component ตาม `response_type` → `SourceViewer` → `ActionChips`
+
+### แสดงประวัติการสนทนา
+
+ข้อความแบบ `text` จะพิมพ์ทีละตัวอักษรตอนปรากฏ ถ้า render ประวัติทั้งห้องโดยไม่ปิด
+ทุกคำตอบเก่าจะพิมพ์ใหม่พร้อมกันทุกครั้งที่ผู้ใช้เลื่อนกลับมาดู — ส่ง `animate` เฉพาะคำตอบล่าสุด
+
+```tsx
+{messages.map((message, index) =>
+  message.role === "assistant" ? (
+    <ResponseRenderer
+      key={message.id}
+      response={message.response}
+      onAsk={chatStore.send}
+      onSubmitAssessment={chatStore.submitAssessment}
+      disabled={chatStore.pending}
+      animate={index === messages.length - 1}
+    />
+  ) : (
+    <UserMessage key={message.id} content={message.content} />   // ของ P1
+  ),
+)}
+```
+
+`key={message.id}` สำคัญ — renderer เก็บ state ภายใน (แหล่งอ้างอิงที่กางอยู่, แถวที่เลือก,
+ข้อที่ตอบไปแล้วในแบบประเมิน) ถ้า key ไม่คงที่ state พวกนี้จะหายทุกครั้งที่ list เปลี่ยน
+
+### สิ่งที่ renderer **ไม่ได้** ทำให้ (เป็นของ P1 / P2)
+
+- ฟองข้อความฝั่งผู้ใช้ · สถานะกำลังโหลด / มาสคอตกำลังคิด · การเลื่อนหน้าจอตามคำตอบใหม่
+- ปุ่มคัดลอกและ thumbs feedback ใต้คำตอบ (ม็อกอัพ 05) — `FeedbackRequest` เป็นของ P2
+- การจัด `layout` split / rail ของ workspace
+
+### ความกว้างที่แนะนำ
+
+renderer ปรับตัวตามความกว้างกล่องที่วาง (ดูหัวข้อ container query ด้านล่าง)
+ตารางรายวิชาจะสลับจากการ์ดเป็นตารางเมื่อกล่องกว้าง **≥ 672px** ถ้าแผงของ workspace แคบกว่านี้
+ผู้ใช้จะเห็นเป็นการ์ดเสมอ ซึ่งยังอ่านได้ครบแต่ไม่ใช่หน้าตาตามม็อกอัพ 07
 
 ## ตาราง response_type → component → props
 

@@ -30,9 +30,22 @@ export interface ResponseRendererProps {
   onSubmitAssessment: (answers: AssessmentAnswer[]) => Promise<void>;
   /** true ระหว่างที่ยังมี request ค้างอยู่ ปุ่มทุกปุ่มต้องกดไม่ได้ */
   disabled?: boolean;
+  /**
+   * เล่นแอนิเมชันตอนปรากฏและพิมพ์ทีละตัวอักษรหรือไม่
+   *
+   * ตั้ง false สำหรับคำตอบเก่าที่โหลดมาจากประวัติ ไม่งั้นทุกข้อความในห้องแชต
+   * จะพิมพ์ใหม่ทุกครั้งที่ผู้ใช้เลื่อนกลับมาดู — ปกติใช้ animate={index === messages.length - 1}
+   */
+  animate?: boolean;
 }
 
-export function ResponseRenderer({ response, onAsk, onSubmitAssessment, disabled = false }: ResponseRendererProps) {
+export function ResponseRenderer({
+  response,
+  onAsk,
+  onSubmitAssessment,
+  disabled = false,
+  animate = true,
+}: ResponseRendererProps) {
   // แหล่งอ้างอิงที่กางอยู่ ใช้ร่วมกันระหว่าง badge [n] ในคำตอบกับการ์ดใน SourceViewer
   const [activeSource, setActiveSource] = useState<number | null>(null);
 
@@ -43,6 +56,7 @@ export function ResponseRenderer({ response, onAsk, onSubmitAssessment, disabled
     setActiveSource(null);
   }
 
+  // พิมพ์ทีละตัวอักษรเฉพาะคำตอบแบบข้อความที่เพิ่งมาถึงเท่านั้น
   const isText = response.response_type === "text";
 
   // ErrorResponse ใช้ action "ask" ตัวแรกเป็นปุ่มลองใหม่อยู่แล้ว ไม่ต้องโผล่ซ้ำเป็น chip
@@ -55,7 +69,7 @@ export function ResponseRenderer({ response, onAsk, onSubmitAssessment, disabled
       <motion.article
         // key ที่ message_id ทำให้คำตอบใหม่เล่นแอนิเมชันเข้าใหม่ทุกครั้ง
         key={response.message_id}
-        initial={{ opacity: 0, y: 8 }}
+        initial={animate ? { opacity: 0, y: 8 } : false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
         className="@container flex flex-col gap-5"
@@ -67,12 +81,18 @@ export function ResponseRenderer({ response, onAsk, onSubmitAssessment, disabled
             message={response.message}
             citationCount={response.sources.length}
             onCitationClick={setActiveSource}
-            animate={isText}
+            animate={animate && isText}
             showEyebrow={isText}
           />
         )}
 
-        <ResponseBody response={response} onAsk={onAsk} onSubmitAssessment={onSubmitAssessment} disabled={disabled} />
+        <ResponseBody
+          response={response}
+          onAsk={onAsk}
+          onSubmitAssessment={onSubmitAssessment}
+          disabled={disabled}
+          animate={animate}
+        />
 
         <SourceViewer sources={response.sources} activeIndex={activeSource} onActiveChange={setActiveSource} />
 
@@ -88,21 +108,23 @@ function ResponseBody({
   onAsk,
   onSubmitAssessment,
   disabled,
+  animate,
 }: {
   response: AgentResponse;
   onAsk: (text: string) => void;
   onSubmitAssessment: (answers: AssessmentAnswer[]) => Promise<void>;
   disabled: boolean;
+  animate: boolean;
 }) {
   switch (response.response_type) {
     case "text":
       return null; // message ด้านบนคือเนื้อหาทั้งหมด
 
     case "course_table":
-      return <CourseTable data={response.data} disabled={disabled} />;
+      return <CourseTable data={response.data} disabled={disabled} animate={animate} />;
 
     case "cards":
-      return <InfoCards data={response.data} onAsk={onAsk} disabled={disabled} />;
+      return <InfoCards data={response.data} onAsk={onAsk} disabled={disabled} animate={animate} />;
 
     case "assessment_form":
       return <AssessmentForm data={response.data} onSubmit={onSubmitAssessment} disabled={disabled} />;

@@ -15,15 +15,23 @@ interface InfoCardsProps {
   data: CardsData;
   onAsk: (text: string) => void;
   disabled?: boolean;
+  animate?: boolean;
 }
 
-export function InfoCards({ data, onAsk, disabled = false }: InfoCardsProps) {
+export function InfoCards({ data, onAsk, disabled = false, animate = true }: InfoCardsProps) {
   if (data.cards.length === 0) return null;
 
   return (
     <ul className="grid gap-4 @lg:grid-cols-2 @3xl:grid-cols-3">
       {data.cards.map((card, position) => (
-        <Card key={`${card.title}-${position}`} card={card} index={position} onAsk={onAsk} disabled={disabled} />
+        <Card
+          key={`${card.title}-${position}`}
+          card={card}
+          index={position}
+          onAsk={onAsk}
+          disabled={disabled}
+          animate={animate}
+        />
       ))}
     </ul>
   );
@@ -34,17 +42,19 @@ function Card({
   index,
   onAsk,
   disabled,
+  animate,
 }: {
   card: InfoCard;
   index: number;
   onAsk: (text: string) => void;
   disabled: boolean;
+  animate: boolean;
 }) {
   return (
     <motion.li
-      initial={{ opacity: 0, y: 8 }}
+      initial={animate ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: index * 0.04 }}
+      transition={{ duration: 0.25, delay: animate ? index * 0.04 : 0 }}
       className="copie-panel flex flex-col gap-3 rounded-xl border border-deep-navy/12 bg-surface p-4"
     >
       <span className="flex size-11 items-center justify-center rounded-xl border border-copie-teal/25 bg-copie-teal/8">
