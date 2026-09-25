@@ -7,10 +7,11 @@
    the question?). Chunks below MIN_RELEVANCE are dropped, so an unrelated
    question returns [] and Source.score is a real relevance score.
 
-If a model cannot be loaded (no internet on first run, missing library), search
-still works with what is available and retries loading later:
-- no reranker: keyword 3-gram coverage decides scope, RRF decides order
-- no vector index: BM25 alone provides the candidates
+If a model cannot be loaded (no internet on first run, missing library, not enough
+memory), search still works with what is available and retries loading later:
+- no reranker: word + 3-gram keyword coverage decides scope; vector (if loaded)
+  and 3-gram keyword ranking, merged by RRF, decide the order
+- no vector index: keyword ranking alone provides the candidates
 """
 import logging
 import time
@@ -36,13 +37,16 @@ CANDIDATES = 10  # chunks taken from each ranking before fusion
 # Fused chunks sent to the reranker: 10 found one more answer in 113 questions but was 60% slower.
 RERANK_CANDIDATES = 6
 VECTOR_WEIGHT = 2.0
-BM25_WEIGHT = 1.0
+KEYWORD_WEIGHT = 1.0
 # Reranker probability below which a chunk does not answer the question. On the
 # tuning questions, out-of-scope ones scored at most 0.0034 and answerable ones
 # mostly above 0.01, so the cut sits in that gap.
 MIN_RELEVANCE = 0.005
-# Fallback scope filter when the reranker is unavailable: share of the query's
-# 3-grams that must appear in one chunk.
+# Scope filter when the reranker is unavailable: a question is in scope only if one
+# chunk has at least 40% of its content words and 20% of its 3-grams (IDF-weighted).
+# On the tuning questions this kept 88.5% of answerable ones and rejected 88% of the
+# rest; the 3-gram share alone kept 100% but rejected only 36%.
+FALLBACK_MIN_WORD_COVERAGE = 0.4
 MIN_COVERAGE = 0.2
 RETRY_SECONDS = 60  # wait before trying again to load a model that failed
 SNIPPET_CHARS = 200
@@ -115,27 +119,40 @@ def ensure_index() -> int:
     return len(_indexes().chunks)
 
 
-def _candidates(query: str, idx: _Indexes) -> list[retriever.Ranked]:
-    bm25_ids = idx.bm25.search(query, CANDIDATES)
+def _fused(query: str, idx: _Indexes, keyword_ids: list[str]) -> list[tuple[Chunk, float]]:
+    """Vector results (if available) and `keyword_ids` merged by RRF, as (chunk, score)."""
+    rankings, weights = [keyword_ids], [KEYWORD_WEIGHT]
     if _vector.get():
         try:
-            vector_ids = [r.chunk_id for r in retriever.vector_search(query, CANDIDATES)]
-            return retriever.rrf_merge([vector_ids, bm25_ids], [VECTOR_WEIGHT, BM25_WEIGHT])
+            rankings.insert(0, [r.chunk_id for r in retriever.vector_search(query, CANDIDATES)])
+            weights.insert(0, VECTOR_WEIGHT)
         except Exception:
-            logger.exception("vector search failed, using BM25 candidates only")
-    return retriever.rrf_merge([bm25_ids], [BM25_WEIGHT])
+            logger.exception("vector search failed, using keyword candidates only")
+    merged = retriever.rrf_merge(rankings, weights)
+    return [(idx.by_id[r.chunk_id], r.score) for r in merged if r.chunk_id in idx.by_id]
+
+
+def _in_scope_without_reranker(query: str, idx: _Indexes) -> bool:
+    return (
+        idx.bm25.coverage(query) >= FALLBACK_MIN_WORD_COVERAGE
+        and idx.lexical.in_scope(query, MIN_COVERAGE)
+    )
 
 
 def _ranked(query: str, idx: _Indexes) -> list[tuple[Chunk, float]]:
-    fused = [(idx.by_id[r.chunk_id], r.score) for r in _candidates(query, idx) if r.chunk_id in idx.by_id]
     scorer = _reranker.get()
     if scorer is not None:
+        fused = _fused(query, idx, idx.bm25.search(query, CANDIDATES))
         try:
             scored = reranker.rerank(query, [chunk for chunk, _ in fused[:RERANK_CANDIDATES]], scorer)
             return [(chunk, score) for chunk, score in scored if score >= MIN_RELEVANCE]
         except Exception:
-            logger.exception("reranking failed, using keyword scope filter")
-    return fused if idx.lexical.in_scope(query, MIN_COVERAGE) else []
+            logger.exception("reranking failed, using the keyword fallback")
+    if not _in_scope_without_reranker(query, idx):
+        return []
+    # Without the reranker, 3-gram keyword ranking put the right page first more
+    # often than BM25 on the tuning questions (88.5% vs 82.7%).
+    return _fused(query, idx, [hit.chunk.chunk_id for hit in idx.lexical.search(query, CANDIDATES)])
 
 
 def search_department_knowledge(query: str, top_k: int = 4) -> list[RetrievedChunk]:

@@ -3,6 +3,7 @@
 pythainlp's newmm engine with a dictionary extended by department terms, so
 words like "สหกิจศึกษา" or "หน่วยกิต" are not cut into meaningless pieces.
 """
+import math
 from functools import lru_cache
 
 from rank_bm25 import BM25Okapi
@@ -50,6 +51,22 @@ class BM25Index:
         # Section headings are repeated so a match on them counts more than one in the body.
         docs = [tokenize(f"{c.title} {c.section or ''} {c.section or ''} {c.text}") for c in chunks]
         self._bm25 = BM25Okapi(docs) if chunks else None
+        self._word_sets = [set(d) for d in docs]
+        doc_freq: dict[str, int] = {}
+        for words in self._word_sets:
+            for word in words:
+                doc_freq[word] = doc_freq.get(word, 0) + 1
+        total = len(chunks)
+        self._idf = {w: math.log((1 + total) / (1 + df)) + 1 for w, df in doc_freq.items()}
+        self._unseen_idf = math.log(1 + total) + 1
+
+    def coverage(self, query: str) -> float:
+        """Best share (0-1) of the query's content words, weighted by IDF, found in one chunk."""
+        words = set(tokenize(expand_query(query)))
+        total = sum(self._idf.get(w, self._unseen_idf) for w in words)
+        if not total or not self._word_sets:
+            return 0.0
+        return max(sum(self._idf[w] for w in words if w in chunk_words) / total for chunk_words in self._word_sets)
 
     def search(self, query: str, k: int) -> list[str]:
         """Chunk ids with a positive BM25 score, best first."""

@@ -204,25 +204,27 @@ LIVE_REJECTION = [
     ("held_out_5", OUT_OF_SCOPE_5, 0.8),
     ("held_out_6", OUT_OF_SCOPE_6, 0.9),
 ]
-# Without the models (fallback path, also what plain `pytest` runs). It gets weaker
-# as documents are added: the 3-gram filter and BM25 alone cannot tell similar pages apart.
+# Without the reranker (fallback path; plain `pytest` also runs without the vector
+# model). Word + 3-gram keyword coverage filters scope, 3-gram keywords rank.
+# It rejects most unrelated questions but also more answerable ones: keyword
+# matching alone cannot reach the reranker's accuracy.
 OFFLINE_ACCURACY = [
-    ("tuning", IN_SCOPE, 0.82, 0.96),
-    ("held_out", HELD_OUT, 1.0, 1.0),
-    ("held_out_2", HELD_OUT_2, 0.9, 0.95),
-    ("held_out_3", HELD_OUT_3, 0.68, 0.88),
-    ("held_out_4", HELD_OUT_4, 0.75, 0.9),
-    ("held_out_5", HELD_OUT_5, 0.6, 0.86),
-    ("held_out_6", HELD_OUT_6, 0.64, 0.8),
+    ("tuning", IN_SCOPE, 0.78, 0.88),
+    ("held_out", HELD_OUT, 0.83, 0.83),
+    ("held_out_2", HELD_OUT_2, 0.85, 0.95),
+    ("held_out_3", HELD_OUT_3, 0.64, 0.76),
+    ("held_out_4", HELD_OUT_4, 0.72, 0.8),
+    ("held_out_5", HELD_OUT_5, 0.66, 0.86),
+    ("held_out_6", HELD_OUT_6, 0.53, 0.6),
 ]
 OFFLINE_REJECTION = [
-    ("tuning", OUT_OF_SCOPE, 0.7),
-    ("near", OUT_OF_SCOPE_NEAR, 0.55),
-    ("held_out_2", OUT_OF_SCOPE_2, 0.8),
-    ("held_out_3", OUT_OF_SCOPE_3, 0.75),
-    ("held_out_4", OUT_OF_SCOPE_4, 0.6),
-    ("held_out_5", OUT_OF_SCOPE_5, 0.4),
-    ("held_out_6", OUT_OF_SCOPE_6, 0.35),
+    ("tuning", OUT_OF_SCOPE, 1.0),
+    ("near", OUT_OF_SCOPE_NEAR, 0.85),
+    ("held_out_2", OUT_OF_SCOPE_2, 1.0),
+    ("held_out_3", OUT_OF_SCOPE_3, 0.95),
+    ("held_out_4", OUT_OF_SCOPE_4, 0.75),
+    ("held_out_5", OUT_OF_SCOPE_5, 0.6),
+    ("held_out_6", OUT_OF_SCOPE_6, 0.75),
 ]
 
 
