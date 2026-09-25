@@ -6,7 +6,7 @@ import type { AgentResponse } from "@/types/contract";
 import { textMock } from "./text";
 import { textWithSourcesMock } from "./text-with-sources";
 import { clarifyMock } from "./clarify";
-import { courseTableMock } from "./course-table";
+import { courseTableMock, courseTableEmptyMock } from "./course-table";
 import { cardsMock } from "./cards";
 import { assessmentFormMock } from "./assessment-form";
 import { skillRadarMock, skillRadarEdgeMock } from "./skill-radar";
@@ -17,6 +17,7 @@ export const MOCKS = {
   "text-with-sources": textWithSourcesMock,
   clarify: clarifyMock,
   "course-table": courseTableMock,
+  "course-table-empty": courseTableEmptyMock,
   cards: cardsMock,
   "assessment-form": assessmentFormMock,
   "skill-radar": skillRadarMock,
@@ -33,6 +34,7 @@ export const MOCK_LABELS: { key: MockKey; label: string; note: string }[] = [
   { key: "text-with-sources", label: "text + sources", note: "5 แหล่งจริง + citation [n] + ตาราง" },
   { key: "clarify", label: "text (clarify)", note: "ถามกลับ + ตัวเลือก 4 ปุ่ม" },
   { key: "course-table", label: "course_table", note: "ข้อมูลจริง 8 วิชา · 20 หน่วยกิต" },
+  { key: "course-table-empty", label: "course_table (ว่าง)", note: "เทอมที่ไม่มีรายวิชา" },
   { key: "cards", label: "cards", note: "3 ใบ · มี icon ที่ต้อง fallback" },
   { key: "assessment-form", label: "assessment_form", note: "ข้อจริง 12 ข้อ · 5 ระดับ" },
   { key: "skill-radar", label: "skill_radar", note: "คะแนนปกติ · top 2 ด้าน" },

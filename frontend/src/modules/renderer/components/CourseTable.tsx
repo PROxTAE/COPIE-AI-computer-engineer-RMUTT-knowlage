@@ -18,7 +18,15 @@ const COLUMNS: { key: SortKey; label: string; align: "left" | "right" }[] = [
   { key: "category", label: "หมวด", align: "left" },
 ];
 
-export function CourseTable({ data, disabled = false }: { data: CourseTableData; disabled?: boolean }) {
+export function CourseTable({
+  data,
+  disabled = false,
+  animate = true,
+}: {
+  data: CourseTableData;
+  disabled?: boolean;
+  animate?: boolean;
+}) {
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -31,6 +39,23 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
     );
 
   const toggleRow = (code: string) => setSelected((current) => (current === code ? null : code));
+
+  const heading = `รายวิชา ปี ${data.year} เทอม ${data.semester}`;
+
+  // API จริงอาจคืนเทอมที่ไม่มีรายวิชา อย่าปล่อยให้ผู้ใช้เห็นหัวตารางเปล่า ๆ
+  if (data.courses.length === 0) {
+    return (
+      <section className="copie-panel flex flex-col gap-4" aria-label={heading}>
+        <h2 className="copie-heading flex items-center gap-3 font-display text-2xl font-bold text-deep-navy">
+          <span aria-hidden="true" className="h-8 w-1 shrink-0 rounded-full bg-copie-teal" />
+          {heading}
+        </h2>
+        <p className="rounded-xl border border-deep-navy/12 bg-surface px-4 py-6 text-center text-muted">
+          ไม่พบรายวิชาของปีและเทอมนี้ในเล่มหลักสูตร
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section className="copie-panel flex flex-col gap-4" aria-label={`รายวิชา ปี ${data.year} เทอม ${data.semester}`}>
@@ -82,9 +107,9 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
               return (
                 <motion.tr
                   key={course.code}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={animate ? { opacity: 0, y: 6 } : false}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.04 }}
+                  transition={{ duration: 0.2, delay: animate ? index * 0.04 : 0 }}
                   onClick={() => toggleRow(course.code)}
                   data-selected={active}
                   className={`cursor-pointer border-t border-deep-navy/8 transition ${
@@ -137,9 +162,9 @@ export function CourseTable({ data, disabled = false }: { data: CourseTableData;
           return (
             <motion.li
               key={course.code}
-              initial={{ opacity: 0, y: 6 }}
+              initial={animate ? { opacity: 0, y: 6 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: index * 0.04 }}
+              transition={{ duration: 0.2, delay: animate ? index * 0.04 : 0 }}
             >
               <button
                 type="button"
