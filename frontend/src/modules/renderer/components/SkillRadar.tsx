@@ -133,8 +133,9 @@ function TopSkill({ skill, score, rank }: { skill: SkillKey; score: number; rank
       <Icon aria-hidden="true" className="size-5 shrink-0 text-copie-teal" />
       <div className="min-w-0">
         <p className="text-xs text-muted">{rank === 0 ? "ทักษะที่โดดเด่นที่สุด" : "ทักษะที่โดดเด่นรองลงมา"}</p>
-        <p className="flex items-baseline gap-2">
-          <span className="truncate font-display font-semibold text-deep-navy">{SKILL_LABELS[skill].th}</span>
+        {/* ชื่อด้านภาษาไทยบางอันยาว ปล่อยให้ตัดบรรทัดดีกว่าตัดคำด้วย ellipsis */}
+        <p className="flex flex-wrap items-baseline gap-x-2">
+          <span className="font-display font-semibold text-deep-navy">{SKILL_LABELS[skill].th}</span>
           <span className="font-display text-lg font-bold tabular-nums text-copie-teal">{score}</span>
         </p>
       </div>
