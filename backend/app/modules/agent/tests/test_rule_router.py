@@ -13,6 +13,7 @@ from app.modules.agent.rule_router import rule_route
         ("เทอมหน้าเรียนไร", "curriculum", None, None),
         ("หลักสูตรมีกี่หน่วยกิต", "curriculum", None, None),
         ("ปี 3 เรียนอะไร", "curriculum", 3, None),
+        ("ปีสามเทอมสองเรียนไร", "curriculum", 3, 2),
     ],
 )
 def test_curriculum(message: str, intent: str, year: int | None, semester: int | None) -> None:
@@ -20,7 +21,7 @@ def test_curriculum(message: str, intent: str, year: int | None, semester: int |
     assert (route.intent, route.year, route.semester, route.source) == (intent, year, semester, "rule")
 
 
-@pytest.mark.parametrize("message", ["ช่วยวิเคราะห์ skill ของผม", "ผมถนัดสายไหน", "อยากทำแบบประเมิน", "สกิลผมเป็นยังไง"])
+@pytest.mark.parametrize("message", ["ช่วยวิเคราะห์ skill ของผม", "ผมถนัดสายไหน", "อยากทำแบบประเมิน", "สกิลผมเป็นยังไง", "อยากรู้ว่าตัวเองเหมาะกับ AI ไหม"])
 def test_skill(message: str) -> None:
     assert rule_route(message).intent == "skill_analysis"
 

@@ -3,10 +3,11 @@ import re
 
 from app.modules.agent.types import RouteResult
 
-_YEAR = re.compile(r"(?:ปี|year)\s*(?:ที่\s*)?([1-4])", re.IGNORECASE)
-_SEMESTER = re.compile(r"(?:เทอม|ภาคเรียน|ภาคการศึกษา|semester|term)\s*(?:ที่\s*)?([1-3])", re.IGNORECASE)
+_THAI_NUMBERS = {"หนึ่ง": 1, "สอง": 2, "สาม": 3, "สี่": 4}
+_YEAR = re.compile(r"(?:ปี|year)\s*(?:ที่\s*)?([1-4]|หนึ่ง|สอง|สาม|สี่)", re.IGNORECASE)
+_SEMESTER = re.compile(r"(?:เทอม|ภาคเรียน|ภาคการศึกษา|semester|term)\s*(?:ที่\s*)?([1-3]|หนึ่ง|สอง|สาม)", re.IGNORECASE)
 _COURSE_CODE = re.compile(r"\b\d{2}-\d{3}-\d{3}\b|\b\d{7,10}\b")
-_SKILL = re.compile(r"skill|สกิล|ถนัด|ประเมิน|วิเคราะห์.*(?:ตัวเอง|ของ(?:ผม|หนู|ฉัน|เรา))|เหมาะกับสาย", re.IGNORECASE)
+_SKILL = re.compile(r"skill|สกิล|ถนัด|ประเมิน|วิเคราะห์.*(?:ตัวเอง|ของ(?:ผม|หนู|ฉัน|เรา))|(?:ผม|หนู|ฉัน|เรา|ตัวเอง).*เหมาะกับ|เหมาะกับสาย", re.IGNORECASE)
 _CURRICULUM = re.compile(r"หน่วยกิต|แผนการเรียน|รายวิชา|เทอม(?:นี้|หน้า)|ปี(?:นี้|หน้า)|เรียนวิชาอะไร|credit", re.IGNORECASE)
 _COURSE_NAME = re.compile(r"วิชา\s*(.+?)\s*(?:เรียน|คือ|เกี่ยวกับ|มีอะไร|สอน|ยาก|$)")
 _GREETING = re.compile(r"^\s*(?:สวัสดี|หวัดดี|ดีครับ|ดีค่ะ|ขอบคุณ|hello|hi\b|hey\b|thank)", re.IGNORECASE)
@@ -39,4 +40,7 @@ def rule_route(message: str) -> RouteResult:
 
 def _first_int(pattern: re.Pattern[str], text: str) -> int | None:
     match = pattern.search(text)
-    return int(match.group(1)) if match else None
+    if not match:
+        return None
+    value = match.group(1)
+    return _THAI_NUMBERS.get(value) or int(value)
