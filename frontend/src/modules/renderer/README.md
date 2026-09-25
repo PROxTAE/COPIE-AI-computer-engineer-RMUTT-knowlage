@@ -10,17 +10,19 @@
 
 แปลง `AgentResponse` ทุก `response_type` เป็น UI (Text, CourseTable, InfoCards, AssessmentForm, SkillRadar, SourceViewer, ActionChips, Error) และเป็นเจ้าของ mock fixtures + หน้า `/dev`
 
-## โครงไฟล์ที่จะสร้าง
+## โครงไฟล์
 
 ```text
 renderer/
-├─ index.ts
-├─ ResponseRenderer.tsx
-├─ components/   # TextResponse, SourceViewer, CourseTable, InfoCards, AssessmentForm,
-│                # SkillRadar, ActionChips, ErrorResponse, skillLabels.ts
-├─ mock/         # fixtures ของทุก response_type (ใช้ได้เฉพาะ /dev และ test)
-└─ DevPlayground.tsx
+├─ index.ts                 # public API
+├─ ResponseRenderer.tsx     # switch(response_type) + exhaustive never check
+├─ DevPlayground.tsx        # หน้า /dev
+├─ components/              # TextResponse, Markdown, SourceViewer, CourseTable, InfoCards,
+│                           # AssessmentForm, SkillRadar, ActionChips, ErrorResponse, skillLabels.ts
+└─ mock/                    # fixtures ของทุก response_type (ใช้ได้เฉพาะ /dev และ test)
 ```
+
+คู่มือใช้งานฉบับเต็ม: [`docs/handoffs/P6-dynamic-renderer.md`](../../../../docs/handoffs/P6-dynamic-renderer.md)
 
 ## Public API (สิ่งที่ module อื่นเรียกใช้ได้)
 
