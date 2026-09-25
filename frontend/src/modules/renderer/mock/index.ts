@@ -34,7 +34,7 @@ export const MOCK_LABELS: { key: MockKey; label: string; note: string }[] = [
   { key: "clarify", label: "text (clarify)", note: "ถามกลับ + ตัวเลือก 4 ปุ่ม" },
   { key: "course-table", label: "course_table", note: "ข้อมูลจริง 8 วิชา · 20 หน่วยกิต" },
   { key: "cards", label: "cards", note: "3 ใบ · มี icon ที่ต้อง fallback" },
-  { key: "assessment-form", label: "assessment_form", note: "12 ข้อ · 5 ระดับ" },
+  { key: "assessment-form", label: "assessment_form", note: "ข้อจริง 12 ข้อ · 5 ระดับ" },
   { key: "skill-radar", label: "skill_radar", note: "คะแนนปกติ · top 2 ด้าน" },
   { key: "skill-radar-edge", label: "skill_radar (0/100)", note: "คะแนนสุดขั้ว 0 และ 100" },
   { key: "error", label: "error", note: "llm_unavailable" },
