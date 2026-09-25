@@ -15,9 +15,6 @@
   --color-cyber-paper: var(--copie-cyber-paper);
   --color-cyber-focus: var(--copie-cyber-focus);
 
-  /* Earlier token names still used by /mascot-demo — prefer cyber-* in new code */
-  --color-deep-navy: #13233a;
-  --color-copie-teal: #0e9aa7;
 }
 
 @theme inline {

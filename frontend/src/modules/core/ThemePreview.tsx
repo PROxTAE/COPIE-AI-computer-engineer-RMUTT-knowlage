@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button, Chip } from "@heroui/react";
 
-import { CopieMascot, type CopieMascotState } from "@/modules/mascot";
+import { CopieMascot, MascotStatePreview, type CopieMascotState } from "@/modules/mascot";
 
 // Temporary landing page (P1): shows the White Cyberism theme wiring until "/" becomes the login redirect.
 const STATES: CopieMascotState[] = ["idle", "listening", "thinking", "responding", "success", "no-answer", "skill-guide"];
@@ -89,12 +89,14 @@ export function ThemePreview() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
             {STATES.map((state) => (
               <figure key={state} className="copie-panel flex flex-col items-center gap-2 p-3">
-                <CopieMascot state={state} layout="rail" className="!w-full" />
+                <CopieMascot state={state} layout="rail" animated={false} className="!w-full" />
                 <figcaption className="copie-status text-[0.7rem]">{state}</figcaption>
               </figure>
             ))}
           </div>
         </section>
+
+        <MascotStatePreview />
 
         <nav className="flex flex-wrap gap-3 pb-10">
           {ROUTES.map((r) => (

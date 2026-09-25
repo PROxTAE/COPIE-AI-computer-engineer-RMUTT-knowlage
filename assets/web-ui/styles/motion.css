@@ -26,6 +26,16 @@
   animation: copie-mascot-breathe 4s ease-in-out infinite;
 }
 
+.copie-ui .copie-mascot.copie-mascot-layer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-in-out, width 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
+}
+
+.copie-ui .copie-mascot.copie-mascot-layer[data-active="true"] {
+  opacity: 1;
+}
+
 .copie-ui .copie-status-pulse {
   animation: copie-status-pulse 2.4s ease-out infinite;
 }
