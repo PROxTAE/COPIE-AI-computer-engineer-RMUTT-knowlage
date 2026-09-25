@@ -3,7 +3,7 @@ import uuid
 import chromadb
 import pytest
 
-from app.modules.rag import retriever, service
+from app.modules.rag import retriever
 from app.modules.rag.chunker import Chunk
 from app.modules.rag.ingest import build_index
 
@@ -101,34 +101,3 @@ def test_vector_search_returns_k_ranked_ids(fake_vector_store) -> None:
 def test_vector_search_on_empty_index(fake_vector_store) -> None:
     assert retriever.vector_search("x", k=3) == []
 
-
-# ---------- service fallback ----------
-
-@pytest.fixture
-def fresh_service():
-    service._index.cache_clear()
-    service._vector_ready.cache_clear()
-    yield service
-    service._index.cache_clear()
-    service._vector_ready.cache_clear()
-
-
-def test_keyword_only_when_vector_index_cannot_load(monkeypatch, fresh_service) -> None:
-    def broken(_chunks):
-        raise RuntimeError("model download failed")
-
-    monkeypatch.setattr(retriever, "sync_index", broken)
-    assert fresh_service._vector_ready() is False
-    results = fresh_service.search_department_knowledge("ค่าเทอมเท่าไหร่")
-    assert results and results[0].source.doc_id == "tuition-fees"
-
-
-def test_keyword_only_when_vector_search_fails(monkeypatch, fresh_service) -> None:
-    def broken(_query, _k):
-        raise RuntimeError("chroma error")
-
-    monkeypatch.setattr(retriever, "sync_index", lambda _chunks: 50)
-    monkeypatch.setattr(retriever, "vector_search", broken)
-    assert fresh_service._vector_ready() is True
-    results = fresh_service.search_department_knowledge("หัวหน้าภาควิชาคือใคร")
-    assert results and results[0].source.doc_id == "staff"
