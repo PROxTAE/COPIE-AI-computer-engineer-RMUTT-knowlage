@@ -1,15 +1,10 @@
 """Public curriculum queries backed by the verified JSON study plan."""
 
-from difflib import SequenceMatcher
+from rapidfuzz import fuzz, utils
 
 from app.schemas.contract import CardsData, Course, CourseTableData, InfoCard
 
 from .loader import load_curriculum, load_program_total_credits
-
-try:
-    from rapidfuzz import fuzz
-except ImportError:  # Optional until the backend dependency is approved by P3.
-    fuzz = None
 
 
 def get_courses(year: int, semester: int) -> CourseTableData | None:
@@ -49,11 +44,7 @@ def get_course_detail(query: str) -> Course | None:
         for name in (course.name_th, course.name_en):
             if not name:
                 continue
-            score = (
-                fuzz.WRatio(query, name)
-                if fuzz is not None
-                else SequenceMatcher(None, query.casefold(), name.casefold()).ratio() * 100
-            )
+            score = fuzz.WRatio(query, name, processor=utils.default_process)
             if score > best_score:
                 best_course, best_score = course, score
     return best_course if best_score >= 80 else None
