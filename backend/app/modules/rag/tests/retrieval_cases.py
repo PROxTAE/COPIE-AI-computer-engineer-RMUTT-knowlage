@@ -79,6 +79,39 @@ HELD_OUT: list[tuple[str, set[str]]] = [
     ("ตำราวิชาการสื่อสารข้อมูล", {"faq-current-student", "staff"}),
 ]
 
+# Written after the vector + keyword fusion weights were chosen (HELD_OUT was
+# looked at while choosing them), measured once: the unbiased check.
+HELD_OUT_2: list[tuple[str, set[str]]] = [
+    ("ภาควิชานี้อยากผลิตวิศวกรแบบไหน", {"ce-overview", "program-structure"}),
+    ("เรียนแบบเทียบโอนจบได้ภายในกี่ปี", {"ce-overview", "admission"}),
+    ("ชื่อหลักสูตรภาษาอังกฤษเขียนว่าอะไร", {"program-structure"}),
+    ("กลุ่มวิชาพื้นฐานต้องเก็บกี่หน่วยกิต", {"program-structure"}),
+    ("ปวช. สาขาไหนสมัครเข้าได้บ้าง", {"admission"}),
+    ("เรียนนอกเวลาได้ไหม", {"admission"}),
+    ("เรียนสี่ปีจ่ายค่าเทอมรวมเท่าไหร่", {"tuition-fees"}),
+    ("หลักสูตรใหม่ค่าเทอมเทอมละเท่าไร", {"tuition-fees"}),
+    ("จบไปทำงานสายซอฟต์แวร์ได้ไหม", {"careers"}),
+    ("เรียนจบแล้วเป็นอาจารย์หรือนักวิจัยได้ไหม", {"careers"}),
+    ("ห้องเน็ตเวิร์กมีไหม", {"labs-facilities"}),
+    ("ขอยืมห้องประชุมทำงานกลุ่ม", {"labs-facilities"}),
+    ("ฝึกงานต้องมีจีพีเอขั้นต่ำเท่าไหร่", {"coop-internship"}),
+    ("วิชาฐานข้อมูลต้องผ่านก่อนไปสหกิจไหม", {"coop-internship"}),
+    ("โทรหาภาควิชาเบอร์อะไร", {"contact", "staff"}),
+    ("รหัสไปรษณีย์ของภาคคือเท่าไหร่", {"contact"}),
+    ("ใครสอนวิชา Operating Systems", {"staff"}),
+    ("หัวหน้าธุรการภาควิชาชื่ออะไร", {"staff"}),
+    ("อยากถอนวิชาแบบได้ W ใช้ฟอร์มไหน", {"faq-current-student"}),
+    ("ลงทะเบียนเรียนข้ามมหาวิทยาลัยต้องยื่นอะไร", {"faq-current-student"}),
+]
+
+OUT_OF_SCOPE_2: list[str] = [
+    "อากาศที่เชียงใหม่ตอนนี้",
+    "สอนทำผัดไทยหน่อย",
+    "ผลบอลเมื่อคืน",
+    "แนะนำหนังน่าดูปีนี้",
+    "วิธีลดน้ำหนักให้ได้ผล",
+]
+
 OUT_OF_SCOPE: list[str] = [
     "ราคาทองวันนี้",
     "พรุ่งนี้ฝนจะตกไหม",

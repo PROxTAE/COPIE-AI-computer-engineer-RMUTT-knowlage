@@ -73,7 +73,11 @@ def test_index_holds_every_chunk_with_metadata(collection) -> None:
     chunks = [make_chunk(i) for i in range(3)] + [make_chunk(0, doc_id="other", section=None)]
     assert build_index(chunks, collection, fake_embed) == 4
     got = collection.get(ids=["other#0"], include=["metadatas", "documents"])
-    assert got["metadatas"][0] == {"doc_id": "other", "title": "Title", "section": "", "url": "https://example.ac.th/"}
+    meta = got["metadatas"][0]
+    assert {k: meta[k] for k in ("doc_id", "title", "section", "url")} == {
+        "doc_id": "other", "title": "Title", "section": "", "url": "https://example.ac.th/",
+    }
+    assert len(meta["hash"]) == 40
     assert got["documents"][0] == "text 0"
 
 
