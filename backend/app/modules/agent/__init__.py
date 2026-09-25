@@ -2,3 +2,6 @@
 
 Other modules import only from `app.modules.agent`, never from its internal files.
 """
+from app.modules.agent.router import router
+
+__all__ = ["router"]
