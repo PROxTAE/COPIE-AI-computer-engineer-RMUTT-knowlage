@@ -1,0 +1,16 @@
+/* Synced from assets/web-ui/styles/tokens.css by scripts/sync_ui_assets.py - do not edit here. */
+:root {
+  --copie-cyber-white: #ffffff;
+  --copie-cyber-paper: #f8fbff;
+  --copie-cyber-ink: #111a30;
+  --copie-cyber-muted: #5f7088;
+  --copie-cyber-blue: #155ff2;
+  --copie-cyber-cyan: #45cfe9;
+  --copie-cyber-line: #d7e5f8;
+  --copie-cyber-focus: #0c58ee;
+  --copie-cyber-radius-sm: 10px;
+  --copie-cyber-radius-lg: 20px;
+  --copie-cyber-shadow: 0 10px 32px rgb(35 93 162 / 8%);
+  --copie-cyber-heading: var(--font-heading, "Bai Jamjuree", system-ui, sans-serif);
+  --copie-cyber-body: var(--font-body, "IBM Plex Sans Thai", system-ui, sans-serif);
+}

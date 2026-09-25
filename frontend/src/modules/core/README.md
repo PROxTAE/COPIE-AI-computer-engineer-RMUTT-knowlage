@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | เจ้าของ | **P1** |
-| แผนงาน | [`01_FRONTEND_CORE_3D_MASCOT.md`](../../../../IMPLEMENTATION_PLANS/01_FRONTEND_CORE_3D_MASCOT.md) |
+| แผนงาน | [`01_FRONTEND_CORE_MASCOT.md`](../../../../IMPLEMENTATION_PLANS/01_FRONTEND_CORE_MASCOT.md) |
 | Branch prefix | ดู `IMPLEMENTATION_PLANS/00_GIT_DELIVERY_RULES.md` §2 |
 
 ## หน้าที่
@@ -24,6 +24,14 @@ core/
 ## Public API (สิ่งที่ module อื่นเรียกใช้ได้)
 
 `ui` components, `api`, `chatApi`, `useChatStore`, `ChatPage`
+
+## ใช้ธีมระหว่างรอ workspace (P2/P6)
+
+- `app/globals.css` โหลด HeroUI และ design kit แล้ว ครอบหน้าที่ต้องการพื้นกริด/halo ด้วย `className="copie-ui"`
+- ใช้ Tailwind `bg-cyber-blue`, `text-cyber-ink`, `font-display`, `font-sans`, `font-label`, `font-wordmark` และ class ของ kit เช่น `copie-heading`, `copie-eyebrow`, `copie-panel`
+- สีหลักอยู่ที่ `assets/web-ui/styles/tokens.css`; หากแก้ master ให้รัน `python scripts/sync_ui_assets.py` เพื่ออัปเดต CSS และ WebP ใน frontend
+- ใช้ `CopieMascot` จาก `@/modules/mascot` พร้อม `state` และ `layout`; ดู state ทั้งหมดที่ `/` (theme preview)
+- `ui/`, `api.ts`, `chatStore` และ workspace จะส่งใน PR ถัดไป อย่า import ก่อน merge
 
 ## ใช้ของ module อื่นได้จาก
 

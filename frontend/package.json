@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,9 +12,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@heroui/react": "^3.2.6",
+    "@heroui/styles": "^3.2.6",
     "@react-oauth/google": "^0.13.5",
     "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.8.0",
+    "@react-three/fiber": "^9.8.1",
     "lucide-react": "^1.48.0",
     "motion": "^13.4.3",
     "next": "16.3.6",

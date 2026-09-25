@@ -1,24 +1,6 @@
 @import "tailwindcss";
+@import "@heroui/styles";
 
-/* Design tokens — 00_SHARED_PROJECT_CONTEXT.md §3 (owner: P1) */
-@theme {
-  --color-copie-teal: #0e9aa7;
-  --color-deep-navy: #13233a;
-  --color-mist: #eef4f7;
-  --color-surface: #ffffff;
-  --color-ink: #1b2733;
-  --color-muted: #5f6f80;
-  --color-success: #1f9d6b;
-  --color-warning: #d98e04;
-  --color-danger: #d0475e;
-}
-
-@theme inline {
-  --font-sans: var(--font-body), system-ui, sans-serif;
-  --font-display: var(--font-heading), var(--font-body), system-ui, sans-serif;
-}
-
-body {
-  background: var(--color-mist);
-  color: var(--color-ink);
-}
+/* Design kit from assets/web-ui (synced by scripts/sync_ui_assets.py) + our theme mapping */
+@import "../modules/core/theme/kit/copie-ui.css";
+@import "../modules/core/theme/theme.css";
