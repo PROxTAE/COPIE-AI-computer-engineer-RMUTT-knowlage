@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
+from google.genai import errors
 
 from app.modules.agent import llm_client
 from app.modules.agent.llm_client import LLMError, generate_json, generate_text
@@ -45,6 +46,13 @@ def test_gives_up_after_two_attempts(fake) -> None:
     with pytest.raises(LLMError):
         generate_text("sys", "hi")
     assert models.calls == 2
+
+
+def test_client_error_is_not_retried(fake) -> None:
+    models = fake(errors.ClientError(429, {"error": {"code": 429, "status": "RESOURCE_EXHAUSTED"}}), "ok")
+    with pytest.raises(LLMError):
+        generate_text("sys", "hi")
+    assert models.calls == 1
 
 
 def test_empty_reply_is_error(fake) -> None:
