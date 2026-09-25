@@ -1,13 +1,16 @@
 """Parse knowledge Markdown files into section chunks.
 
 Each file starts with a front-matter block (doc_id, title, source_url, updated)
-and is split into one chunk per "## " heading.
+and is split into one chunk per "## " heading. A section longer than MAX_CHARS
+is cut into overlapping pieces so every chunk fits the embedding model well.
 """
 from dataclasses import dataclass
 from pathlib import Path
 
 REQUIRED_KEYS = ("doc_id", "title", "source_url", "updated")
 FRONT_MATTER_FENCE = "---"
+MAX_CHARS = 800
+OVERLAP_CHARS = 100
 
 
 @dataclass(frozen=True)
@@ -65,8 +68,36 @@ def split_sections(body: str) -> list[tuple[str | None, str]]:
     return [(heading, text) for heading, text in result if text]
 
 
+def split_long_text(text: str, max_chars: int = MAX_CHARS, overlap: int = OVERLAP_CHARS) -> list[str]:
+    """Cut text into pieces of at most max_chars that overlap by about `overlap` chars.
+
+    Cuts prefer a line break, then a space, in the second half of the window,
+    so list items and sentences are not split in the middle.
+    """
+    if len(text) <= max_chars:
+        return [text]
+    pieces: list[str] = []
+    start = 0
+    while start < len(text):
+        end = min(start + max_chars, len(text))
+        if end < len(text):
+            window_mid = start + max_chars // 2
+            cut = max(text.rfind("\n", window_mid, end), text.rfind(" ", window_mid, end))
+            end = cut if cut > start else end
+        pieces.append(text[start:end].strip())
+        if end >= len(text):
+            break
+        start = max(end - overlap, start + 1)
+    return [piece for piece in pieces if piece]
+
+
 def chunk_file(path: Path) -> list[Chunk]:
     meta, body = parse_front_matter(path.read_text(encoding=ENCODING), path.name)
+    pieces = [
+        (heading, piece)
+        for heading, text in split_sections(body)
+        for piece in split_long_text(text)
+    ]
     return [
         Chunk(
             chunk_id=f"{meta['doc_id']}#{i}",
@@ -76,7 +107,7 @@ def chunk_file(path: Path) -> list[Chunk]:
             url=meta["source_url"],
             text=text,
         )
-        for i, (heading, text) in enumerate(split_sections(body))
+        for i, (heading, text) in enumerate(pieces)
     ]
 
 

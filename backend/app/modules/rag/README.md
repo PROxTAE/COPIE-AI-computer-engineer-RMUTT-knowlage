@@ -27,16 +27,31 @@ ensure_index() -> int   # โหลดเอกสารใหม่ คืน�
 ```text
 rag/
 ├─ __init__.py          # export search_department_knowledge, ensure_index
-├─ chunker.py           # front-matter + แบ่ง section ตาม "## " (error ชัดเจนถ้า front-matter ไม่ครบ)
+├─ chunker.py           # front-matter + แบ่ง section ตาม "## " + ตัด section ยาวเกิน 800 ตัวอักษร (overlap 100)
+├─ ingest.py            # สร้าง vector index ใน Chroma: python -m app.modules.rag.ingest [--rebuild]
 ├─ lexical.py           # ค้นแบบ keyword: TF-IDF บน character 2/3-gram + query synonyms + ตัวกันคำถามนอกขอบเขต
 ├─ guard.py             # ตรวจคำหยาบ (รองรับเว้นวรรค/ลากเสียง, ไม่จับคำปกติเช่น "สัดส่วน")
 ├─ service.py           # search_department_knowledge() — จุดเดียวที่ P3 เรียก
 └─ tests/
    ├─ test_rag.py       # data, chunker, contract, accuracy, out-of-scope, profanity
+   ├─ test_ingest.py    # ตัด chunk ยาว, ingest ซ้ำไม่เกิด chunk ซ้ำ, --rebuild (ใช้ embedder ปลอม ไม่โหลดโมเดล)
    └─ retrieval_cases.py# ชุดคำถาม → doc_id ที่ควรเจอ (ชุดจูน + held-out + นอกขอบเขต)
 ```
 
-รอบถัดไป (ตามแผน): `ingest.py` + Chroma vector search → BM25 + RRF แทน `lexical.py` โดยไม่เปลี่ยน interface
+ตอนนี้ `search_department_knowledge()` ยังค้นด้วย `lexical.py` · รอบถัดไป: vector search จาก Chroma → BM25 + RRF โดยไม่เปลี่ยน interface
+
+## สร้าง vector index
+
+```bash
+cd backend
+python -m app.modules.rag.ingest            # เพิ่ม/อัปเดต/ลบ chunk ที่เปลี่ยน (รันซ้ำได้ ไม่เกิดซ้ำ)
+python -m app.modules.rag.ingest --rebuild  # ล้าง collection แล้ว embed ใหม่ทั้งหมด
+```
+
+- โมเดล `EMBEDDING_MODEL` (ค่าเริ่มต้น `intfloat/multilingual-e5-small`, ~470MB) ดาวน์โหลดครั้งแรกอัตโนมัติ
+- index อยู่ที่ `CHROMA_DIR` (ค่าเริ่มต้น `./storage/chroma`, อยู่ใน `.gitignore`) collection `ce_knowledge` (cosine)
+- ข้อความที่ embed = `passage: <title> | <section>\n<text>` (e5 ต้องมี prefix `passage:` / `query:`)
+- คะแนน cosine ของ e5 อยู่ช่วงสูง (~0.74–0.9 ทั้งคำถามที่เกี่ยวและไม่เกี่ยว) — `RAG_MIN_SCORE=0.35` ใช้กรองไม่ได้ ต้องตั้งจากผลวัดจริงตอนทำ vector retriever
 
 ## วิธีเพิ่มเอกสาร
 
