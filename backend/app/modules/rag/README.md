@@ -13,10 +13,11 @@
 ## Public API (สิ่งที่ module อื่นเรียกใช้ได้)
 
 ```python
-from app.modules.rag import search_department_knowledge, ensure_index
+from app.modules.rag import search_department_knowledge, ensure_index, contains_profanity
 
 search_department_knowledge(query: str, top_k: int = 4) -> list[RetrievedChunk]
 ensure_index() -> int   # โหลดเอกสาร + sync vector index + โหลดโมเดลทั้งสอง คืนจำนวน chunk
+contains_profanity(text: str) -> bool   # ให้ agent ตอบคำหยาบอย่างสุภาพ แทน "ไม่พบข้อมูล"
 ```
 
 - ผลเรียงจากเกี่ยวข้องมากไปน้อย · `source.score` = ความน่าจะเป็น 0–1 จาก reranker ว่า chunk นี้ตอบคำถามได้ · ทุกผลมี `source.url` เป็นลิงก์จริงจาก front-matter

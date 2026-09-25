@@ -137,3 +137,10 @@ def test_failed_model_is_retried_after_wait(monkeypatch) -> None:
 
 def test_ensure_index_counts_chunks_without_models() -> None:
     assert service.ensure_index() > 0
+
+
+def test_public_api_exports_profanity_check() -> None:
+    from app.modules.rag import contains_profanity
+
+    assert contains_profanity("ภาคนี้แม่งเรียนอะไร")
+    assert not contains_profanity("ภาคนี้เรียนอะไร")
