@@ -4,6 +4,7 @@ Other modules import only from ``app.modules.user``, never from internal files.
 """
 
 from app.modules.user.auth.deps import get_current_user
+from app.modules.user.auth.jwt import validate_jwt_secret
 from app.modules.user.database import create_all, get_session
 from app.modules.user.routers import router
 from app.modules.user.services.history_service import (
@@ -27,4 +28,5 @@ __all__ = [
     "get_user_context",
     "router",
     "save_skill_profile",
+    "validate_jwt_secret",
 ]

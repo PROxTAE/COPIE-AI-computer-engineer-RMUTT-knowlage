@@ -180,6 +180,23 @@ def test_jwt_rejects_insecure_default_secret(monkeypatch, secret: str) -> None:
         decode_access_token("not-a-token")
 
 
+@pytest.mark.parametrize("secret", ["", "change-me"])
+def test_invalid_jwt_secret_stops_startup_before_database_init(monkeypatch, secret: str) -> None:
+    from app import main
+
+    create_all = MagicMock()
+    ensure_index = MagicMock()
+    monkeypatch.setattr(settings, "jwt_secret", secret)
+    monkeypatch.setattr(main, "create_all", create_all)
+    monkeypatch.setattr(main, "ensure_index", ensure_index)
+
+    with pytest.raises(RuntimeError, match="JWT_SECRET must be configured"), TestClient(main.app):
+        pass
+
+    create_all.assert_not_called()
+    ensure_index.assert_not_called()
+
+
 def test_main_app_mounts_user_endpoints() -> None:
     from app.main import app
 
