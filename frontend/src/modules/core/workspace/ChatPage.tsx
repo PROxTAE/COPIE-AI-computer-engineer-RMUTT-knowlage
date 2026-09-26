@@ -1,9 +1,11 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { Button } from "@heroui/react";
 
 import { COPIE_IMAGES, type CopieMascotState } from "@/modules/mascot";
+import { SuggestedPrompts } from "@/modules/suggest";
+import type { UserType } from "@/types/contract";
 
 import { getApiAuthSnapshot, subscribeApiAuth } from "../api";
 import { useChatStore, type WorkspaceMode } from "../chatStore";
@@ -11,11 +13,11 @@ import { AppHeader, ChatInput, HistoryButton } from "../ui";
 import { MessageList } from "./MessageList";
 import { WorkspaceLayout } from "./WorkspaceLayout";
 
-type ChatPageProps = { debug?: boolean };
+type ChatPageProps = { debug?: boolean; userType?: UserType | null; studyYear?: number | null };
 const MODES: WorkspaceMode[] = ["center", "split", "rail", "hidden"];
 const STATES = Object.keys(COPIE_IMAGES) as CopieMascotState[];
 
-export function ChatPage({ debug = false }: ChatPageProps) {
+export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) {
   const canChat = useSyncExternalStore(subscribeApiAuth, getApiAuthSnapshot, () => false);
   const messages = useChatStore((state) => state.messages);
   const liveMessageId = useChatStore((state) => state.liveMessageId);
@@ -29,9 +31,15 @@ export function ChatPage({ debug = false }: ChatPageProps) {
   const newConversation = useChatStore((state) => state.newConversation);
   const send = useChatStore((state) => state.send);
   const submitAssessment = useChatStore((state) => state.submitAssessment);
+  const wasAuthenticated = useRef(false);
   const hasResponse = messages.some((message) => message.role === "assistant");
   const lastAssistant = messages.findLast((message) => message.role === "assistant");
   const showComposer = lastAssistant?.role !== "assistant" || lastAssistant.response.response_type !== "assessment_form";
+
+  useEffect(() => {
+    if (wasAuthenticated.current && !canChat) newConversation();
+    wasAuthenticated.current = canChat;
+  }, [canChat, newConversation]);
 
   return (
     <main className="copie-ui flex h-dvh min-h-0 flex-col">
@@ -43,6 +51,8 @@ export function ChatPage({ debug = false }: ChatPageProps) {
         hasResponse={hasResponse}
         onHide={() => setLayout("hidden")}
         onShow={() => setLayout(lastVisibleLayout)}
+        onBack={() => setLayout("center")}
+        onRead={() => setLayout(lastVisibleLayout)}
       >
         <MessageList
           messages={messages}
@@ -80,6 +90,11 @@ export function ChatPage({ debug = false }: ChatPageProps) {
                 disabled={!canChat}
                 placeholder={canChat ? "พิมพ์คำถามของคุณ..." : "กำลังเชื่อมต่อระบบสมาชิก"}
               />
+              {canChat && !pending && messages.length === 0 && (
+                <div className="mt-3 w-full max-w-[720px]">
+                  <SuggestedPrompts userType={userType} studyYear={studyYear} onAsk={(text) => { void send(text); }} compact />
+                </div>
+              )}
               {!canChat && <p className="mt-2 text-center text-xs text-cyber-muted">พร้อมรับคำถามเมื่อเชื่อมต่อบัญชีผู้ใช้</p>}
             </>
           )}

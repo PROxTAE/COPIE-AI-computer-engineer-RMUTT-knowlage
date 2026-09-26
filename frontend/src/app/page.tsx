@@ -1,4 +1,8 @@
+import { redirect } from "next/navigation";
+
 import { ThemePreview } from "@/modules/core";
 
-// Route / — owner: P1. Theme preview for now; becomes the login/onboarding/chat redirect in Phase 1.
-export default ThemePreview;
+export default function Page() {
+  if (process.env.NODE_ENV === "development") return <ThemePreview />;
+  redirect("/login");
+}

@@ -15,6 +15,8 @@ type WorkspaceLayoutProps = {
   hasResponse: boolean;
   onHide: () => void;
   onShow: () => void;
+  onBack?: () => void;
+  onRead?: () => void;
   children: ReactNode;
 };
 
@@ -25,7 +27,7 @@ const layoutClass: Record<WorkspaceMode, string> = {
   hidden: "block",
 };
 
-export function WorkspaceLayout({ layout, copieState, hasResponse, onHide, onShow, children }: WorkspaceLayoutProps) {
+export function WorkspaceLayout({ layout, copieState, hasResponse, onHide, onShow, onBack, onRead, children }: WorkspaceLayoutProps) {
   const showPanel = layout !== "center";
   const showMascot = layout !== "hidden";
 
@@ -36,6 +38,11 @@ export function WorkspaceLayout({ layout, copieState, hasResponse, onHide, onSho
           <motion.div layout transition={{ duration: 0.42 }} className={`relative z-10 min-w-0 ${layout === "hidden" ? "mx-auto max-w-5xl" : ""}`}>
             <div className="mb-3 flex items-center justify-between gap-3">
               <span className="copie-eyebrow">AI answer</span>
+              {layout === "rail" && onBack && (
+                <Button variant="outline" onPress={onBack} className="rounded-full bg-white">
+                  <Icon name="arrow-left" size={17} /> กลับหน้าสนทนา
+                </Button>
+              )}
               {layout === "hidden" && (
                 <Button variant="outline" onPress={onShow} className="rounded-full">
                   แสดงมาสคอต
@@ -57,6 +64,11 @@ export function WorkspaceLayout({ layout, copieState, hasResponse, onHide, onSho
               className={layout === "center" ? "relative max-h-[min(60dvh,560px)] w-auto!" : layout === "rail" ? "relative max-h-[min(38dvh,330px)] w-auto!" : "relative max-h-[min(58dvh,540px)] w-auto!"}
             />
             <StatusLabel label={`COPIE / ${copieState}`} className="relative mt-1" />
+            {layout === "center" && hasResponse && onRead && (
+              <Button variant="outline" onPress={onRead} className="relative mt-4 rounded-full bg-white">
+                อ่านคำตอบ
+              </Button>
+            )}
             {showPanel && (
               <Button variant="outline" onPress={onHide} className="relative mt-4 rounded-full bg-white">
                 <Icon name="eye-off" size={17} /> ซ่อนมาสคอต
