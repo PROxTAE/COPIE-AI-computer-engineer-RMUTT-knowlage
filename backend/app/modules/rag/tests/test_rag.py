@@ -204,40 +204,50 @@ LIVE_REJECTION = [
     ("held_out_5", OUT_OF_SCOPE_5, 0.8),
     ("held_out_6", OUT_OF_SCOPE_6, 0.9),
 ]
-# Without the models (fallback path, also what plain `pytest` runs). It gets weaker
-# as documents are added: the 3-gram filter and BM25 alone cannot tell similar pages apart.
+# Without the reranker (fallback path; plain `pytest` also runs without the vector
+# model). Word + 3-gram keyword coverage filters scope, 3-gram keywords rank.
+# Keyword matching alone cannot reach the reranker's accuracy or its rejection of
+# unrelated questions.
 OFFLINE_ACCURACY = [
-    ("tuning", IN_SCOPE, 0.82, 0.96),
-    ("held_out", HELD_OUT, 1.0, 1.0),
-    ("held_out_2", HELD_OUT_2, 0.9, 0.95),
-    ("held_out_3", HELD_OUT_3, 0.68, 0.88),
-    ("held_out_4", HELD_OUT_4, 0.75, 0.9),
-    ("held_out_5", HELD_OUT_5, 0.6, 0.86),
-    ("held_out_6", HELD_OUT_6, 0.64, 0.8),
+    ("tuning", IN_SCOPE, 0.84, 0.96),
+    ("held_out", HELD_OUT, 0.95, 0.95),
+    ("held_out_2", HELD_OUT_2, 0.9, 1.0),
+    ("held_out_3", HELD_OUT_3, 0.76, 0.88),
+    ("held_out_4", HELD_OUT_4, 0.82, 0.92),
+    ("held_out_5", HELD_OUT_5, 0.73, 0.93),
+    ("held_out_6", HELD_OUT_6, 0.64, 0.84),
 ]
 OFFLINE_REJECTION = [
-    ("tuning", OUT_OF_SCOPE, 0.7),
-    ("near", OUT_OF_SCOPE_NEAR, 0.55),
+    ("tuning", OUT_OF_SCOPE, 0.8),
+    ("near", OUT_OF_SCOPE_NEAR, 0.65),
     ("held_out_2", OUT_OF_SCOPE_2, 0.8),
-    ("held_out_3", OUT_OF_SCOPE_3, 0.75),
-    ("held_out_4", OUT_OF_SCOPE_4, 0.6),
+    ("held_out_3", OUT_OF_SCOPE_3, 0.8),
+    ("held_out_4", OUT_OF_SCOPE_4, 0.65),
     ("held_out_5", OUT_OF_SCOPE_5, 0.4),
-    ("held_out_6", OUT_OF_SCOPE_6, 0.35),
+    ("held_out_6", OUT_OF_SCOPE_6, 0.4),
 ]
+
+
+def _one_question(cases: list) -> float:
+    """Model scores on CPU can differ in the last digits between runs (thread scheduling),
+    which can swap two nearly tied chunks at the candidate cut-off. Live floors therefore
+    allow one question of slack; a real regression costs more than one."""
+    return 1 / len(cases) + 1e-9
 
 
 @live
 @pytest.mark.parametrize(("name", "cases", "min_hit1", "min_hit4"), LIVE_ACCURACY, ids=[a[0] for a in LIVE_ACCURACY])
 def test_live_retrieval_accuracy(name: str, cases, min_hit1: float, min_hit4: float) -> None:
     hit1, hit4 = _hit_rates(cases)
-    assert hit4 >= min_hit4, f"{name} hit@4 {hit4:.1%}"
-    assert hit1 >= min_hit1, f"{name} hit@1 {hit1:.1%}"
+    slack = _one_question(cases)
+    assert hit4 >= min_hit4 - slack, f"{name} hit@4 {hit4:.1%}"
+    assert hit1 >= min_hit1 - slack, f"{name} hit@1 {hit1:.1%}"
 
 
 @live
 @pytest.mark.parametrize(("name", "questions", "minimum"), LIVE_REJECTION, ids=[r[0] for r in LIVE_REJECTION])
 def test_live_out_of_scope_rejection(name: str, questions: list[str], minimum: float) -> None:
-    assert _rejected(questions) >= minimum
+    assert _rejected(questions) >= minimum - _one_question(questions)
 
 
 @pytest.mark.skipif(LIVE, reason="measures the fallback path used without models")

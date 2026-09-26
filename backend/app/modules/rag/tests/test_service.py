@@ -145,3 +145,17 @@ def test_public_api_exports_profanity_check() -> None:
 
     assert contains_profanity("ภาคนี้แม่งเรียนอะไร")
     assert not contains_profanity("ภาคนี้เรียนอะไร")
+
+
+def test_word_coverage_separates_department_and_unrelated_questions() -> None:
+    idx = service._indexes()
+    assert idx.bm25.coverage("ค่าเทอมเท่าไหร่") >= service.FALLBACK_MIN_WORD_COVERAGE
+    assert idx.bm25.coverage("สูตรต้มยำกุ้ง") < service.FALLBACK_MIN_WORD_COVERAGE
+    assert BM25Index([]).coverage("อะไรก็ได้") == 0.0
+
+
+def test_fallback_rejects_unrelated_question_that_shares_common_words() -> None:
+    # Passes the 3-gram filter but shares no content word with any chunk.
+    idx = service._indexes()
+    assert idx.lexical.in_scope("ข่าวการเมืองวันนี้", service.MIN_COVERAGE)
+    assert service.search_department_knowledge("ข่าวการเมืองวันนี้") == []
