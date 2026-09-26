@@ -206,4 +206,8 @@ def test_main_app_mounts_user_endpoints() -> None:
         "/api/auth/google",
         "/api/users/me",
         "/api/users/me/profile",
+        "/api/conversations",
+        "/api/conversations/{conversation_id}",
+        "/api/skills/me",
+        "/api/feedback",
     } <= paths

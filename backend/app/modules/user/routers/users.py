@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
 from app.modules.user.auth.deps import get_current_user
@@ -25,4 +25,9 @@ def write_profile(
     user: CurrentUser,
     db: Annotated[Session, Depends(get_session)],
 ) -> User:
+    needs_study_year = profile.user_type in ("current_student", "near_graduate")
+    if needs_study_year and profile.study_year is None:
+        raise HTTPException(status_code=422, detail="กรุณาระบุชั้นปีสำหรับสถานะนักศึกษา")
+    if profile.user_type == "prospective" and profile.study_year is not None:
+        raise HTTPException(status_code=422, detail="ผู้สนใจเข้าศึกษาไม่ต้องระบุชั้นปี")
     return update_profile(db, user.id, profile)

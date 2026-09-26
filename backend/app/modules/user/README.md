@@ -8,9 +8,9 @@
 
 ## หน้าที่
 
-ตาราง DB ทั้งหมด (SQLite/SQLModel), Google verify + JWT, endpoint `/api/auth/*`, `/api/users/*`, `/api/conversations*`, `/api/skills/me`, `/api/feedback`, `/api/stats` และ service ที่ Agent เรียกใช้
+ตาราง DB ทั้งหมด (SQLite/SQLModel), Google verify + JWT, endpoint `/api/auth/*`, `/api/users/*`, `/api/conversations*`, `/api/skills/me`, `/api/feedback` และ service ที่ Agent เรียกใช้ (`/api/stats` เป็น optional scope ที่ไม่ได้ทำ)
 
-## โครงไฟล์ที่จะสร้าง
+## โครงสร้าง
 
 ```text
 user/
@@ -18,8 +18,8 @@ user/
 ├─ database.py       # engine, get_session(), create_all()
 ├─ models.py         # User, Conversation, Message, SkillProfileRow, Feedback
 ├─ auth/             # google.py, jwt.py, deps.py (get_current_user)
-├─ services/         # user_service.py, history_service.py, skill_store.py
-├─ routers/          # auth.py, users.py, history.py, feedback.py, skills.py, stats.py
+├─ services/         # user_service.py, history_service.py, skill_store.py, feedback_service.py
+├─ routers/          # auth.py, users.py, history.py, feedback.py, skills.py
 └─ tests/
 ```
 
