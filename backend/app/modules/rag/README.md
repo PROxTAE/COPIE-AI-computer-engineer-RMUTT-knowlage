@@ -46,7 +46,7 @@ contains_profanity(text: str) -> bool   # ให้ agent ตอบคำหย�
 ```text
 rag/
 ├─ __init__.py          # export search_department_knowledge, ensure_index
-├─ chunker.py           # front-matter + แบ่ง section ตาม "## " + ตัด section ยาวเกิน 800 ตัวอักษร (overlap 100)
+├─ chunker.py           # front-matter + แบ่ง section ตาม "## " + ลิงก์ "ที่มา:" ราย section + ตัด section ยาวเกิน 800 ตัวอักษร (overlap 100)
 ├─ ingest.py            # สร้าง vector index ใน Chroma: python -m app.modules.rag.ingest [--rebuild]
 ├─ retriever.py         # vector_search() บน Chroma, sync_index() (embed ใหม่เฉพาะที่เปลี่ยน), rrf_merge()
 ├─ thai_text.py         # ตัดคำไทย (pythainlp + ศัพท์ของภาค) + BM25
@@ -94,7 +94,7 @@ python -m app.modules.rag.ingest --rebuild  # ล้าง collection แล้�
    ```
 
 2. เพิ่มแถวใน `data/knowledge/SOURCES.md`
-3. ถ้าเนื้อหาบาง section มาจากหน้าอื่น ให้เขียน `ที่มา: <url>` ไว้ใต้หัวข้อนั้น
+3. ถ้าเนื้อหาบาง section มาจากหน้าอื่น ให้เขียน `ที่มา: <url>` เป็นบรรทัดแรกใต้หัวข้อนั้น — chunk ของ section นั้นจะลิงก์ไปหน้านั้นแทน `source_url` (บรรทัดนี้ถูกตัดออกจากเนื้อหา)
 4. รัน test (รวมแบบ live) แล้วดูว่าความแม่นยำไม่ลดลง
 
 ## วิธีทดสอบ
