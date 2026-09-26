@@ -15,6 +15,6 @@
 
 P2 เรียก `useChatStore.getState().loadConversation(detail)` เมื่อได้ `ConversationDetail` จริงจาก History และ `newConversation()` เมื่อเริ่มห้องใหม่; ไม่มีการสร้างข้อมูลภาค/รายวิชา/คะแนนใน store
 
-P1 จะเชื่อม `chatApi.send`/`submitAssessment` และส่ง callback ของ `ResponseRenderer` ใน PR `core/wire-chat-api` หลัง P2 ส่ง `getToken`, `clearToken`, `onUnauthorized` กับ UI auth/history
+`send` และ `submitAssessment` เรียก `chatApi` ตาม contract และส่ง callback ของ `ResponseRenderer` แล้ว; หน้า `/chat` จะเปิด input/action เมื่อ P2 ลงทะเบียน `configureApiAuth({ getToken, clearToken, onUnauthorized })` ฝั่ง client และเรียก `notifyApiAuthChanged()` หลัง token เปลี่ยนเท่านั้น History ยังรอ UI/ข้อมูลจาก P2 การสลับห้องยกเลิกคำขอเก่าเพื่อไม่ให้คำตอบหลงห้อง
 
 โหมด split แสดง Renderer ฝั่งซ้ายและมาสคอตฝั่งขวา เพราะ Renderer ปัจจุบันคืน component เดียว หากต้องการจัดเนื้อหา/แหล่งอ้างอิงสองฝั่งรอบมาสคอตเหมือน mockup 04 ต้องให้ P6 เพิ่ม slot ใน public API ก่อน P1 ปรับ layout โดยไม่แก้ไฟล์ของ P6 เอง

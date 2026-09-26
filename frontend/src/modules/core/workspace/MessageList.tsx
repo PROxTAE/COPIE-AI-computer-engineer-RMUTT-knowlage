@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChatMessage } from "@/types/contract";
+import type { AgentResponse, ChatMessage } from "@/types/contract";
 import { ResponseRenderer, type AssessmentAnswer } from "@/modules/renderer";
 
 type MessageListProps = {
@@ -8,7 +8,7 @@ type MessageListProps = {
   liveMessageId?: string | null;
   disabled?: boolean;
   onAsk?: (text: string) => void;
-  onSubmitAssessment?: (answers: AssessmentAnswer[]) => Promise<void>;
+  onSubmitAssessment?: (answers: AssessmentAnswer[], formResponse: AgentResponse) => Promise<void>;
 };
 
 const unavailableAsk = () => {};
@@ -26,7 +26,7 @@ export function MessageList({ messages, liveMessageId = null, disabled = false, 
           key={message.id}
           response={message.response}
           onAsk={onAsk ?? unavailableAsk}
-          onSubmitAssessment={onSubmitAssessment ?? unavailableAssessment}
+          onSubmitAssessment={onSubmitAssessment ? (answers) => onSubmitAssessment(answers, message.response) : unavailableAssessment}
           disabled={disabled || !onAsk || !onSubmitAssessment}
           animate={message.id === liveMessageId}
         />

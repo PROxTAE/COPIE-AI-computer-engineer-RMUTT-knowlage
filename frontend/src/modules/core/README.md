@@ -23,7 +23,7 @@ core/
 
 ## Public API (สิ่งที่ module อื่นเรียกใช้ได้)
 
-`AppHeader`, `HistoryButton`, `ChatInput`, `Icon`, `StatusLabel`, `api`, `chatApi`, `configureApiAuth`, `ChatPage`, `WorkspaceLayout`, `MessageList`, `useChatStore` ผ่าน `@/modules/core`
+`AppHeader`, `HistoryButton`, `ChatInput`, `Icon`, `StatusLabel`, `api`, `chatApi`, `configureApiAuth`, `notifyApiAuthChanged`, `ChatPage`, `WorkspaceLayout`, `MessageList`, `useChatStore` ผ่าน `@/modules/core`
 
 ## ใช้ธีมระหว่างรอ workspace (P2/P6)
 
@@ -31,10 +31,10 @@ core/
 - ใช้ Tailwind `bg-cyber-blue`, `text-cyber-ink`, `font-display`, `font-sans`, `font-label`, `font-wordmark` และ class ของ kit เช่น `copie-heading`, `copie-eyebrow`, `copie-panel`
 - สีหลักอยู่ที่ `assets/web-ui/styles/tokens.css`; หากแก้ master ให้รัน `python scripts/sync_ui_assets.py` เพื่ออัปเดต CSS และ WebP ใน frontend
 - ใช้ `CopieMascot` จาก `@/modules/mascot` พร้อม `state` และ `layout`; ดู state ทั้งหมดที่ `/` (theme preview)
-- `ChatPage` เป็น shell ที่แสดงมาสคอตและตำแหน่ง input/history โดยปิดการส่งคำถามไว้จน P2 ส่ง token adapter; ไม่มี fixture response ในหน้า `/chat`
-- P2 ลงทะเบียน `configureApiAuth({ getToken, clearToken, onUnauthorized })` ก่อนเรียก `chatApi`; เมื่อ 401 ให้พาไป `/login`
-- `useChatStore` มี `loadConversation(detail)` ให้ P2 เรียกหลังเปิด History, `newConversation()` สำหรับเริ่มห้องใหม่ และ `beginRequest`/`receiveResponse`/`failRequest` สำหรับ P1 ต่อ API ใน PR ถัดไป
-- `MessageList` เรียก `ResponseRenderer` ของ P6 โดยไม่ import fixture; action callbacks ยังปิดอยู่จนต่อ API จริง
+- `ChatPage` ส่งคำถามและคำตอบแบบประเมินผ่าน API จริงเมื่อ P2 ลงทะเบียน token adapter; ไม่มี fixture response ในหน้า `/chat`
+- P2 ลงทะเบียน `configureApiAuth({ getToken, clearToken, onUnauthorized })` ฝั่ง client ก่อนใช้หน้าแชต และเรียก `notifyApiAuthChanged()` เมื่อ token เปลี่ยน; เมื่อ 401 ให้พาไป `/login`
+- `useChatStore` มี `loadConversation(detail)` ให้ P2 เรียกหลังเปิด History, `newConversation()` สำหรับเริ่มห้องใหม่ และ `send`/`submitAssessment` สำหรับ action จริง; การสลับห้องยกเลิก request ที่ค้างอยู่
+- `MessageList` ส่ง action callbacks ไป `ResponseRenderer` ของ P6 โดยผูกแบบประเมินกับ response ที่แสดง; ปิด action เมื่อไม่มี auth หรือระหว่าง pending
 - `/chat?debug=1` เปิดปุ่มสลับ layout/state เฉพาะ `next dev`; production จะไม่แสดงเครื่องมือ debug
 - การจัดเนื้อหาสองฝั่งรอบมาสคอตตาม mockup 04 ต้องให้ P6 expose ส่วนเนื้อหา/แหล่งอ้างอิงเป็น slot เพิ่มเติม; ปัจจุบัน Renderer ส่งเป็นก้อนเดียว จึงแสดงฝั่งซ้ายในโหมด split
 
