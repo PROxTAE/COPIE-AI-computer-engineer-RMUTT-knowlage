@@ -11,6 +11,8 @@ google-genai==2.25.0
 # ---- user (P2) ----
 sqlmodel==0.0.47
 PyJWT==2.15.0
+google-auth==2.58.1
+requests==2.34.2
 
 # ---- rag (P4) ----
 chromadb==1.5.9

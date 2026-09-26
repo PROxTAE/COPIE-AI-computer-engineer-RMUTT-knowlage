@@ -201,4 +201,9 @@ def test_main_app_mounts_user_endpoints() -> None:
     from app.main import app
 
     paths = set(app.openapi()["paths"])
-    assert {"/api/auth/dev", "/api/users/me"} <= paths
+    assert {
+        "/api/auth/dev",
+        "/api/auth/google",
+        "/api/users/me",
+        "/api/users/me/profile",
+    } <= paths
