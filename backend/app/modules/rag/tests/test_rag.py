@@ -18,12 +18,18 @@ from app.modules.rag.guard import contains_profanity
 from app.modules.rag.service import KNOWLEDGE_DIR, SNIPPET_CHARS
 from app.schemas.contract import RetrievedChunk
 
+from .conftest import LIVE, live
 from .retrieval_cases import (
     HELD_OUT,
     HELD_OUT_2,
+    HELD_OUT_3,
+    HELD_OUT_4,
     IN_SCOPE,
     OUT_OF_SCOPE,
     OUT_OF_SCOPE_2,
+    OUT_OF_SCOPE_3,
+    OUT_OF_SCOPE_4,
+    OUT_OF_SCOPE_NEAR,
 )
 
 KNOWLEDGE_FILES = [p for p in sorted(KNOWLEDGE_DIR.glob("*.md")) if has_front_matter(p)]
@@ -149,28 +155,68 @@ def _hit_rates(cases: list[tuple[str, set[str]]]) -> tuple[float, float]:
     return hit1 / len(cases), hit4 / len(cases)
 
 
-# Floors are the measured results, so a change that makes retrieval worse fails.
-# held_out_2 was 85% hit@1 with 10 documents; adding study-plan-overview (11 documents)
-# measured 80%, because its broad year-by-year text outranks narrower pages.
-@pytest.mark.parametrize(
-    ("cases", "min_hit1", "min_hit4"),
-    [(IN_SCOPE, 0.9, 1.0), (HELD_OUT, 0.9, 1.0), (HELD_OUT_2, 0.8, 0.9)],
-    ids=["tuning", "held_out", "held_out_2"],
-)
-def test_retrieval_accuracy(cases: list[tuple[str, set[str]]], min_hit1: float, min_hit4: float) -> None:
+def _rejected(questions: list[str]) -> float:
+    return sum(not search_department_knowledge(q) for q in questions) / len(questions)
+
+
+# Floors are the measured results (11 documents), so a change that makes retrieval
+# worse fails. held_out_4 was written after every setting was fixed: the numbers to quote.
+LIVE_ACCURACY = [
+    ("tuning", IN_SCOPE, 0.97, 1.0),
+    ("held_out", HELD_OUT, 1.0, 1.0),
+    ("held_out_2", HELD_OUT_2, 0.9, 0.9),
+    ("held_out_3", HELD_OUT_3, 0.84, 0.84),
+    ("held_out_4", HELD_OUT_4, 0.95, 1.0),
+]
+LIVE_REJECTION = [
+    ("tuning", OUT_OF_SCOPE + OUT_OF_SCOPE_NEAR, 1.0),
+    ("held_out_2", OUT_OF_SCOPE_2, 1.0),
+    ("held_out_3", OUT_OF_SCOPE_3, 1.0),
+    ("held_out_4", OUT_OF_SCOPE_4, 0.95),
+]
+# Without the models (fallback path, also what plain `pytest` runs).
+OFFLINE_ACCURACY = [
+    ("tuning", IN_SCOPE, 0.88, 0.97),
+    ("held_out", HELD_OUT, 0.95, 1.0),
+    ("held_out_2", HELD_OUT_2, 0.85, 0.95),
+    ("held_out_3", HELD_OUT_3, 0.72, 0.92),
+    ("held_out_4", HELD_OUT_4, 0.9, 1.0),
+]
+OFFLINE_REJECTION = [
+    ("tuning", OUT_OF_SCOPE, 0.9),
+    ("near", OUT_OF_SCOPE_NEAR, 0.6),  # 3-gram filter is weak on near-domain questions; the reranker rejects all
+    ("held_out_2", OUT_OF_SCOPE_2, 0.8),
+    ("held_out_3", OUT_OF_SCOPE_3, 0.9),
+    ("held_out_4", OUT_OF_SCOPE_4, 0.7),
+]
+
+
+@live
+@pytest.mark.parametrize(("name", "cases", "min_hit1", "min_hit4"), LIVE_ACCURACY, ids=[a[0] for a in LIVE_ACCURACY])
+def test_live_retrieval_accuracy(name: str, cases, min_hit1: float, min_hit4: float) -> None:
     hit1, hit4 = _hit_rates(cases)
-    assert hit4 >= min_hit4, f"hit@4 {hit4:.1%}"
-    assert hit1 >= min_hit1, f"hit@1 {hit1:.1%}"
+    assert hit4 >= min_hit4, f"{name} hit@4 {hit4:.1%}"
+    assert hit1 >= min_hit1, f"{name} hit@1 {hit1:.1%}"
 
 
-@pytest.mark.parametrize(
-    ("questions", "min_rejected"),
-    [(OUT_OF_SCOPE, 0.9), (OUT_OF_SCOPE_2, 0.6)],
-    ids=["tuning", "held_out_2"],
-)
-def test_out_of_scope_questions_are_rejected(questions: list[str], min_rejected: float) -> None:
-    rejected = sum(not search_department_knowledge(q) for q in questions)
-    assert rejected / len(questions) >= min_rejected
+@live
+@pytest.mark.parametrize(("name", "questions", "minimum"), LIVE_REJECTION, ids=[r[0] for r in LIVE_REJECTION])
+def test_live_out_of_scope_rejection(name: str, questions: list[str], minimum: float) -> None:
+    assert _rejected(questions) >= minimum
+
+
+@pytest.mark.skipif(LIVE, reason="measures the fallback path used without models")
+@pytest.mark.parametrize(("name", "cases", "min_hit1", "min_hit4"), OFFLINE_ACCURACY, ids=[a[0] for a in OFFLINE_ACCURACY])
+def test_fallback_retrieval_accuracy(name: str, cases, min_hit1: float, min_hit4: float) -> None:
+    hit1, hit4 = _hit_rates(cases)
+    assert hit4 >= min_hit4, f"{name} hit@4 {hit4:.1%}"
+    assert hit1 >= min_hit1, f"{name} hit@1 {hit1:.1%}"
+
+
+@pytest.mark.skipif(LIVE, reason="measures the fallback path used without models")
+@pytest.mark.parametrize(("name", "questions", "minimum"), OFFLINE_REJECTION, ids=[r[0] for r in OFFLINE_REJECTION])
+def test_fallback_out_of_scope_rejection(name: str, questions: list[str], minimum: float) -> None:
+    assert _rejected(questions) >= minimum
 
 
 # ---------- profanity guard ----------
