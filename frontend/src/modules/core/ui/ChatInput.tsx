@@ -10,9 +10,10 @@ type ChatInputProps = {
   pending?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  onDraftChange?: (hasDraft: boolean) => void;
 };
 
-export function ChatInput({ onSend, pending = false, disabled = false, placeholder = "พิมพ์คำถามของคุณ..." }: ChatInputProps) {
+export function ChatInput({ onSend, pending = false, disabled = false, placeholder = "พิมพ์คำถามของคุณ...", onDraftChange }: ChatInputProps) {
   const [text, setText] = useState("");
   const canSend = text.trim().length > 0 && !pending && !disabled && Boolean(onSend);
 
@@ -39,7 +40,10 @@ export function ChatInput({ onSend, pending = false, disabled = false, placehold
           aria-label="พิมพ์คำถาม"
           placeholder={placeholder}
           value={text}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) => {
+            setText(event.target.value);
+            onDraftChange?.(event.target.value.trim().length > 0);
+          }}
           onKeyDown={handleKeyDown}
           maxLength={1000}
           rows={1}
