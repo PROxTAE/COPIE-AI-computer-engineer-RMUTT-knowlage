@@ -1,16 +1,35 @@
 import type { AgentResponse, AssessmentSubmit, ChatRequest } from "@/types/contract";
 
-type AuthAdapter = {
+export type AuthAdapter = {
   getToken: () => string | null;
   clearToken: () => void;
   onUnauthorized: () => void;
 };
 
 let authAdapter: AuthAdapter | null = null;
+const authListeners = new Set<() => void>();
+
+export function notifyApiAuthChanged() {
+  authListeners.forEach((listener) => listener());
+}
+
+export function subscribeApiAuth(listener: () => void) {
+  authListeners.add(listener);
+  return () => { authListeners.delete(listener); };
+}
+
+export function getApiAuthSnapshot() {
+  try {
+    return Boolean(authAdapter?.getToken());
+  } catch {
+    return false;
+  }
+}
 
 // P2 registers its token helpers when the user module is available.
-export function configureApiAuth(adapter: AuthAdapter) {
+export function configureApiAuth(adapter: AuthAdapter | null) {
   authAdapter = adapter;
+  notifyApiAuthChanged();
 }
 
 export class ApiError extends Error {
@@ -36,6 +55,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     const response = await fetch(path, { ...init, headers, signal: controller.signal });
     if (response.status === 401) {
       authAdapter?.clearToken();
+      notifyApiAuthChanged();
       authAdapter?.onUnauthorized();
     }
     if (!response.ok) {
@@ -57,7 +77,8 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
 }
 
 export const chatApi = {
-  send: (body: ChatRequest) => api<AgentResponse>("/api/chat", { method: "POST", body: JSON.stringify(body) }),
-  submitAssessment: (body: AssessmentSubmit) =>
-    api<AgentResponse>("/api/assessment/submit", { method: "POST", body: JSON.stringify(body) }),
+  send: (body: ChatRequest, signal?: AbortSignal) =>
+    api<AgentResponse>("/api/chat", { method: "POST", body: JSON.stringify(body), signal }),
+  submitAssessment: (body: AssessmentSubmit, signal?: AbortSignal) =>
+    api<AgentResponse>("/api/assessment/submit", { method: "POST", body: JSON.stringify(body), signal }),
 };

@@ -8,4 +8,5 @@ export { useChatStore, layoutFromResponse, mascotStateFromResponse } from "./cha
 export type { WorkspaceMode } from "./chatStore";
 export { AppHeader, ChatInput, HistoryButton, Icon, ICON_NAMES, StatusLabel } from "./ui";
 export type { IconName } from "./ui";
-export { api, chatApi, configureApiAuth, ApiError } from "./api";
+export { api, chatApi, configureApiAuth, notifyApiAuthChanged, subscribeApiAuth, getApiAuthSnapshot, ApiError } from "./api";
+export type { AuthAdapter } from "./api";
