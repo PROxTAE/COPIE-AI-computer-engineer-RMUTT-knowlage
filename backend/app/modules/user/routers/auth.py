@@ -8,10 +8,19 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
 from app.core.config import settings
+from app.modules.user.auth.google import (
+    GoogleAuthConfigurationError,
+    InvalidGoogleTokenError,
+    verify_google_id_token,
+)
 from app.modules.user.auth.jwt import create_access_token
 from app.modules.user.database import get_session
 from app.modules.user.models import User as UserRow
-from app.modules.user.services.user_service import to_contract_user
+from app.modules.user.services.user_service import (
+    GoogleIdentityConflictError,
+    to_contract_user,
+    upsert_google_user,
+)
 from app.schemas.contract import AuthResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -22,6 +31,40 @@ class DevAuthRequest(BaseModel):
 
     email: str = Field(min_length=3)
     name: str = Field(min_length=1)
+
+
+class GoogleAuthRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id_token: str
+
+
+@router.post("/google", response_model=AuthResponse)
+def google_login(
+    req: GoogleAuthRequest,
+    db: Annotated[Session, Depends(get_session)],
+) -> AuthResponse:
+    try:
+        identity = verify_google_id_token(req.id_token)
+        user, is_new_user = upsert_google_user(db, identity)
+    except GoogleAuthConfigurationError as exc:
+        raise HTTPException(status_code=503, detail="ยังไม่ได้ตั้งค่า Google Login") from exc
+    except InvalidGoogleTokenError as exc:
+        raise HTTPException(
+            status_code=401,
+            detail="ไม่สามารถยืนยันตัวตนด้วย Google ได้ กรุณาลองใหม่",
+        ) from exc
+    except GoogleIdentityConflictError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail="อีเมลนี้เชื่อมกับบัญชีอื่นอยู่แล้ว",
+        ) from exc
+
+    return AuthResponse(
+        access_token=create_access_token(user.id),
+        user=to_contract_user(user),
+        is_new_user=is_new_user,
+    )
 
 
 @router.post("/dev", response_model=AuthResponse)
