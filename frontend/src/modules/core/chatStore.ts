@@ -180,7 +180,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
   failRequest: (message) => {
     clearSettleTimer();
-    set({ pending: false, copieState: "no-answer", error: message });
+    set({ pending: false, copieState: "idle", error: message });
   },
   loadConversation: (detail) => {
     cancelActiveRequest();

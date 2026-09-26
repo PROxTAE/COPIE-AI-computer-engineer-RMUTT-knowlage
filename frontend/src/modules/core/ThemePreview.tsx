@@ -3,7 +3,7 @@ import { Button, Chip } from "@heroui/react";
 
 import { CopieMascot, MascotStatePreview, type CopieMascotState } from "@/modules/mascot";
 
-// Temporary landing page (P1): shows the White Cyberism theme wiring until "/" becomes the login redirect.
+// Development preview of the White Cyberism theme and mascot states.
 const STATES: CopieMascotState[] = ["idle", "listening", "thinking", "responding", "success", "no-answer", "skill-guide"];
 
 const ROUTES = [
