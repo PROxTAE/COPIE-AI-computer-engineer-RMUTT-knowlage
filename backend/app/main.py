@@ -6,6 +6,8 @@ from fastapi import FastAPI
 
 from app.modules.agent import router as agent_router
 from app.modules.rag import ensure_index
+from app.modules.user import create_all, validate_jwt_secret
+from app.modules.user import router as user_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger(__name__)
@@ -13,6 +15,8 @@ log = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    validate_jwt_secret()
+    create_all()
     # Build the knowledge index once at startup so the first question is not slow.
     # A broken knowledge file must not stop the API: RAG answers "not found" until it is fixed.
     try:
@@ -30,7 +34,5 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-# Module routers are added here by their owners (via PR, P3 approves), e.g.
-# from app.modules.user import router as user_router
-# app.include_router(user_router)
+app.include_router(user_router)
 app.include_router(agent_router)

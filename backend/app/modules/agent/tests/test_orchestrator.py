@@ -2,14 +2,19 @@
 
 Course/skill values below are test fixtures only, not curriculum data.
 """
+from collections.abc import Generator
+
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from sqlalchemy.pool import StaticPool
+from sqlmodel import Session, SQLModel, create_engine
 
 from app.main import app
 from app.modules.agent import orchestrator
 from app.modules.agent.llm_client import LLMError
 from app.modules.agent.types import RouteResult
+from app.modules.user.models import User as UserRow
 from app.schemas.contract import (
     AgentResponse,
     AssessmentFormData,
@@ -41,6 +46,48 @@ SKILL = SkillProfile(scores=SkillScores(frontend=80, backend=70, network=10, emb
 
 def llm_down(*args, **kwargs):
     raise LLMError("down")
+
+
+@pytest.fixture
+def api_client() -> Generator[TestClient, None, None]:
+    engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as db:
+        db.add(
+            UserRow(
+                id=STUDENT.id,
+                email=STUDENT.email,
+                name=STUDENT.name,
+                user_type=STUDENT.user_type,
+                study_year=STUDENT.study_year,
+                onboarded=STUDENT.onboarded,
+            )
+        )
+        db.commit()
+
+    def test_session() -> Generator[Session, None, None]:
+        with Session(engine) as db:
+            yield db
+
+    services = orchestrator.services
+    assert services.get_current_user not in app.dependency_overrides
+    assert services.get_session not in app.dependency_overrides
+    app.dependency_overrides[services.get_current_user] = lambda: STUDENT
+    app.dependency_overrides[services.get_session] = test_session
+    test_client = TestClient(app)
+    try:
+        yield test_client
+    finally:
+        test_client.close()
+        app.dependency_overrides.pop(services.get_current_user, None)
+        app.dependency_overrides.pop(services.get_session, None)
+        engine.dispose()
+        assert services.get_current_user not in app.dependency_overrides
+        assert services.get_session not in app.dependency_overrides
 
 
 @pytest.fixture
@@ -187,20 +234,19 @@ def test_tool_exception_is_error(agent, monkeypatch) -> None:
     assert (resp.response_type, resp.data.code) == ("error", "tool_failed")
 
 
-def test_api_chat_end_to_end(monkeypatch) -> None:
+def test_api_chat_end_to_end(monkeypatch, api_client: TestClient) -> None:
     monkeypatch.setattr(orchestrator.intent_router, "route", lambda *a: r("clarify"))
-    client = TestClient(app)
-    first = client.post("/api/chat", json={"conversation_id": None, "message": "อันนั้นอะ"})
+    first = api_client.post("/api/chat", json={"conversation_id": None, "message": "อันนั้นอะ"})
     assert first.status_code == 200
     body = AgentResponse.model_validate(first.json())
-    again = client.post("/api/chat", json={"conversation_id": body.conversation_id, "message": "ต่อ"})
+    again = api_client.post("/api/chat", json={"conversation_id": body.conversation_id, "message": "ต่อ"})
     assert again.json()["conversation_id"] == body.conversation_id
 
 
-def test_api_chat_forbidden_conversation(monkeypatch) -> None:
+def test_api_chat_forbidden_conversation(monkeypatch, api_client: TestClient) -> None:
     def forbidden(*a):
         raise HTTPException(status_code=403, detail="ไม่มีสิทธิ์เข้าถึงบทสนทนานี้")
 
     monkeypatch.setattr(orchestrator.services, "get_or_create_conversation", forbidden)
-    response = TestClient(app).post("/api/chat", json={"conversation_id": "someone-else", "message": "สวัสดี"})
+    response = api_client.post("/api/chat", json={"conversation_id": "someone-else", "message": "สวัสดี"})
     assert response.status_code == 403

@@ -2,6 +2,8 @@
 
 The skill tool is replaced with a 2-question fake; the in-memory user stub keeps the profile.
 """
+from collections.abc import Generator
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -15,6 +17,7 @@ from app.schemas.contract import (
     AssessmentOption,
     AssessmentQuestion,
     SkillScores,
+    User,
 )
 
 FORM = AssessmentFormData(
@@ -25,6 +28,7 @@ FORM = AssessmentFormData(
         for q in ("q1", "q2")
     ],
 )
+TEST_USER = User(id="stub-user", email="stub@example.com", name="Stub User", onboarded=True)
 
 
 def fake_scores(answers) -> SkillScores:
@@ -33,7 +37,7 @@ def fake_scores(answers) -> SkillScores:
 
 
 @pytest.fixture
-def client(monkeypatch) -> TestClient:
+def client(monkeypatch) -> Generator[TestClient, None, None]:
     s = orchestrator.services
     for name in ("get_user_context", "get_or_create_conversation", "add_user_message", "add_assistant_message",
                  "get_recent_messages", "save_skill_profile", "get_latest_skill", "top_skills"):
@@ -43,7 +47,19 @@ def client(monkeypatch) -> TestClient:
     monkeypatch.setattr(s, "calculate_skill", fake_scores)
     monkeypatch.setattr(orchestrator.generator, "explain_skill", lambda *a: "สรุปจาก LLM")
     monkeypatch.setattr(orchestrator.intent_router, "route", lambda *a: RouteResult(intent="skill_analysis", source="rule"))
-    return TestClient(app)
+    assert s.get_current_user not in app.dependency_overrides
+    assert s.get_session not in app.dependency_overrides
+    app.dependency_overrides[s.get_current_user] = lambda: TEST_USER
+    app.dependency_overrides[s.get_session] = lambda: None
+    test_client = TestClient(app)
+    try:
+        yield test_client
+    finally:
+        test_client.close()
+        app.dependency_overrides.pop(s.get_current_user, None)
+        app.dependency_overrides.pop(s.get_session, None)
+        assert s.get_current_user not in app.dependency_overrides
+        assert s.get_session not in app.dependency_overrides
 
 
 def chat(client: TestClient, message: str, conversation_id: str | None = None) -> AgentResponse:
