@@ -43,10 +43,11 @@ KEYWORD_WEIGHT = 1.0
 # mostly above 0.01, so the cut sits in that gap.
 MIN_RELEVANCE = 0.005
 # Scope filter when the reranker is unavailable: a question is in scope only if one
-# chunk has at least 40% of its content words and 20% of its 3-grams (IDF-weighted).
-# On the tuning questions this kept 88.5% of answerable ones and rejected 88% of the
-# rest; the 3-gram share alone kept 100% but rejected only 36%.
-FALLBACK_MIN_WORD_COVERAGE = 0.4
+# chunk has at least 20% of its content words and 20% of its 3-grams (IDF-weighted).
+# With the vector model on the tuning + held-out 1-3 questions: hit@1 92%, rejected
+# 62% of unrelated ones; 3-grams alone 94% / 42%; a 40% word share 83% / 80%. Each
+# step above 20% loses about as many answers as it rejects unrelated questions.
+FALLBACK_MIN_WORD_COVERAGE = 0.2
 MIN_COVERAGE = 0.2
 RETRY_SECONDS = 60  # wait before trying again to load a model that failed
 SNIPPET_CHARS = 200

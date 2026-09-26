@@ -155,5 +155,7 @@ def test_word_coverage_separates_department_and_unrelated_questions() -> None:
 
 
 def test_fallback_rejects_unrelated_question_that_shares_common_words() -> None:
-    # "ราคาทองวันนี้" shares 3-grams with fee pages; the word filter rejects it.
-    assert service.search_department_knowledge("ราคาทองวันนี้") == []
+    # Passes the 3-gram filter but shares no content word with any chunk.
+    idx = service._indexes()
+    assert idx.lexical.in_scope("ข่าวการเมืองวันนี้", service.MIN_COVERAGE)
+    assert service.search_department_knowledge("ข่าวการเมืองวันนี้") == []

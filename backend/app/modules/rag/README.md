@@ -39,15 +39,15 @@ contains_profanity(text: str) -> bool   # ให้ agent ตอบคำหย�
 
 ทำไมต้องมีกฎหน่วยงานอื่น: "ภาคไฟฟ้าเรียนอะไร" ต่างจาก "ภาคคอมเรียนอะไร" แค่คำเดียว reranker ยังให้ 0.16 ได้ · ถ้าถามเปรียบเทียบกับภาคคอม ("ภาคคอมกับภาคไฟฟ้าต่างกันยังไง") จะไม่ตัดทิ้ง
 
-วิธีสำรอง (ไม่มี reranker เช่น RAM ไม่พอ): กรองด้วยสัดส่วนคำ ≥ 0.4 **และ** 3-gram ≥ 0.2 แล้วเรียงด้วย vector (ถ้ามี) + 3-gram keyword ด้วย RRF
+วิธีสำรอง (ไม่มี reranker เช่น RAM ไม่พอ): กรองด้วยสัดส่วนคำ ≥ 0.2 **และ** 3-gram ≥ 0.2 แล้วเรียงด้วย vector (ถ้ามี) + 3-gram keyword ด้วย RRF
 
 | โหมด (held-out 4/5/6) | hit@1 | ปฏิเสธนอกขอบเขต |
 |---|---|---|
 | ปกติ (vector + reranker) | 95% / 87% / 89% | 95% / 80% / 90% |
-| ไม่มี reranker (`USE_RERANKER = False`) | 78% / 73% / 58% | 75% / 60% / 75% |
-| ไม่มีโมเดลเลย | 73% / 67% / 53% | 75% / 60% / 75% |
+| ไม่มี reranker (`USE_RERANKER = False`) | 93% / 80% / 78% | 65% / 40% / 40% |
+| ไม่มีโมเดลเลย | 83% / 73% / 64% | 65% / 40% / 40% |
 
-→ ถ้าเครื่องไม่พอสำหรับ reranker ให้ปิดแค่ reranker (vector ใช้ RAM น้อยกว่ามาก) แต่ความแม่นยำจะลดชัดเจน
+→ ถ้าเครื่องไม่พอสำหรับ reranker ให้ปิดแค่ reranker (vector ใช้ RAM น้อยกว่ามาก) แต่คำถามนอกขอบเขตจะหลุดเข้ามามากขึ้น (ถ้าตั้ง threshold คำสูงขึ้น จะปฏิเสธได้มากขึ้นแต่เสียคำตอบที่ถูกไปพอๆ กัน)
 
 ## โครงไฟล์
 
@@ -122,7 +122,7 @@ python -c "from app.modules.rag import ensure_index, search_department_knowledge
 | `RERANK_CANDIDATES = 6` | จำนวน candidate ที่ส่งให้ reranker (10 แม่นขึ้น 1 ข้อใน 113 แต่ช้าขึ้น 60%) |
 | `CANDIDATES = 10`, `VECTOR_WEIGHT = 2.0`, `KEYWORD_WEIGHT = 1.0` | จำนวนผลจากแต่ละวิธีและน้ำหนักใน RRF |
 | `USE_VECTOR`, `USE_RERANKER` | `False` = ไม่โหลดโมเดลนั้น (ใช้วิธีสำรอง) |
-| `FALLBACK_MIN_WORD_COVERAGE = 0.4`, `MIN_COVERAGE = 0.2` | ตัวกรองของวิธีสำรองเมื่อไม่มี reranker (สัดส่วนคำ / 3-gram ของคำถามที่ต้องพบใน chunk เดียว) |
+| `FALLBACK_MIN_WORD_COVERAGE = 0.2`, `MIN_COVERAGE = 0.2` | ตัวกรองของวิธีสำรองเมื่อไม่มี reranker (สัดส่วนคำ / 3-gram ของคำถามที่ต้องพบใน chunk เดียว) |
 | `KNOWLEDGE_DIR`, `RERANK_MODEL` | env (ไม่บังคับ) โฟลเดอร์เอกสาร / ชื่อโมเดล reranker |
 | `QUERY_SYNONYMS` (`lexical.py`), `DOMAIN_WORDS` (`thai_text.py`) | คำพ้องและศัพท์ของภาคสำหรับการค้นแบบคำ |
 
