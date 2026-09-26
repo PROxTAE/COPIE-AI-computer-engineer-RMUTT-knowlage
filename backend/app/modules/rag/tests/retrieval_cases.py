@@ -1,5 +1,8 @@
 """Question -> acceptable doc_ids, used to measure retrieval accuracy (hit@k).
 
+When a new document also answers a question correctly, its doc_id is added to
+that question's acceptable set (e.g. both co-op documents give the 2.00 GPA rule).
+
 Questions are phrased the way users ask, not copied from the documents.
 """
 
@@ -24,7 +27,7 @@ IN_SCOPE: list[tuple[str, set[str]]] = [
     ("ค่าเทอมเท่าไหร่", {"tuition-fees"}),
     ("ค่าเรียนตลอดหลักสูตรประมาณเท่าไร", {"tuition-fees"}),
     ("ภาคฤดูร้อนต้องจ่ายเท่าไหร่", {"tuition-fees"}),
-    ("มีทุนการศึกษาไหม", {"tuition-fees"}),
+    ("มีทุนการศึกษาไหม", {"tuition-fees", "scholarships"}),
     ("จบแล้วทำงานอะไรได้บ้าง", {"careers"}),
     ("เป็นนักพัฒนาซอฟต์แวร์ได้ไหม", {"careers"}),
     ("อาชีพวิศวกรระบบเครือข่าย", {"careers"}),
@@ -32,9 +35,9 @@ IN_SCOPE: list[tuple[str, set[str]]] = [
     ("มีคอมพิวเตอร์ให้ใช้กี่เครื่อง", {"labs-facilities"}),
     ("จะขอใช้ห้องประชุมต้องทำยังไง", {"labs-facilities"}),
     ("มีห้อง IoT ไหม", {"labs-facilities"}),
-    ("ออกสหกิจต้องได้เกรดเฉลี่ยเท่าไหร่", {"coop-internship"}),
-    ("ก่อนไปฝึกงานต้องเรียนผ่านวิชาอะไร", {"coop-internship"}),
-    ("รหัสวิชาสหกิจศึกษา", {"coop-internship"}),
+    ("ออกสหกิจต้องได้เกรดเฉลี่ยเท่าไหร่", {"coop-internship", "coop-internship-2563"}),
+    ("ก่อนไปฝึกงานต้องเรียนผ่านวิชาอะไร", {"coop-internship", "coop-internship-2563"}),
+    ("รหัสวิชาสหกิจศึกษา", {"coop-internship", "coop-internship-2563"}),
     ("เบอร์โทรภาควิชา", {"contact", "staff"}),
     ("ภาคอยู่ที่ไหน ที่อยู่อะไร", {"contact"}),
     ("เพจเฟซบุ๊กของภาค", {"contact"}),
@@ -48,6 +51,17 @@ IN_SCOPE: list[tuple[str, set[str]]] = [
     ("ลงทะเบียนเกินหน่วยกิตต้องทำยังไง", {"faq-current-student"}),
     ("ดาวน์โหลดเล่มหลักสูตรได้ที่ไหน", {"faq-current-student", "program-structure", "ce-overview"}),
     ("ใบยืมอุปกรณ์ของภาค", {"faq-current-student", "labs-facilities"}),
+    # Added with coop-internship-2563 / student-projects (knowledge-v2), including ones
+    # that still miss rank 1, so the tuning score is not cherry-picked.
+    ("หลักสูตร 63 ก่อนไปสหกิจต้องผ่านวิชาอะไร", {"coop-internship-2563"}),
+    ("เด็กหลักสูตร 58 ฝึกงานต้องผ่านวิชาอะไรบ้าง", {"coop-internship-2563"}),
+    ("ตัวอย่างโปรเจกต์จบของรุ่นพี่", {"student-projects"}),
+    ("มีโครงงานเกี่ยวกับ image processing ไหม", {"student-projects", "staff"}),
+    # Added with admission-schedule-2570 / scholarships.
+    ("TCAS1 รอบ portfolio เปิดรับสมัครเมื่อไหร่", {"admission-schedule-2570"}),
+    ("รอบโควตาปี 2570 สมัครได้ถึงวันไหน", {"admission-schedule-2570"}),
+    ("มีทุนสำหรับนักศึกษาขาดแคลนไหม", {"scholarships"}),
+    ("กู้ กยศ. ติดต่อที่ไหน", {"scholarships"}),
 ]
 
 # Written after tuning QUERY_SYNONYMS / MIN_COVERAGE and never used to tune them:
@@ -66,7 +80,7 @@ HELD_OUT: list[tuple[str, set[str]]] = [
     ("สายงานที่รองรับหลังเรียนจบ", {"careers", "ce-overview"}),
     ("ห้องเรียนรองรับได้กี่คน", {"labs-facilities"}),
     ("มีห้องทำโปรเจกต์ไหม", {"labs-facilities"}),
-    ("เงื่อนไขการออกฝึกประสบการณ์วิชาชีพ", {"coop-internship"}),
+    ("เงื่อนไขการออกฝึกประสบการณ์วิชาชีพ", {"coop-internship", "coop-internship-2563"}),
     ("ฝึกงานต้องผ่านวิชาไมโครคอนโทรลเลอร์ก่อนไหม", {"coop-internship"}),
     ("อีเมลหรือช่องทางติดต่อภาควิชา", {"contact"}),
     ("ภาคตั้งอยู่จังหวัดอะไร", {"contact"}),
@@ -94,8 +108,8 @@ HELD_OUT_2: list[tuple[str, set[str]]] = [
     ("เรียนจบแล้วเป็นอาจารย์หรือนักวิจัยได้ไหม", {"careers"}),
     ("ห้องเน็ตเวิร์กมีไหม", {"labs-facilities"}),
     ("ขอยืมห้องประชุมทำงานกลุ่ม", {"labs-facilities"}),
-    ("ฝึกงานต้องมีจีพีเอขั้นต่ำเท่าไหร่", {"coop-internship"}),
-    ("วิชาฐานข้อมูลต้องผ่านก่อนไปสหกิจไหม", {"coop-internship"}),
+    ("ฝึกงานต้องมีจีพีเอขั้นต่ำเท่าไหร่", {"coop-internship", "coop-internship-2563"}),
+    ("วิชาฐานข้อมูลต้องผ่านก่อนไปสหกิจไหม", {"coop-internship", "coop-internship-2563"}),
     ("โทรหาภาควิชาเบอร์อะไร", {"contact", "staff"}),
     ("รหัสไปรษณีย์ของภาคคือเท่าไหร่", {"contact"}),
     ("ใครสอนวิชา Operating Systems", {"staff"}),
@@ -166,8 +180,8 @@ HELD_OUT_3: list[tuple[str, set[str]]] = [
     ("จบแล้วเปิดธุรกิจของตัวเองได้ไหม", {"careers"}),
     ("ห้องเรียนมีโปรเจกเตอร์ไหม", {"labs-facilities"}),
     ("มีเครื่องมือช่างให้เบิกไหม", {"labs-facilities"}),
-    ("ก่อนไปฝึกงานต้องผ่านวิชา OOP ไหม", {"coop-internship"}),
-    ("ข้อกำหนดสหกิจเริ่มใช้เทอมไหน", {"coop-internship"}),
+    ("ก่อนไปฝึกงานต้องผ่านวิชา OOP ไหม", {"coop-internship", "coop-internship-2563"}),
+    ("ข้อกำหนดสหกิจเริ่มใช้เทอมไหน", {"coop-internship", "coop-internship-2563"}),
     ("ภาคเปิดทำการวันไหนบ้าง", {"contact"}),
     ("ส่งข้อความหาภาควิชาทางไหนได้บ้าง", {"contact"}),
     ("ใครเป็นรองหัวหน้าภาคฝ่ายพัฒนานักศึกษา", {"staff"}),
@@ -223,7 +237,7 @@ HELD_OUT_4: list[tuple[str, set[str]]] = [
     ("สมัครเรียนต้องจบสายไหนบ้าง", {"admission", "ce-overview"}),
     ("ค่าเทอมหลักสูตรใหม่เท่าไหร่", {"tuition-fees"}),
     ("ค่าใช้จ่ายสี่ปีรวมประมาณเท่าไร", {"tuition-fees"}),
-    ("มีทุนให้ไหม", {"tuition-fees"}),
+    ("มีทุนให้ไหม", {"tuition-fees", "scholarships"}),
     ("อยากเป็นนักพัฒนาซอฟต์แวร์เรียนที่นี่ได้ไหม", {"careers"}),
     ("จบไปเป็นวิศวกรฮาร์ดแวร์ได้ไหม", {"careers"}),
     ("มีห้องปฏิบัติการดิจิทัลไหม", {"labs-facilities"}),
@@ -231,9 +245,9 @@ HELD_OUT_4: list[tuple[str, set[str]]] = [
     ("ห้องเรียนมีแอร์ไหม", {"labs-facilities"}),
     ("ยืมอุปกรณ์ของภาคใช้ฟอร์มไหน", {"faq-current-student", "labs-facilities"}),
     ("ก่อนออกสหกิจต้องผ่านไมโครคอนโทรลเลอร์ไหม", {"coop-internship"}),
-    ("รหัสวิชาฝึกงานคืออะไร", {"coop-internship"}),
+    ("รหัสวิชาฝึกงานคืออะไร", {"coop-internship", "coop-internship-2563"}),
     ("ฝึกงานนานกี่เดือน", {"coop-internship", "ce-overview"}),
-    ("ใครเป็นคนลงนามข้อกำหนดสหกิจ", {"coop-internship"}),
+    ("ใครเป็นคนลงนามข้อกำหนดสหกิจ", {"coop-internship", "coop-internship-2563"}),
     ("ภาควิชาอยู่ถนนอะไร", {"contact"}),
     ("เบอร์ติดต่อภาคคอม", {"contact", "staff"}),
     ("ภาคมีเฟซบุ๊กไหม", {"contact"}),
@@ -268,4 +282,32 @@ OUT_OF_SCOPE_4: list[str] = [
     "เลี้ยงแมวต้องเตรียมอะไร",
     "ซีรีส์เกาหลีเรื่องไหนสนุก",
     "สมัครงานราชการต้องสอบอะไร",
+]
+
+# Written with admission-schedule-2570 / scholarships / coop-internship-2563 /
+# student-projects added and before any measurement on 15 documents.
+HELD_OUT_5: list[tuple[str, set[str]]] = [
+    ("TCAS รอบสาม admission สมัครวันไหน", {"admission-schedule-2570"}),
+    ("รอบสอบตรงของมหาวิทยาลัยปี 2570 เปิดเมื่อไหร่", {"admission-schedule-2570"}),
+    ("โครงการ MOU รับสมัครช่วงไหน", {"admission-schedule-2570"}),
+    ("ดูรายละเอียดการสมัครเรียนได้ที่เว็บไหน", {"admission-schedule-2570"}),
+    ("ทุนวิพงษ์ให้ปีละเท่าไหร่", {"scholarships"}),
+    ("ขอทุนต้องได้เกรดเท่าไหร่", {"scholarships"}),
+    ("ได้ทุนแล้วมีงานทำไหม", {"scholarships"}),
+    ("ติดต่องานทุนการศึกษาของมหาวิทยาลัยเบอร์อะไร", {"scholarships"}),
+    ("หลักสูตรปี 58 ต้องผ่านวิชาอะไรก่อนสหกิจ", {"coop-internship-2563"}),
+    ("หลักสูตร 63 ฝึกงานต้องผ่านวิชา IoT ก่อนไหม", {"coop-internship-2563"}),
+    ("รุ่นพี่เคยทำโปรเจกต์แอปมือถืออะไรบ้าง", {"student-projects"}),
+    ("มีโครงงานระบบยืมคืนอุปกรณ์ไหม", {"student-projects"}),
+    ("โปรเจกต์จบแยกพัสดุทำยังไง", {"student-projects"}),
+    ("ค่าเทอมภาคฤดูร้อนเท่าไหร่", {"tuition-fees"}),
+    ("หัวหน้าภาควิชาชื่ออะไร", {"staff"}),
+]
+
+OUT_OF_SCOPE_5: list[str] = [
+    "ทุนเรียนต่อต่างประเทศของรัฐบาล",
+    "สมัครสอบ ก.พ. ยังไง",
+    "โปรเจกต์ทำระบบร้านค้าออนไลน์ช่วยเขียนโค้ดให้หน่อย",
+    "TCAS คณะแพทย์จุฬาใช้คะแนนอะไร",
+    "ขอยืมเงินด่วน",
 ]
