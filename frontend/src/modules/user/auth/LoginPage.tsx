@@ -49,9 +49,7 @@ export function LoginPage() {
               <>
                 <GoogleSignInButton onAuthenticated={routeUser} />
                 <p className="text-center text-sm text-cyber-muted">ใช้บัญชี Google เพื่อเริ่มต้นใช้งาน COPIE</p>
-                {process.env.NODE_ENV === "development" && (
-                  <DevLoginForm onAuthenticated={routeUser} />
-                )}
+                <DevLoginForm onAuthenticated={routeUser} />
               </>
             )}
           </div>

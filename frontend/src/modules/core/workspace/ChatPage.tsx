@@ -1,23 +1,39 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@heroui/react";
 
 import { COPIE_IMAGES, type CopieMascotState } from "@/modules/mascot";
 import { SuggestedPrompts } from "@/modules/suggest";
-import type { UserType } from "@/types/contract";
+import type { ChatMessage, UserType } from "@/types/contract";
 
 import { getApiAuthSnapshot, subscribeApiAuth } from "../api";
-import { useChatStore, type WorkspaceMode } from "../chatStore";
+import { layoutFromResponse, useChatStore, type WorkspaceMode } from "../chatStore";
 import { AppHeader, ChatInput, HistoryButton } from "../ui";
 import { MessageList } from "./MessageList";
 import { WorkspaceLayout } from "./WorkspaceLayout";
 
-type ChatPageProps = { debug?: boolean; userType?: UserType | null; studyYear?: number | null };
+type ChatPageProps = {
+  debug?: boolean;
+  userType?: UserType | null;
+  studyYear?: number | null;
+  displayName?: string | null;
+  profileControl?: ReactNode;
+  onOpenHistory?: () => void;
+  renderAssistantFooter?: (message: Extract<ChatMessage, { role: "assistant" }>) => ReactNode;
+};
 const MODES: WorkspaceMode[] = ["center", "split", "rail", "hidden"];
 const STATES = Object.keys(COPIE_IMAGES) as CopieMascotState[];
 
-export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) {
+export function ChatPage({
+  debug = false,
+  userType,
+  studyYear,
+  displayName,
+  profileControl,
+  onOpenHistory,
+  renderAssistantFooter,
+}: ChatPageProps) {
   const canChat = useSyncExternalStore(subscribeApiAuth, getApiAuthSnapshot, () => false);
   const messages = useChatStore((state) => state.messages);
   const liveMessageId = useChatStore((state) => state.liveMessageId);
@@ -35,6 +51,9 @@ export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) 
   const hasResponse = messages.some((message) => message.role === "assistant");
   const lastAssistant = messages.findLast((message) => message.role === "assistant");
   const showComposer = lastAssistant?.role !== "assistant" || lastAssistant.response.response_type !== "assessment_form";
+  const responseLayout = lastAssistant?.role === "assistant"
+    ? layoutFromResponse(lastAssistant.response)
+    : lastVisibleLayout;
 
   useEffect(() => {
     if (wasAuthenticated.current && !canChat) newConversation();
@@ -44,7 +63,9 @@ export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) 
   return (
     <main className="copie-ui flex h-dvh min-h-0 flex-col">
       <div className="copie-floor" aria-hidden="true" />
-      <AppHeader />
+      <div className="relative z-30">
+        <AppHeader profile={profileControl} />
+      </div>
       <WorkspaceLayout
         layout={layout}
         copieState={copieState}
@@ -52,7 +73,7 @@ export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) 
         onHide={() => setLayout("hidden")}
         onShow={() => setLayout(lastVisibleLayout)}
         onBack={() => setLayout("center")}
-        onRead={() => setLayout(lastVisibleLayout)}
+        onRead={() => setLayout(responseLayout)}
       >
         <MessageList
           messages={messages}
@@ -60,6 +81,7 @@ export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) 
           disabled={pending || !canChat}
           onAsk={canChat ? (text) => { void send(text); } : undefined}
           onSubmitAssessment={canChat ? submitAssessment : undefined}
+          renderAssistantFooter={renderAssistantFooter}
         />
       </WorkspaceLayout>
       {pending && <p className="relative z-20 px-5 text-center text-sm text-cyber-blue" role="status">COPIE กำลังค้นหาคำตอบ...</p>}
@@ -77,8 +99,13 @@ export function ChatPage({ debug = false, userType, studyYear }: ChatPageProps) 
         </div>
       )}
       <div className="relative z-20 mx-auto flex w-full max-w-[1672px] items-end gap-4 px-5 pb-5 sm:px-10 sm:pb-8">
-        <div className="hidden shrink-0 sm:block"><HistoryButton isDisabled /></div>
-        <div className="flex min-w-0 flex-1 flex-col items-center">
+        <div className="shrink-0"><HistoryButton onPress={onOpenHistory} isDisabled={!onOpenHistory} /></div>
+        <div className="flex min-w-0 flex-1 flex-col items-center [&_.copie-input:focus-within]:!border-[#a9bee0] [&_textarea]:!leading-7 [&_textarea:focus]:!ring-0">
+          {canChat && messages.length === 0 && displayName && (
+            <p className="mb-3 text-center font-label text-sm font-semibold text-cyber-blue">
+              สวัสดี {displayName} วันนี้อยากให้ช่วยเรื่องอะไรครับ
+            </p>
+          )}
           {showComposer && (
             <>
               <ChatInput
