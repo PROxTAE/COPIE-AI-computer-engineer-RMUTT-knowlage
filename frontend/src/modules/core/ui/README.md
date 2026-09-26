@@ -9,7 +9,7 @@
 <Icon name="document" label="เอกสาร" />
 ```
 
-`AppHeader.profile` เป็น slot ให้ P2 ใส่ปุ่มโปรไฟล์จริง `HistoryButton` ต้องมี handler จาก P2 ส่วน `ChatInput` ส่งข้อความที่ trim แล้วสูงสุด 1000 ตัวอักษร: Enter ส่ง, Shift+Enter ขึ้นบรรทัดใหม่ และปิดปุ่มระหว่าง pending
+`AppHeader.profile` เป็น slot ให้ P2 ใส่ปุ่มโปรไฟล์จริง `HistoryButton` ต้องมี handler จาก P2 ส่วน `ChatInput` ส่งข้อความที่ trim แล้วสูงสุด 1000 ตัวอักษร: Enter ส่ง, Shift+Enter ขึ้นบรรทัดใหม่ และปิดปุ่มระหว่าง pending. `onDraftChange(hasDraft)` แจ้งหน้าแชตให้มาสคอตเปลี่ยนเป็น listening ระหว่างพิมพ์
 
 `Icon` ใช้ CSS mask ของ SVG ใน `/copie-ui/icons/`; สีตาม `currentColor` จึงเปลี่ยนผ่าน `text-cyber-*` ได้
 

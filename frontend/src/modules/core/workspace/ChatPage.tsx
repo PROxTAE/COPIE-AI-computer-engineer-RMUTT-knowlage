@@ -30,9 +30,11 @@ export function ChatPage({ debug = false }: ChatPageProps) {
   const send = useChatStore((state) => state.send);
   const submitAssessment = useChatStore((state) => state.submitAssessment);
   const hasResponse = messages.some((message) => message.role === "assistant");
+  const lastAssistant = messages.findLast((message) => message.role === "assistant");
+  const showComposer = lastAssistant?.role !== "assistant" || lastAssistant.response.response_type !== "assessment_form";
 
   return (
-    <main className="copie-ui flex h-dvh min-h-[600px] flex-col">
+    <main className="copie-ui flex h-dvh min-h-0 flex-col">
       <div className="copie-floor" aria-hidden="true" />
       <AppHeader />
       <WorkspaceLayout
@@ -50,6 +52,7 @@ export function ChatPage({ debug = false }: ChatPageProps) {
           onSubmitAssessment={canChat ? submitAssessment : undefined}
         />
       </WorkspaceLayout>
+      {pending && <p className="relative z-20 px-5 text-center text-sm text-cyber-blue" role="status">COPIE กำลังค้นหาคำตอบ...</p>}
       {error && <p className="relative z-20 px-5 text-center text-sm text-red-700" role="alert">{error}</p>}
       {debug && (
         <div className="relative z-20 mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-2 px-5 pb-3" aria-label="เครื่องมือทดสอบ layout">
@@ -66,13 +69,20 @@ export function ChatPage({ debug = false }: ChatPageProps) {
       <div className="relative z-20 mx-auto flex w-full max-w-[1672px] items-end gap-4 px-5 pb-5 sm:px-10 sm:pb-8">
         <div className="hidden shrink-0 sm:block"><HistoryButton isDisabled /></div>
         <div className="flex min-w-0 flex-1 flex-col items-center">
-          <ChatInput
-            onSend={send}
-            pending={pending}
-            disabled={!canChat}
-            placeholder={canChat ? "พิมพ์คำถามของคุณ..." : "กำลังเชื่อมต่อระบบสมาชิก"}
-          />
-          {!canChat && <p className="mt-2 text-center text-xs text-cyber-muted">พร้อมรับคำถามเมื่อเชื่อมต่อบัญชีผู้ใช้</p>}
+          {showComposer && (
+            <>
+              <ChatInput
+                onSend={send}
+                onDraftChange={(hasDraft) => {
+                  if (canChat && !pending) setCopieState(hasDraft ? "listening" : "idle");
+                }}
+                pending={pending}
+                disabled={!canChat}
+                placeholder={canChat ? "พิมพ์คำถามของคุณ..." : "กำลังเชื่อมต่อระบบสมาชิก"}
+              />
+              {!canChat && <p className="mt-2 text-center text-xs text-cyber-muted">พร้อมรับคำถามเมื่อเชื่อมต่อบัญชีผู้ใช้</p>}
+            </>
+          )}
         </div>
         <div className="hidden w-[115px] shrink-0 sm:block" aria-hidden="true" />
       </div>
