@@ -34,10 +34,23 @@ export interface ProfileUpdate {
 export type SkillKey = "frontend" | "backend" | "network" | "embedded" | "ai_data" | "cybersecurity";
 export type SkillScores = Record<SkillKey, number>; // integer 0-100
 
+export interface SkillDimension {
+  key: string;
+  label: string;
+  short_label?: string | null;
+  score: number; // 0-100
+  description?: string | null;
+}
+
 export interface SkillProfile {
   scores: SkillScores;
   top_skills: SkillKey[];
   taken_at: string; // ISO 8601
+  topic?: string | null;
+  score?: number | null;
+  title?: string | null;
+  dimensions?: SkillDimension[] | null;
+  custom_top_skills?: string[] | null;
 }
 
 // ---------- Curriculum ----------
@@ -82,6 +95,10 @@ export interface SkillRadarData {
   top_skills: SkillKey[];
   summary: string; // markdown, written by LLM from the computed scores
   taken_at: string;
+  topic?: string | null;
+  title?: string | null;
+  dimensions?: SkillDimension[] | null;
+  custom_top_skills?: string[] | null;
 }
 
 export interface ErrorData { code: "llm_unavailable" | "tool_failed" | "unknown" }
@@ -143,7 +160,7 @@ export interface FeedbackRequest {
 }
 
 // ---------- History ----------
-export interface ConversationSummary { id: string; title: string; updated_at: string }
+export interface ConversationSummary { id: string; title: string; updated_at: string; last_message?: string | null; snippet?: string | null; }
 
 export type ChatMessage =
   | { id: string; role: "user"; content: string; created_at: string }

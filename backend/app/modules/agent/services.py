@@ -40,11 +40,13 @@ try:
     from app.modules.user import (
         add_assistant_message,
         add_user_message,
+        get_all_user_skills,
         get_current_user,
         get_latest_skill,
         get_or_create_conversation,
         get_recent_messages,
         get_session,
+        get_skill_by_topic,
         get_user_context,
         save_skill_profile,
     )
@@ -52,11 +54,13 @@ except ImportError:
     from app.modules.agent.stubs import (
         add_assistant_message,
         add_user_message,
+        get_all_user_skills,
         get_current_user,
         get_latest_skill,
         get_or_create_conversation,
         get_recent_messages,
         get_session,
+        get_skill_by_topic,
         get_user_context,
         save_skill_profile,
     )
@@ -71,6 +75,7 @@ __all__ = [
     "add_assistant_message",
     "add_user_message",
     "calculate_skill",
+    "get_all_user_skills",
     "get_assessment",
     "get_course_detail",
     "get_courses",
@@ -80,6 +85,7 @@ __all__ = [
     "get_or_create_conversation",
     "get_recent_messages",
     "get_session",
+    "get_skill_by_topic",
     "get_user_context",
     "save_skill_profile",
     "search_department_knowledge",

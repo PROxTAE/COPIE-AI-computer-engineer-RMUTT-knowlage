@@ -28,6 +28,8 @@ export interface ResponseRendererProps {
   onAsk: (text: string) => void;
   /** ส่งคำตอบแบบประเมิน — renderer รอ promise เพื่อ disable ปุ่มระหว่างส่ง */
   onSubmitAssessment: (answers: AssessmentAnswer[]) => Promise<void>;
+  /** ปุ่มย้อนกลับไปหน้าสนทนาหลัก */
+  onBack?: () => void;
   /** true ระหว่างที่ยังมี request ค้างอยู่ ปุ่มทุกปุ่มต้องกดไม่ได้ */
   disabled?: boolean;
   /**
@@ -43,6 +45,7 @@ export function ResponseRenderer({
   response,
   onAsk,
   onSubmitAssessment,
+  onBack,
   disabled = false,
   animate = true,
 }: ResponseRendererProps) {
@@ -58,6 +61,7 @@ export function ResponseRenderer({
 
   // พิมพ์ทีละตัวอักษรเฉพาะคำตอบแบบข้อความที่เพิ่งมาถึงเท่านั้น
   const isText = response.response_type === "text";
+  const isStandaloneInteractive = response.response_type === "skill_radar" || response.response_type === "assessment_form";
 
   // ErrorResponse ใช้ action "ask" ตัวแรกเป็นปุ่มลองใหม่อยู่แล้ว ไม่ต้องโผล่ซ้ำเป็น chip
   const retryAction = response.response_type === "error" ? response.actions.find((item) => item.type === "ask") : null;
@@ -76,7 +80,7 @@ export function ResponseRenderer({
         data-response-type={response.response_type}
         aria-busy={disabled}
       >
-        {response.message.trim().length > 0 && (
+        {response.message.trim().length > 0 && !isStandaloneInteractive && (
           <TextResponse
             message={response.message}
             citationCount={response.sources.length}
@@ -90,6 +94,7 @@ export function ResponseRenderer({
           response={response}
           onAsk={onAsk}
           onSubmitAssessment={onSubmitAssessment}
+          onBack={onBack}
           disabled={disabled}
           animate={animate}
         />
@@ -107,12 +112,14 @@ function ResponseBody({
   response,
   onAsk,
   onSubmitAssessment,
+  onBack,
   disabled,
   animate,
 }: {
   response: AgentResponse;
   onAsk: (text: string) => void;
   onSubmitAssessment: (answers: AssessmentAnswer[]) => Promise<void>;
+  onBack?: () => void;
   disabled: boolean;
   animate: boolean;
 }) {
@@ -127,10 +134,10 @@ function ResponseBody({
       return <InfoCards data={response.data} onAsk={onAsk} disabled={disabled} animate={animate} />;
 
     case "assessment_form":
-      return <AssessmentForm data={response.data} onSubmit={onSubmitAssessment} disabled={disabled} />;
+      return <AssessmentForm data={response.data} onSubmit={onSubmitAssessment} onBack={onBack} disabled={disabled} />;
 
     case "skill_radar":
-      return <SkillRadar data={response.data} onAsk={onAsk} disabled={disabled} />;
+      return <SkillRadar data={response.data} onAsk={onAsk} onBack={onBack} disabled={disabled} />;
 
     case "error":
       return <ErrorResponse data={response.data} actions={response.actions} onAsk={onAsk} disabled={disabled} />;
@@ -141,3 +148,4 @@ function ResponseBody({
     }
   }
 }
+

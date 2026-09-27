@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Button } from "@heroui/react";
+import { ArrowRight, Calendar, GraduationCap, BarChart2, User as UserIcon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { ApiError } from "@/modules/core";
@@ -11,67 +11,37 @@ import { useUserStore } from "../userStore";
 
 const AGE_OPTIONS: { value: AgeRange; label: string }[] = [
   { value: "under_18", label: "ต่ำกว่า 18 ปี" },
-  { value: "18_20", label: "18–20 ปี" },
-  { value: "21_23", label: "21–23 ปี" },
+  { value: "18_20", label: "18 – 20 ปี" },
+  { value: "21_23", label: "21 – 23 ปี" },
   { value: "24_plus", label: "24 ปีขึ้นไป" },
 ];
 
-const USER_TYPE_OPTIONS: { value: UserType; label: string }[] = [
-  { value: "prospective", label: "ผู้สนใจเข้าศึกษา" },
+const USER_TYPE_OPTIONS: { value: UserType | "other"; label: string }[] = [
   { value: "current_student", label: "นักศึกษาปัจจุบัน" },
-  { value: "near_graduate", label: "ใกล้สำเร็จการศึกษา" },
+  { value: "near_graduate", label: "จบการศึกษาแล้ว" },
+  { value: "prospective", label: "บุคคลทั่วไป" },
+  { value: "other", label: "อื่น ๆ" },
+];
+
+const YEAR_OPTIONS = [
+  { value: 1, label: "ปี 1" },
+  { value: 2, label: "ปี 2" },
+  { value: 3, label: "ปี 3" },
+  { value: 4, label: "ปี 4" },
+  { value: 5, label: "อื่น ๆ" },
 ];
 
 type OnboardingFormProps = { user: User };
 
-function Choice({
-  checked,
-  label,
-  name,
-  value,
-  onChange,
-}: {
-  checked: boolean;
-  label: string;
-  name: string;
-  value: string;
-  onChange: () => void;
-}) {
-  return (
-    <label className={`cursor-pointer rounded-xl border px-4 py-3 text-center text-sm font-semibold transition focus-within:ring-2 focus-within:ring-cyber-blue focus-within:ring-offset-2 ${
-      checked
-        ? "border-cyber-blue bg-blue-50 text-cyber-blue ring-1 ring-cyber-blue"
-        : "border-cyber-line bg-white text-cyber-muted hover:border-blue-300"
-    }`}>
-      <input
-        className="sr-only"
-        type="radio"
-        name={name}
-        value={value}
-        checked={checked}
-        onChange={onChange}
-      />
-      {label}
-    </label>
-  );
-}
-
 export function OnboardingForm({ user }: OnboardingFormProps) {
   const router = useRouter();
   const updateProfile = useUserStore((state) => state.updateProfile);
-  const [displayName, setDisplayName] = useState(user.display_name ?? user.name);
-  const [ageRange, setAgeRange] = useState<AgeRange | "">(user.age_range ?? "");
-  const [userType, setUserType] = useState<UserType | "">(user.user_type ?? "");
-  const [studyYear, setStudyYear] = useState<number | null>(user.study_year);
+  const [displayName, setDisplayName] = useState(user.display_name ?? user.name ?? "Tae");
+  const [ageRange, setAgeRange] = useState<AgeRange>("21_23");
+  const [userType, setUserType] = useState<UserType | "other">("current_student");
+  const [studyYear, setStudyYear] = useState<number>(3);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const needsStudyYear = userType === "current_student" || userType === "near_graduate";
-
-  const selectUserType = (value: UserType) => {
-    setUserType(value);
-    if (value === "prospective") setStudyYear(null);
-  };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -82,20 +52,15 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
       setError("ชื่อที่อยากให้เรียกต้องมีความยาว 1–50 ตัวอักษร");
       return;
     }
-    if (!ageRange || !userType) {
-      setError("กรุณาเลือกช่วงอายุและสถานะผู้ใช้งาน");
-      return;
-    }
-    if (needsStudyYear && studyYear === null) {
-      setError("กรุณาเลือกชั้นปี");
-      return;
-    }
+
+    const mappedUserType: UserType = userType === "other" ? "prospective" : userType;
+    const isStudent = mappedUserType === "current_student" || mappedUserType === "near_graduate";
 
     const profile: ProfileUpdate = {
       display_name: normalizedName,
       age_range: ageRange,
-      user_type: userType,
-      study_year: needsStudyYear ? studyYear : null,
+      user_type: mappedUserType,
+      study_year: isStudent ? Math.min(studyYear, 4) : null,
     };
 
     setPending(true);
@@ -117,75 +82,135 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
   };
 
   return (
-    <form className="grid gap-5" onSubmit={(event) => { void submit(event); }} noValidate>
-      <label className="grid gap-2 font-semibold text-cyber-ink">
-        ชื่อที่อยากให้เรียก
-        <input
-          className="rounded-xl border border-cyber-line bg-white px-4 py-3 font-normal outline-none focus:border-cyber-blue focus:ring-2 focus:ring-blue-100"
-          value={displayName}
-          onChange={(event) => setDisplayName(event.target.value)}
-          autoComplete="nickname"
-          minLength={1}
-          maxLength={50}
-          disabled={pending}
-          required
-        />
-      </label>
+    <form className="grid gap-6" onSubmit={(event) => { void submit(event); }} noValidate>
+      {/* Field 1: Name */}
+      <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
+        <label className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
+          <UserIcon className="size-4.5 text-[#155ff2] shrink-0" />
+          ชื่อที่อยากให้เรียก
+        </label>
+        <div className="relative flex items-center">
+          <input
+            className="w-full rounded-xl border border-[#a9bee0] bg-white px-4 py-3 pr-10 font-sans text-base text-[#080b12] outline-none focus:border-[#155ff2] focus:ring-2 focus:ring-[#155ff2]/20 transition-all shadow-xs"
+            value={displayName}
+            onChange={(event) => setDisplayName(event.target.value)}
+            autoComplete="nickname"
+            minLength={1}
+            maxLength={50}
+            disabled={pending}
+            placeholder="ใส่ชื่อที่ต้องการให้ COPIE เรียก"
+            required
+          />
+          {displayName.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setDisplayName("")}
+              className="absolute right-3 text-[#6b82a6] hover:text-[#080b12] p-1 cursor-pointer"
+              aria-label="ลบชื่อ"
+            >
+              <X className="size-4" />
+            </button>
+          )}
+        </div>
+      </div>
 
-      <fieldset className="grid gap-3" disabled={pending}>
-        <legend className="mb-2 font-semibold text-cyber-ink">ช่วงอายุ</legend>
+      {/* Field 2: Age Range */}
+      <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
+        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
+          <Calendar className="size-4.5 text-[#155ff2] shrink-0" />
+          ช่วงอายุ
+        </span>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {AGE_OPTIONS.map((option) => (
-            <Choice
-              key={option.value}
-              checked={ageRange === option.value}
-              label={option.label}
-              name="age_range"
-              value={option.value}
-              onChange={() => setAgeRange(option.value)}
-            />
-          ))}
+          {AGE_OPTIONS.map((option) => {
+            const isSelected = ageRange === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setAgeRange(option.value)}
+                disabled={pending}
+                className={`rounded-xl px-3 py-3 text-center text-sm font-semibold transition-all cursor-pointer shadow-xs ${
+                  isSelected
+                    ? "border-2 border-[#155ff2] bg-white text-[#155ff2] shadow-[0_0_12px_rgba(21,95,242,0.15)]"
+                    : "border border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:bg-slate-50"
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset className="grid gap-3" disabled={pending}>
-        <legend className="mb-2 font-semibold text-cyber-ink">สถานะผู้ใช้งาน</legend>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {USER_TYPE_OPTIONS.map((option) => (
-            <Choice
-              key={option.value}
-              checked={userType === option.value}
-              label={option.label}
-              name="user_type"
-              value={option.value}
-              onChange={() => selectUserType(option.value)}
-            />
-          ))}
+      {/* Field 3: User Status */}
+      <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
+        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
+          <GraduationCap className="size-4.5 text-[#155ff2] shrink-0" />
+          สถานะผู้ใช้งาน
+        </span>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {USER_TYPE_OPTIONS.map((option) => {
+            const isSelected = userType === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setUserType(option.value)}
+                disabled={pending}
+                className={`rounded-xl px-3 py-3 text-center text-sm font-semibold transition-all cursor-pointer shadow-xs ${
+                  isSelected
+                    ? "border-2 border-[#155ff2] bg-[#155ff2] text-white shadow-[0_4px_14px_rgba(21,95,242,0.3)]"
+                    : "border border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:bg-slate-50"
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
         </div>
-      </fieldset>
+      </div>
 
-      {needsStudyYear && (
-        <fieldset className="grid gap-3" disabled={pending}>
-          <legend className="mb-2 font-semibold text-cyber-ink">ชั้นปี</legend>
-          <div className="grid grid-cols-4 gap-2">
-            {[1, 2, 3, 4].map((year) => (
-              <Choice
-                key={year}
-                checked={studyYear === year}
-                label={`ปี ${year}`}
-                name="study_year"
-                value={String(year)}
-                onChange={() => setStudyYear(year)}
-              />
-            ))}
-          </div>
-        </fieldset>
-      )}
+      {/* Field 4: Study Year */}
+      <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
+        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
+          <BarChart2 className="size-4.5 text-[#155ff2] shrink-0" />
+          ชั้นปี
+        </span>
+        <div className="grid grid-cols-5 gap-2">
+          {YEAR_OPTIONS.map((option) => {
+            const isSelected = studyYear === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setStudyYear(option.value)}
+                disabled={pending}
+                className={`rounded-xl px-2 py-3 text-center text-sm font-semibold transition-all cursor-pointer shadow-xs ${
+                  isSelected
+                    ? "border-2 border-[#155ff2] bg-white text-[#155ff2] shadow-[0_0_12px_rgba(21,95,242,0.15)]"
+                    : "border border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:bg-slate-50"
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-      {error && <p className="text-sm text-red-700" role="alert">{error}</p>}
-      <Button type="submit" size="lg" variant="primary" isDisabled={pending} className="mt-1 w-full">
-        {pending ? "กำลังบันทึก..." : "เริ่มใช้งาน COPIE"}
-      </Button>
+      {error && <p className="text-sm text-red-700 font-medium" role="alert">{error}</p>}
+
+      {/* Primary CTA Submit Button */}
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={pending}
+          className="group relative flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#0f5ff0] to-[#155ff2] px-8 py-4 font-display text-base font-bold text-white shadow-[0_8px_24px_rgba(21,95,242,0.3)] hover:shadow-[0_12px_32px_rgba(21,95,242,0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer disabled:opacity-50"
+        >
+          <span>{pending ? "กำลังบันทึกข้อมูล..." : "เริ่มต้นใช้งาน COPIE"}</span>
+          <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
     </form>
   );
 }

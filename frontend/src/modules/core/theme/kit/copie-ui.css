@@ -6,7 +6,8 @@
   position: relative;
   isolation: isolate;
   min-height: 100vh;
-  overflow: hidden;
+  width: 100%;
+  overflow-x: hidden;
   background: var(--copie-cyber-white);
   color: var(--copie-cyber-ink);
   font-family: var(--copie-cyber-body);
@@ -22,20 +23,29 @@
 
 .copie-ui::before {
   inset: 0;
+  width: 100%;
+  height: 100%;
   background: url("/copie-ui/backgrounds/grid-light.svg") center top / cover no-repeat;
+  opacity: 0.85;
 }
 
 .copie-ui::after {
-  inset: auto 0 0;
-  height: min(44vh, 400px);
-  background: url("/copie-ui/backgrounds/cyan-wash.svg") center bottom / 100% 100% no-repeat;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 100%, rgba(195, 238, 255, 0.55) 0%, rgba(225, 246, 255, 0.3) 50%, transparent 80%),
+    linear-gradient(180deg, transparent 35%, rgba(235, 247, 255, 0.25) 65%, rgba(205, 240, 255, 0.45) 100%);
 }
 
 .copie-ui .copie-floor {
   position: absolute;
-  inset: auto 0 0;
-  height: min(39vh, 360px);
+  inset: auto 0 0 0;
+  width: 100%;
+  height: min(36vh, 320px);
   background: url("/copie-ui/backgrounds/floor-perspective.svg") center bottom / 100% 100% no-repeat;
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 100%);
   pointer-events: none;
 }
 
@@ -223,3 +233,33 @@
   .copie-ui .copie-mascot { width: min(82vw, 480px); }
   .copie-ui .copie-mascot[data-layout="rail"] { width: min(34vw, 180px); }
 }
+
+/* Custom Scrollbars */
+.copie-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(21, 95, 242, 0.45) rgba(21, 95, 242, 0.03);
+}
+
+.copie-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.copie-scroll::-webkit-scrollbar-track {
+  background: rgba(21, 95, 242, 0.03);
+  border-radius: 9999px;
+  margin: 6px 0;
+}
+
+.copie-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(21, 95, 242, 0.55), rgba(0, 212, 255, 0.55));
+  border-radius: 9999px;
+  box-shadow: 0 0 6px rgba(21, 95, 242, 0.15);
+  transition: background 0.2s ease;
+}
+
+.copie-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #155ff2, #00d4ff);
+}
+
