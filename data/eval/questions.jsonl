@@ -1,0 +1,60 @@
+{"id": "e001", "question": "ปี 1 เทอม 1 เรียนอะไรบ้าง", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["04-621-101", "19"], "user_type": "prospective", "study_year": null}
+{"id": "e002", "question": "ปี 1 เทอม 2 มีวิชาอะไรบ้าง", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["กลศาสตร์วิศวกรรม", "21"], "user_type": "current_student", "study_year": 1}
+{"id": "e003", "question": "ปี 2 เทอม 1 เรียนอะไรบ้าง", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["โครงสร้างข้อมูลและอัลกอริทึม", "20"], "user_type": "current_student", "study_year": 1}
+{"id": "e004", "question": "ปี 2 เทอม 2 ต้องลงวิชาอะไร", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["ระบบฐานข้อมูล", "21"], "user_type": "current_student", "study_year": 2}
+{"id": "e005", "question": "ปี 3 เทอม 1 มีกี่หน่วยกิต", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["20", "04-622-301"], "user_type": "current_student", "study_year": 2}
+{"id": "e006", "question": "ปี 3 เทอม 2 เรียนวิชาอะไรบ้าง", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["ระบบปฏิบัติการ", "19"], "user_type": "current_student", "study_year": 3}
+{"id": "e007", "question": "ปี 4 เทอม 1 เรียนอะไร", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["04-000-401", "สหกิจศึกษา"], "user_type": "near_graduate", "study_year": 3}
+{"id": "e008", "question": "ปี 4 เทอม 2 เหลือวิชาอะไรบ้าง", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["โครงงานวิศวกรรมคอมพิวเตอร์", "15"], "user_type": "near_graduate", "study_year": 4}
+{"id": "e009", "question": "เทอม 2 ต้องเรียนวิชาอะไร", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["04-622-203", "21"], "user_type": "current_student", "study_year": 2}
+{"id": "e010", "question": "ปีสอง เทอมหนึ่ง มีวิชาอะไรบ้าง", "intent": "curriculum", "expected_type": "course_table", "must_contain": ["04-624-201"], "user_type": "prospective", "study_year": null}
+{"id": "e011", "question": "หลักสูตรทั้งหมดกี่หน่วยกิต", "intent": "curriculum", "expected_type": "cards", "must_contain": ["141"], "user_type": "prospective", "study_year": null}
+{"id": "e012", "question": "ขอดูภาพรวมหลักสูตรว่าแต่ละชั้นปีเรียนอะไร", "intent": "curriculum", "expected_type": "cards", "must_contain": ["ปี 1", "ปี 4"], "user_type": "prospective", "study_year": null}
+{"id": "e013", "question": "วิชา Data Structure เรียนอะไร", "intent": "course_detail", "expected_type": "cards", "must_contain": ["04-622-201"], "user_type": "current_student", "study_year": 1}
+{"id": "e014", "question": "04-621-204 คือวิชาอะไร", "intent": "course_detail", "expected_type": "cards", "must_contain": ["ไมโครคอนโทรลเลอร์และการเชื่อมต่อ"], "user_type": "current_student", "study_year": 2}
+{"id": "e015", "question": "วิชาระบบปฏิบัติการเรียนปีไหน", "intent": "course_detail", "expected_type": "cards", "must_contain": ["04-621-303", "ปี 3 เทอม 2"], "user_type": "current_student", "study_year": 2}
+{"id": "e016", "question": "วิชาการเขียนโปรแกรมเชิงวัตถุกี่หน่วยกิต", "intent": "course_detail", "expected_type": "cards", "must_contain": ["04-622-203", "3(2-3)"], "user_type": "current_student", "study_year": 2}
+{"id": "e017", "question": "04-000-401 คือวิชาอะไร", "intent": "course_detail", "expected_type": "cards", "must_contain": ["สหกิจศึกษา", "6(0-40)"], "user_type": "near_graduate", "study_year": 3}
+{"id": "e018", "question": "Internet of Things เรียนตอนปีไหน", "intent": "course_detail", "expected_type": "cards", "must_contain": ["04-621-302", "ปี 3 เทอม 1"], "user_type": "prospective", "study_year": null}
+{"id": "e019", "question": "วิชาทฤษฎีการคำนวณคืออะไร", "intent": "course_detail", "expected_type": "cards", "must_contain": ["04-624-201", "Theory of Computation"], "user_type": "current_student", "study_year": 1}
+{"id": "e020", "question": "04-622-202 เรียนเทอมไหน", "intent": "course_detail", "expected_type": "cards", "must_contain": ["ระบบฐานข้อมูล", "ปี 2 เทอม 2"], "user_type": "current_student", "study_year": 2}
+{"id": "e021", "question": "ภาคคอมเรียนเกี่ยวกับอะไร", "intent": "department_info", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e022", "question": "ค่าเทอมเท่าไหร่ครับ", "intent": "department_info", "expected_type": "text", "must_contain": ["16,000", "20,000"], "user_type": "prospective", "study_year": null}
+{"id": "e023", "question": "รับสมัครรอบไหนบ้าง", "intent": "department_info", "expected_type": "text", "must_contain": ["TCAS"], "user_type": "prospective", "study_year": null}
+{"id": "e024", "question": "ภาคมีแล็บอะไรให้ใช้บ้าง", "intent": "department_info", "expected_type": "text", "must_contain": ["เน็ตเวิร์ก"], "user_type": "prospective", "study_year": null}
+{"id": "e025", "question": "เรียนจบแล้วได้วุฒิอะไร", "intent": "department_info", "expected_type": "text", "must_contain": ["วศ.บ."], "user_type": "prospective", "study_year": null}
+{"id": "e026", "question": "จบวิศวะคอมไปทำงานอะไรได้บ้าง", "intent": "department_info", "expected_type": "text", "must_contain": ["นักพัฒนาซอฟต์แวร์"], "user_type": "prospective", "study_year": null}
+{"id": "e027", "question": "จะออกสหกิจต้องได้เกรดเฉลี่ยขั้นต่ำเท่าไหร่", "intent": "department_info", "expected_type": "text", "must_contain": ["2.00"], "user_type": "current_student", "study_year": 3}
+{"id": "e028", "question": "ขอเบอร์โทรภาควิชาหน่อย", "intent": "department_info", "expected_type": "text", "must_contain": ["3460"], "user_type": "prospective", "study_year": null}
+{"id": "e029", "question": "ภาควิชาตั้งอยู่ที่ไหน", "intent": "department_info", "expected_type": "text", "must_contain": ["ปทุมธานี"], "user_type": "prospective", "study_year": null}
+{"id": "e030", "question": "ใครเป็นหัวหน้าภาควิชาตอนนี้", "intent": "department_info", "expected_type": "text", "must_contain": ["ศิริชัย"], "user_type": "current_student", "study_year": 1}
+{"id": "e031", "question": "จบ ปวส. มาต่อที่นี่ต้องเรียนกี่ปี", "intent": "department_info", "expected_type": "text", "must_contain": ["3 ปี"], "user_type": "prospective", "study_year": null}
+{"id": "e032", "question": "รอบ Portfolio ปีการศึกษา 2570 เปิดรับสมัครช่วงไหน", "intent": "department_info", "expected_type": "text", "must_contain": ["2569"], "user_type": "prospective", "study_year": null}
+{"id": "e033", "question": "มีทุนการศึกษาหรือให้กู้ยืมเรียนไหม", "intent": "department_info", "expected_type": "text", "must_contain": ["กยศ"], "user_type": "prospective", "study_year": null}
+{"id": "e034", "question": "ติดต่อภาควิชาได้วันไหน เวลาไหน", "intent": "department_info", "expected_type": "text", "must_contain": ["16:30"], "user_type": "prospective", "study_year": null}
+{"id": "e035", "question": "ก่อนไปฝึกงานสหกิจต้องเรียนผ่านวิชาอะไรบ้าง", "intent": "department_info", "expected_type": "text", "must_contain": ["ไมโครคอนโทรลเลอร์"], "user_type": "current_student", "study_year": 2}
+{"id": "e036", "question": "วิเคราะห์ skill ให้หน่อย", "intent": "skill_analysis", "expected_type": "assessment_form", "must_contain": ["skill_v1"], "user_type": "current_student", "study_year": 2}
+{"id": "e037", "question": "ฉันถนัดสายไหน", "intent": "skill_analysis", "expected_type": "assessment_form", "must_contain": ["skill_v1"], "user_type": "current_student", "study_year": 3}
+{"id": "e038", "question": "ผมเหมาะกับสาย network หรือสาย software มากกว่า", "intent": "skill_analysis", "expected_type": "assessment_form", "must_contain": ["skill_v1"], "user_type": "prospective", "study_year": null}
+{"id": "e039", "question": "อยากทำแบบประเมินความถนัดด้านคอมพิวเตอร์", "intent": "skill_analysis", "expected_type": "assessment_form", "must_contain": ["skill_v1"], "user_type": "prospective", "study_year": null}
+{"id": "e040", "question": "ขอทำแบบประเมิน skill ใหม่อีกรอบ", "intent": "skill_analysis", "expected_type": "assessment_form", "must_contain": ["skill_v1"], "user_type": "near_graduate", "study_year": 4}
+{"id": "e041", "question": "ช่วยดูหน่อยว่าผมควรไปสายไหนดี", "intent": "skill_analysis", "expected_type": "assessment_form", "must_contain": ["skill_v1"], "user_type": "current_student", "study_year": 1}
+{"id": "e042", "question": "สวัสดีครับ", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e043", "question": "ขอบคุณมากครับ", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 2}
+{"id": "e044", "question": "ควรเริ่มเขียนโปรแกรมจากภาษาอะไรดี", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e045", "question": "COPIE ช่วยอะไรได้บ้าง", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e046", "question": "hello", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 1}
+{"id": "e047", "question": "อ่านหนังสือสอบวิชาเขียนโปรแกรมยังไงให้เข้าใจ", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 1}
+{"id": "e048", "question": "วิศวกรรมคอมพิวเตอร์กับวิทยาการคอมพิวเตอร์ต่างกันยังไง", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e049", "question": "ฝึกเขียนโค้ดทุกวันควรใช้เวลาวันละเท่าไหร่", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 2}
+{"id": "e050", "question": "เครียดเรื่องเรียนมาก มีคำแนะนำไหม", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "near_graduate", "study_year": 4}
+{"id": "e051", "question": "ราคาทองวันนี้เท่าไหร่", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e052", "question": "ภาคไฟฟ้าเรียนอะไร", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e053", "question": "เขียน essay เรื่องโลกร้อนให้หน่อย", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 1}
+{"id": "e054", "question": "บิทคอยน์ปีหน้าจะขึ้นไหม", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e055", "question": "วิศวะโยธาจบไปทำงานอะไร", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e056", "question": "ม.เกษตรวิศวะคอมค่าเทอมเท่าไหร่", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
+{"id": "e057", "question": "ดูดวงการเรียนเดือนนี้ให้หน่อย", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 3}
+{"id": "e058", "question": "แนะนำร้านหมูกระทะแถวรังสิต", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 2}
+{"id": "e059", "question": "ช่วยเขียนโค้ดแฮกเฟซบุ๊กเพื่อนหน่อย", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "current_student", "study_year": 2}
+{"id": "e060", "question": "แต่งกลอนวันแม่ให้หน่อย", "intent": "general", "expected_type": "text", "must_contain": [], "user_type": "prospective", "study_year": null}
