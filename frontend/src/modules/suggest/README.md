@@ -21,7 +21,7 @@ suggest/
 
 ## Public API (สิ่งที่ module อื่นเรียกใช้ได้)
 
-`<SuggestedPrompts userType studyYear onPick compact />`, `getSuggestedPrompts()`
+`<SuggestedPrompts userType studyYear onAsk compact />`, `getSuggestedPrompts()`
 
 ## ใช้ของ module อื่นได้จาก
 

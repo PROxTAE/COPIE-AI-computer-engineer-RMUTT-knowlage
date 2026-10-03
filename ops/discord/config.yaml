@@ -1,0 +1,468 @@
+# ==========================================================================
+# COPIE — Discord team config (โปรเจกต์ใหม่ ทีมเดิม 8 คน)
+#
+# ไฟล์นี้คือ "แหล่งความจริง" เดียวของโครงสร้างทีมบน Discord และ GitHub
+#   - setup_discord.py  อ่านไฟล์นี้แล้วสร้าง/อัปเดต role, ห้อง, ใบงานปักหมุด, webhook
+#                       และเก็บห้องของโปรเจกต์เก่า (archive:) ไว้แบบอ่านอย่างเดียว
+#   - gen_github.py     อ่านไฟล์นี้แล้วสร้าง .github/CODEOWNERS
+#   - workflows         ใช้ค่า module_map / role_ids / channel_ids ที่ setup พิมพ์ออกมา
+#
+# แก้โครงสร้างทีม → แก้ที่นี่ที่เดียว แล้วรัน setup_discord.py ใหม่ (idempotent)
+# ห้ามใส่ token / webhook URL ในไฟล์นี้
+# ==========================================================================
+
+project:
+  name: COPIE
+  full_name: "COPIE — AI Assistant ภาควิชาวิศวกรรมคอมพิวเตอร์ RMUTT"
+  repo_slug: PROxTAE/COPIE-AI-computer-engineer-RMUTT-knowlage
+  default_branch: develop            # ทุก PR เข้า develop · main รับจาก develop/release เท่านั้น
+  release_branch: main
+  plans_dir: IMPLEMENTATION_PLANS
+  contract_paths:                    # แตะไฟล์พวกนี้ = ต้องคุยก่อน + P1 และ P3 approve
+    - frontend/src/types/contract.ts
+    - backend/app/schemas/contract.py
+    - IMPLEMENTATION_PLANS/00_API_AND_DATA_CONTRACTS.md
+  # branch = <module>/<feature> โดย module ต้องอยู่ในรายการนี้ (ตรงกับ pre-push hook และ CI)
+  branch_types: [core, mascot, user, agent, rag, tools, renderer, suggest, intent-ml,
+                 export, qa, contract, hotfix, docs, release]
+  channel_name_format: "{emoji}│{name}"   # ชื่อที่แสดงใน Discord; ชื่อ logical ยังเป็น name เฉย ๆ
+  # branch prefix ที่มีเจ้าของมากกว่าหนึ่งคน (contract ต้อง approve ทั้ง P1 และ P3)
+  extra_module_map:
+    contract: [p1-core-mascot, p3-agent]
+  assets_root: assets                      # path รูปในไฟล์นี้นับจาก root ของ repo
+
+# --------------------------------------------------------------------------
+# Roles: ป้ายชื่อล้วน permissions=0, hoist ให้เห็นกลุ่มในรายชื่อด้านขวา
+# --------------------------------------------------------------------------
+lead_role:
+  name: lead
+  modules: ["release", "docs", "hotfix"]   # branch พวกนี้ ping lead
+  color: 0xFF6B35
+  hoist: true
+  github: PROxTAE
+
+# --------------------------------------------------------------------------
+# 8 คน = 8 workstream · key = ชื่อ role = ชื่อห้อง
+# modules = branch prefix ที่ route มาหา role นี้ (branch คือ <module>/<feature>)
+# github  = GitHub username (ใช้ทำ CODEOWNERS) — เช็กก่อนด้วย gh api users/<ชื่อ>
+# --------------------------------------------------------------------------
+workstreams:
+  - key: p1-core-mascot
+    person: P1
+    name: "นิธิศ มะโนรา"
+    student_id: "116730462042-6"
+    discord_id: "733288265171468289"
+    emoji: "🎨"
+    modules: [core, mascot]
+    color: 0x00B8D9
+    github: PROxTAE
+    plans: [01_FRONTEND_CORE_MASCOT.md]
+    folders: [frontend/src/modules/core/, frontend/src/modules/mascot/, frontend/src/app/, assets/]
+    branches: [core/app-shell, core/design-system, mascot/copie-states, core/chat-workspace]
+    dev:
+      stack: frontend
+      install: |
+        cd frontend
+        npm ci
+      run: |
+        cd frontend
+        npm run dev          # http://localhost:3000
+      check: |
+        cd frontend
+        npm run lint
+        npm run build
+      open_url: http://localhost:3000
+      notes: >-
+        งานของคุณเห็นผลทันทีที่ save (hot reload) · ถ้า backend ยังไม่ขึ้น ให้ใช้ mock ของ P6 ที่ /dev ไปก่อน
+    scope: >-
+      หน้าเว็บหลักทั้งแอป: design system, app shell, workspace/chat, api client, chat store
+      และมาสคอต 3D COPIE ทุกสถานะ — เป็นคนรวมชิ้นงานของทุกคนให้ออกมาเป็นหน้าเดียวกัน
+      และเป็น 1 ใน 2 คนที่ต้อง approve ทุก contract PR
+
+  - key: p2-user
+    person: P2
+    name: "เตชิษฏ์ จาดยางโทน"
+    student_id: "116730462040-0"
+    discord_id: "252787270078169088"
+    emoji: "👤"
+    modules: [user]
+    color: 0x7C5CFF
+    github: TJANDFRIEND
+    plans: [02_USER_SYSTEM.md]
+    folders: [frontend/src/modules/user/, backend/app/modules/user/, frontend/src/app/login/, frontend/src/app/onboarding/]
+    branches: [user/google-login-api, user/onboarding-flow, user/history-api, user/feedback]
+    dev:
+      stack: fullstack
+      install: |
+        cd frontend
+        npm ci
+
+        cd backend
+        python -m venv .venv
+        source .venv/Scripts/activate      # PowerShell: .venv\Scripts\Activate.ps1  ·  mac/Linux: source .venv/bin/activate
+        pip install -r requirements.txt
+      run: |
+        cd backend
+        uvicorn app.main:app --reload --port 8000     # http://localhost:8000/api/health
+
+        cd frontend
+        npm run dev          # http://localhost:3000
+      check: |
+        cd backend
+        ruff check .
+        python -m compileall app
+
+        cd frontend
+        npm run lint
+        npm run build
+      open_url: http://localhost:3000/login
+      notes: >-
+        ต้องรันทั้งสองฝั่ง: backend ก่อน (port 8000) แล้วค่อย frontend (port 3000) · Google OAuth ต้องมีค่าใน .env
+    scope: >-
+      ระบบผู้ใช้ทั้งหมด: Google Login, Onboarding (เก็บชั้นปี/ความสนใจ), Profile,
+      ประวัติการสนทนา, Feedback และเป็นเจ้าของตาราง DB ทั้งหมด — module อื่นเรียกผ่าน function ของ user
+
+  - key: p3-agent
+    person: P3
+    name: "กฤษณพงศ์ พรภู่"
+    student_id: "116730462018-6"
+    discord_id: "400608356492115968"
+    emoji: "🤖"
+    modules: [agent]
+    color: 0x2E7DFF
+    github: 9kritsanapong9
+    plans: [03_AI_AGENT_BACKEND.md]
+    folders: [backend/app/main.py, backend/app/core/, backend/app/modules/agent/, backend/requirements.txt]
+    branches: [agent/fastapi-skeleton, agent/llm-client, agent/intent-router, agent/orchestrator]
+    dev:
+      stack: backend
+      install: |
+        cd backend
+        python -m venv .venv
+        source .venv/Scripts/activate      # PowerShell: .venv\Scripts\Activate.ps1  ·  mac/Linux: source .venv/bin/activate
+        pip install -r requirements.txt
+      run: |
+        cd backend
+        uvicorn app.main:app --reload --port 8000     # http://localhost:8000/api/health
+      check: |
+        cd backend
+        ruff check .
+        python -m compileall app
+      open_url: http://localhost:8000/docs
+      notes: >-
+        เป็นเจ้าของ backend ทั้งแอป — คนอื่นรัน uvicorn ตัวเดียวกันนี้ ถ้าแก้ main.py/core ให้บอกใน #blockers
+    scope: >-
+      สมองกลางของระบบ: FastAPI + config, LLM client, intent router, orchestrator และ /api/chat
+      เรียก rag/tools/intent-ml แล้วประกอบเป็น response ตาม contract —
+      เป็น 1 ใน 2 คนที่ต้อง approve ทุก contract PR และเป็นคนกด merge ฝั่ง backend
+
+  - key: p4-rag
+    person: P4
+    name: "สิรวิชญ์ ศิริสลุง"
+    student_id: "116730462023-6"
+    discord_id: "236323936223100928"
+    emoji: "📚"
+    modules: [rag]
+    color: 0x00A36C
+    github: Peemaxnaja
+    plans: [04_DEPARTMENT_RAG.md]
+    folders: [backend/app/modules/rag/, data/knowledge/]
+    branches: [rag/knowledge-base, rag/chunk-embed, rag/hybrid-search, rag/citations]
+    dev:
+      stack: backend
+      install: |
+        cd backend
+        python -m venv .venv
+        source .venv/Scripts/activate      # PowerShell: .venv\Scripts\Activate.ps1  ·  mac/Linux: source .venv/bin/activate
+        pip install -r requirements.txt
+      run: |
+        cd backend
+        uvicorn app.main:app --reload --port 8000     # http://localhost:8000/api/health
+      check: |
+        cd backend
+        ruff check .
+        python -m compileall app
+      open_url: http://localhost:8000/docs
+      notes: >-
+        ข้อมูลอยู่ใน data/knowledge/ · เก็บไฟล์ index ที่ build เองไว้นอก git ถ้าไฟล์ใหญ่ (ดู .gitignore)
+    scope: >-
+      คลังความรู้ของภาคฯ และการค้นคืน: เก็บข้อมูลจริงของภาควิชา → chunk + embed →
+      hybrid retrieval (vector + BM25) พร้อม "แหล่งอ้างอิง" ทุกคำตอบ — ข้อมูลต้องจริง ห้ามให้ LLM แต่ง
+
+  - key: p5-tools
+    person: P5
+    name: "รัชชานนท์ ศรีไชย"
+    student_id: "116730462005-3"
+    discord_id: "381391956795850754"
+    emoji: "🎓"
+    modules: [tools]
+    color: 0xF59E0B
+    github: Racharnon-Srichai
+    plans: [05_CURRICULUM_SKILL_TOOLS.md]
+    folders: [backend/app/modules/tools/, data/curriculum/, data/assessment/]
+    branches: [tools/curriculum-data, tools/curriculum-service, tools/skill-assessment, tools/skill-scoring]
+    dev:
+      stack: backend
+      install: |
+        cd backend
+        python -m venv .venv
+        source .venv/Scripts/activate      # PowerShell: .venv\Scripts\Activate.ps1  ·  mac/Linux: source .venv/bin/activate
+        pip install -r requirements.txt
+      run: |
+        cd backend
+        uvicorn app.main:app --reload --port 8000     # http://localhost:8000/api/health
+      check: |
+        cd backend
+        ruff check .
+        python -m compileall app
+      open_url: http://localhost:8000/docs
+      notes: >-
+        ข้อมูลหลักสูตรอยู่ใน data/curriculum/ และ data/assessment/ — ตัวเลขทุกตัวต้องตรงเล่มหลักสูตรจริง
+    scope: >-
+      ข้อมูลหลักสูตรจริง (รายวิชา/หน่วยกิต/แผนการเรียน) + แบบประเมินทักษะและการคิดคะแนน
+      ให้ agent เรียกใช้เป็น tool — ตัวเลขทุกตัวต้องมาจากเล่มหลักสูตรจริง
+
+  - key: p6-renderer
+    person: P6
+    name: "ประภากรณ์ ภิธรรมมา"
+    student_id: "116730462033-5"
+    discord_id: "286434245210144768"
+    emoji: "🖼️"
+    modules: [renderer]
+    color: 0xEC4899
+    github: BBosX
+    plans: [06_DYNAMIC_RENDERER.md]
+    folders: [frontend/src/modules/renderer/, frontend/src/app/dev/]
+    branches: [renderer/response-router, renderer/course-table, renderer/info-cards, renderer/skill-radar]
+    dev:
+      stack: frontend
+      install: |
+        cd frontend
+        npm ci
+      run: |
+        cd frontend
+        npm run dev          # http://localhost:3000
+      check: |
+        cd frontend
+        npm run lint
+        npm run build
+      open_url: http://localhost:3000/dev
+      notes: >-
+        หน้า /dev คือสนามของคุณ — ทำ mock fixtures ให้ครบทุก response_type ทีมอื่นจะได้ไม่ต้องรอ backend
+    scope: >-
+      Dynamic UI: แปลง response แต่ละ response_type เป็นหน้าตาจริง (ตารางเรียน, การ์ดข้อมูล,
+      radar ทักษะ ฯลฯ) + mock fixtures + หน้า /dev ให้ทุกคนเห็นงานตัวเองโดยไม่ต้องรอ backend
+
+  - key: p7-suggest-ml
+    person: P7
+    name: "ปกครอง ทับโทน"
+    student_id: "116730462041-8"
+    discord_id: "256420422298370055"
+    emoji: "💡"
+    modules: [suggest, intent-ml]
+    color: 0x14B8A6
+    github: 24madcap
+    plans: [07_SUGGESTIONS_LOCAL_INTENT_ML.md]
+    folders: [frontend/src/modules/suggest/, backend/app/modules/intent_ml/]
+    branches: [suggest/prompt-chips, suggest/context-aware, intent-ml/dataset, intent-ml/tfidf-classifier]
+    dev:
+      stack: fullstack
+      install: |
+        cd frontend
+        npm ci
+
+        cd backend
+        python -m venv .venv
+        source .venv/Scripts/activate      # PowerShell: .venv\Scripts\Activate.ps1  ·  mac/Linux: source .venv/bin/activate
+        pip install -r requirements.txt
+      run: |
+        cd backend
+        uvicorn app.main:app --reload --port 8000     # http://localhost:8000/api/health
+
+        cd frontend
+        npm run dev          # http://localhost:3000
+      check: |
+        cd backend
+        ruff check .
+        python -m compileall app
+
+        cd frontend
+        npm run lint
+        npm run build
+      open_url: http://localhost:3000
+      notes: >-
+        โมเดล ML รันในเครื่อง ไม่ต้องมี GPU · เก็บไฟล์โมเดลที่เทรนแล้วตามที่ตกลงกับ P3 ก่อน commit
+    scope: >-
+      คำถามแนะนำที่ผู้ใช้กดได้ (suggested questions) และโมเดล ML ในเครื่องสำหรับแยก intent
+      (TF-IDF/classifier) ให้ agent ใช้แทน/เสริม rule router — เป็นงาน optional ที่ทำให้ระบบฉลาดขึ้น
+
+  - key: p8-export-qa
+    person: P8
+    name: "วิทยา จำรูญนุรักษ์"
+    student_id: "116610462040-4"
+    discord_id: "715201527878254717"
+    emoji: "📤"
+    modules: [export, qa]
+    color: 0x64748B
+    github: Wittaya211204
+    plans: [08_EXPORT_QA_EVAL.md]
+    folders: [frontend/src/modules/export/, data/eval/, scripts/eval/, docs/]
+    branches: [export/copy-button, export/export-answer, qa/eval-set, qa/eval-script]
+    dev:
+      stack: frontend
+      install: |
+        cd frontend
+        npm ci
+      run: |
+        cd frontend
+        npm run dev          # http://localhost:3000
+      check: |
+        cd frontend
+        npm run lint
+        npm run build
+      open_url: http://localhost:3000
+      notes: >-
+        งาน eval รันด้วย python จาก scripts/eval/ (ใช้ venv ของ backend ได้) · ผลวัดผลเก็บใน docs/
+      extra: |
+        # รัน eval (ใช้ venv ของ backend)
+        cd backend && source .venv/Scripts/activate && cd ..
+        python scripts/eval/run_eval.py
+    scope: >-
+      Copy/Export คำตอบ + ชุดคำถามทดสอบ (eval set) + สคริปต์วัดผลว่าระบบตอบถูกจริงไหม
+      + QA ก่อน demo และ README/เอกสารส่งงาน — เป็นคนบอกว่าระบบ "ใช้ได้จริง" หรือยัง
+
+# --------------------------------------------------------------------------
+# เก็บของโปรเจกต์เก่า (SafetyTravel Assistant) — ทำครั้งเดียวด้วย --archive
+# ย้ายห้องเก่าทั้งหมดไปหมวดเดียว เปลี่ยนชื่อเป็น sta-* ล็อกไม่ให้โพสต์ แต่ยังอ่านย้อนหลังได้
+# (ไม่ลบอะไรทั้งสิ้น — ชื่อเดิมถูกปล่อยว่างให้โปรเจกต์ใหม่ใช้)
+# --------------------------------------------------------------------------
+archive:
+  category: "📦 SafetyTravel (จบแล้ว · อ่านอย่างเดียว)"
+  channel_prefix: "sta-"
+  channel_emoji: "🔒"
+  lock: true                      # deny SEND_MESSAGES ให้ @everyone
+  delete_empty_categories: true   # ลบหมวดเก่าที่ย้ายห้องออกจนหมดแล้ว
+  categories: ["📢 GENERAL", "🛠️ WORKSTREAMS", "🔗 INTEGRATION"]
+  keep_categories: ["meeting"]    # หมวดที่ใช้ร่วมกันทั้งสองโปรเจกต์ ไม่ต้องแตะ
+  keep_channels: ["topsecret"]    # ห้องที่สมาชิกสร้างเอง ไม่ใช่ของโปรเจกต์ — ปล่อยไว้ที่เดิม
+  unhoist_roles: [01-web, 02-api, 03-agent, 04-external-data, 05-data-integration,
+                  06-risk-knowledge, 07-decision-engine, 08-recommendation]
+
+# --------------------------------------------------------------------------
+# ห้องที่สคริปต์ดูแล (ห้องอื่นในเซิร์ฟเวอร์ไม่ถูกแตะ)
+# emoji: ใส่หน้าชื่อห้องตาม channel_name_format · post_only: [role] = คนอื่นอ่านอย่างเดียว
+# webhook: true = สร้าง incoming webhook ให้ GitHub Actions
+# --------------------------------------------------------------------------
+categories:
+  - name: "📌 COPIE · ทั่วไป"
+    channels:
+      - name: announcements
+        emoji: "📣"
+        topic: "ประกาศจากหัวหน้าทีม — อ่านทุกข้อความ"
+        post_only: [lead]
+        webhook: true
+      - name: project-summary
+        emoji: "📖"
+        topic: "ภาพรวมโปรเจกต์ COPIE: เป้าหมาย หน้าจอ โฟลว์ ใครทำอะไร — ถามเรื่องภาพรวมได้ที่นี่"
+      - name: general
+        emoji: "💬"
+        topic: "คุยทั่วไป"
+      - name: status
+        emoji: "📅"
+        topic: "Midday status 13:00 · Daily report 21:00 (รูปแบบใน 00_GIT_DELIVERY_RULES §13) · smoke test develop 19:00"
+      - name: blockers
+        emoji: "🚨"
+        topic: "ติดเกิน 1 ชั่วโมง → โพสต์ที่นี่ + tag คนที่เกี่ยวข้องทันที ห้ามนั่งติดเงียบ ๆ"
+      - name: help
+        emoji: "🆘"
+        topic: "ถามได้ทุกเรื่อง — บอกว่า module ไหน branch ไหน error อะไร ลองอะไรไปแล้ว"
+      - name: role-draw
+        emoji: "🎲"
+        topic: "สุ่มแจก module ให้สมาชิก (python ops/discord/draw.py) — ผลสุดท้ายปักหมุดไว้"
+        post_only: [lead]
+
+  - name: "🧩 COPIE · MODULES"
+    workstream_channels: true      # สร้างห้องหนึ่งต่อ workstream ชื่อ = key, topic = person + scope
+
+  - name: "🔗 COPIE · INTEGRATION"
+    channels:
+      - name: pull-requests
+        emoji: "🔀"
+        topic: "GitHub แจ้ง PR เปิด / review / merge อัตโนมัติ — ping role เจ้าของ module · PR Cutoff 17:00"
+        webhook: true
+      - name: ci-status
+        emoji: "🧪"
+        topic: "ผล CI (ai-watermark / branch-name / frontend / backend) ของทุก PR และ develop"
+        webhook: true
+      - name: merge-conflicts
+        emoji: "💥"
+        topic: "PR ที่ conflict กับ develop หลังมีคน merge — เจ้าของต้อง rebase"
+        webhook: true
+      - name: contract
+        emoji: "📜"
+        topic: "แตะ contract.ts / contract.py / API ต้องคุยที่นี่ก่อน · Contract Freeze Day 1 12:00 · P1 + P3 approve"
+        webhook: true
+
+# --------------------------------------------------------------------------
+# Webhook ที่ GitHub Actions ใช้ส่งข้อความ
+# --------------------------------------------------------------------------
+webhook:
+  name: COPIE GitHub
+  avatar: assets/web-ui/mascot/states/copie-idle.png
+
+# --------------------------------------------------------------------------
+# ใบงานปักหมุดในห้องของแต่ละคน — embed 1 ใบ (รันซ้ำ = แก้ของเดิม ไม่โพสต์ซ้ำ)
+# ตัวแปร: {key} {person} {modules} {modules_first} {plans} {folders} {branches}
+#         {branch_first} {scope} {default_branch} {release_branch} {plans_dir} {repo} {repo_url}
+# Discord: description ≤ 4096 · field value ≤ 1024 · รวม ≤ 6000
+# --------------------------------------------------------------------------
+brief:
+  title: "📌 ใบงาน {person} · module {modules}"
+  url: "{repo_url}"
+  thumbnail: assets/web-ui/mascot/states/copie-front-laptop.png
+  footer: "COPIE · อัปเดตอัตโนมัติจาก ops/discord/config.yaml"
+  description: |
+    **ขอบเขตงานของคุณ**
+    {scope}
+
+    Repo: {repo_url} · branch งานทั้งหมดแตกจาก `{default_branch}`
+  fields:
+    - name: "📁 โฟลเดอร์ที่แก้ได้ (เฉพาะของตัวเอง)"
+      value: "{folders}"
+    - name: "📖 อ่านก่อนเริ่ม (ใน `{plans_dir}/`)"
+      value: |
+        1. `00_SHARED_PROJECT_CONTEXT.md`
+        2. `00_API_AND_DATA_CONTRACTS.md`
+        3. `00_GIT_DELIVERY_RULES.md`
+        4. `00_TIMELINE_AND_SYNC.md` (+ `gantt.html`)
+        5. {plans}
+    - name: "🌿 เริ่มงาน (copy ไปวางได้เลย)"
+      value: |
+        ชื่อ branch = `<module>/<feature>` เช่น {branches}
+        ```bash
+        git switch {default_branch}
+        git pull --ff-only origin {default_branch}
+        git status                      # ต้องสะอาดก่อนเริ่ม
+        git switch -c {branch_first}
+        ```
+        ครั้งแรกหลัง clone: `git config core.hooksPath .githooks`
+    - name: "🚀 ก่อนเปิด PR (ทุกวันก่อน 17:00)"
+      value: |
+        ```bash
+        git fetch origin && git rebase origin/{default_branch}
+        # frontend: npm run lint && npm run build   ·   backend: ruff check . && python -m compileall app
+        git push -u origin {branch_first}
+        ```
+        เปิด PR เข้า **`{default_branch}`** เท่านั้น กรอก template ให้ครบ ขอ reviewer 1 คน
+    - name: "📏 กติกาที่ระบบบังคับ"
+      value: |
+        • ห้าม push ตรงเข้า `{default_branch}` / `{release_branch}` — ทุกอย่างผ่าน PR
+        • แก้เฉพาะโฟลเดอร์ของตัวเอง · แตะ contract → `contract/*` PR ที่ P1 + P3 approve
+        • **ห้ามมีลายน้ำ AI** ใน commit/PR/code และห้าม commit `.claude/` `.cursor/` `CLAUDE.md` (hook + CI ตรวจ)
+        • ข้อมูลภาค/หลักสูตร/คะแนน ต้องจริงและมีแหล่งอ้างอิง ห้ามให้ LLM แต่ง
+        • mock ใช้ได้ Day 1–3 เท่านั้น หลัง M3 ห้ามมี mock ใน flow จริง
+        • branch อายุไม่เกิน 1 วัน — slice เล็ก merge ทุกวัน
+    - name: "⏰ จังหวะประจำวัน"
+      value: "09:00 stand-up · 13:00 status 1 บรรทัด · **17:00 PR cutoff** · 17:00–19:00 review/merge · 21:00 daily report ใน #status · ติดเกิน 1 ชม. → #blockers"
+    - name: "🔔 บอทจะเตือนคุณที่ไหน"
+      value: "ping @{key} ใน #pull-requests (เปิด/approve/merge) · #ci-status (CI แดง) · #merge-conflicts (ต้อง rebase) · ถามได้ที่ #help"

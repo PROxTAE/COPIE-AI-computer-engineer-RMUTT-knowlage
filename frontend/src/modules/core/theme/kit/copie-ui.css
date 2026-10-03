@@ -1,0 +1,265 @@
+/* Synced from assets/web-ui/styles/copie-ui.css by scripts/sync_ui_assets.py - do not edit here. */
+@import "./tokens.css";
+@import "./motion.css";
+
+.copie-ui {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--copie-cyber-white);
+  color: var(--copie-cyber-ink);
+  font-family: var(--copie-cyber-body);
+}
+
+.copie-ui::before,
+.copie-ui::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.copie-ui::before {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: url("/copie-ui/backgrounds/grid-light.svg") center top / cover no-repeat;
+  opacity: 0.85;
+}
+
+.copie-ui::after {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 100%, rgba(195, 238, 255, 0.55) 0%, rgba(225, 246, 255, 0.3) 50%, transparent 80%),
+    linear-gradient(180deg, transparent 35%, rgba(235, 247, 255, 0.25) 65%, rgba(205, 240, 255, 0.45) 100%);
+}
+
+.copie-ui .copie-floor {
+  position: absolute;
+  inset: auto 0 0 0;
+  width: 100%;
+  height: min(36vh, 320px);
+  background: url("/copie-ui/backgrounds/floor-perspective.svg") center bottom / 100% 100% no-repeat;
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+}
+
+.copie-ui .copie-halo {
+  width: min(56vw, 720px);
+  aspect-ratio: 1;
+  background: url("/copie-ui/backgrounds/mascot-halo.svg") center / contain no-repeat;
+  pointer-events: none;
+}
+
+.copie-ui .copie-wordmark {
+  color: #05070a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -.075em;
+  line-height: 1;
+}
+
+.copie-ui .copie-heading {
+  margin: 0;
+  color: #080b12;
+  font-family: var(--copie-cyber-heading);
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: 1.18;
+}
+
+.copie-ui .copie-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  color: var(--copie-cyber-blue);
+  font: 600 .75rem/1.2 var(--copie-cyber-heading);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.copie-ui .copie-eyebrow::before {
+  content: "";
+  width: .4rem;
+  height: .4rem;
+  background: var(--copie-cyber-blue);
+}
+
+.copie-ui .copie-panel {
+  border: 1px solid var(--copie-cyber-line);
+  border-radius: var(--copie-cyber-radius-lg);
+  background: rgb(255 255 255 / 90%);
+  box-shadow: var(--copie-cyber-shadow);
+}
+
+.copie-ui .copie-response {
+  position: relative;
+  padding-inline-start: 1.5rem;
+}
+
+.copie-ui .copie-response::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(var(--copie-cyber-blue), var(--copie-cyber-cyan));
+}
+
+.copie-ui .copie-response-rule {
+  width: min(100%, 640px);
+  height: 16px;
+  background: url("/copie-ui/frames/response-rule.svg") left center / 100% 100% no-repeat;
+}
+
+.copie-ui .copie-streak {
+  width: min(100%, 480px);
+  height: 64px;
+  background: url("/copie-ui/effects/data-streak.svg") left center / contain no-repeat;
+  pointer-events: none;
+}
+
+.copie-ui .copie-input {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-height: 64px;
+  padding: .5rem .55rem .5rem 1.25rem;
+  border: 1px solid #a9bee0;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 8px 22px rgb(21 95 242 / 7%);
+}
+
+.copie-ui .copie-input:focus-within {
+  border-color: var(--copie-cyber-focus);
+  box-shadow: 0 0 0 3px rgb(21 95 242 / 13%);
+}
+
+.copie-ui .copie-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--copie-cyber-ink);
+  font: 500 1rem/1.5 var(--copie-cyber-body);
+}
+
+.copie-ui .copie-input input::placeholder {
+  color: var(--copie-cyber-muted);
+}
+
+.copie-ui .copie-button,
+.copie-ui .copie-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  min-height: 44px;
+  border: 1px solid var(--copie-cyber-blue);
+  border-radius: 999px;
+  background: white;
+  color: var(--copie-cyber-blue);
+  cursor: pointer;
+  font: 600 .95rem/1.2 var(--copie-cyber-body);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.copie-ui .copie-button {
+  padding: .65rem 1.2rem;
+}
+
+.copie-ui .copie-icon-button {
+  width: 44px;
+  padding: 0;
+}
+
+.copie-ui .copie-button:hover,
+.copie-ui .copie-icon-button:hover {
+  background: #f1f7ff;
+  box-shadow: 0 5px 16px rgb(21 95 242 / 12%);
+  transform: translateY(-1px);
+}
+
+.copie-ui .copie-button:focus-visible,
+.copie-ui .copie-icon-button:focus-visible {
+  outline: 3px solid rgb(21 95 242 / 35%);
+  outline-offset: 3px;
+}
+
+.copie-ui .copie-button--primary {
+  background: var(--copie-cyber-blue);
+  color: white;
+}
+
+.copie-ui .copie-button--primary:hover {
+  background: #0b50d8;
+}
+
+.copie-ui .copie-status-dot {
+  display: inline-block;
+  width: .55rem;
+  height: .55rem;
+  border-radius: 50%;
+  background: var(--copie-cyber-blue);
+}
+
+.copie-ui .copie-mascot {
+  display: block;
+  width: min(48vw, 600px);
+  height: auto;
+  object-fit: contain;
+  transition: width 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
+}
+
+.copie-ui .copie-mascot[data-layout="rail"] {
+  width: min(20vw, 250px);
+}
+
+.copie-ui .copie-mascot[data-layout="hidden"] {
+  width: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 900px) {
+  .copie-ui .copie-floor { display: none; }
+  .copie-ui .copie-halo { width: min(92vw, 520px); }
+  .copie-ui .copie-mascot { width: min(82vw, 480px); }
+  .copie-ui .copie-mascot[data-layout="rail"] { width: min(34vw, 180px); }
+}
+
+/* Custom Scrollbars */
+.copie-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(21, 95, 242, 0.45) rgba(21, 95, 242, 0.03);
+}
+
+.copie-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.copie-scroll::-webkit-scrollbar-track {
+  background: rgba(21, 95, 242, 0.03);
+  border-radius: 9999px;
+  margin: 6px 0;
+}
+
+.copie-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(21, 95, 242, 0.55), rgba(0, 212, 255, 0.55));
+  border-radius: 9999px;
+  box-shadow: 0 0 6px rgba(21, 95, 242, 0.15);
+  transition: background 0.2s ease;
+}
+
+.copie-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #155ff2, #00d4ff);
+}
+

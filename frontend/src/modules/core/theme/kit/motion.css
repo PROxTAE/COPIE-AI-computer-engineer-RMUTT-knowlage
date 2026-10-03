@@ -1,0 +1,66 @@
+/* Synced from assets/web-ui/styles/motion.css by scripts/sync_ui_assets.py - do not edit here. */
+@keyframes copie-answer-enter {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes copie-mascot-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes copie-status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(21 95 242 / 18%); }
+  50% { box-shadow: 0 0 0 8px rgb(21 95 242 / 0%); }
+}
+
+@keyframes copie-scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+
+.copie-ui .copie-answer-enter {
+  animation: copie-answer-enter 420ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.copie-ui .copie-mascot-breathe {
+  animation: copie-mascot-breathe 4s ease-in-out infinite;
+}
+
+.copie-ui .copie-mascot.copie-mascot-layer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-in-out, width 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
+}
+
+.copie-ui .copie-mascot.copie-mascot-layer[data-active="true"] {
+  opacity: 1;
+}
+
+.copie-ui .copie-status-pulse {
+  animation: copie-status-pulse 2.4s ease-out infinite;
+}
+
+.copie-ui .copie-scan {
+  overflow: hidden;
+  position: relative;
+}
+
+.copie-ui .copie-scan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 47%, rgb(69 207 233 / 6%) 50%, transparent 53%);
+  pointer-events: none;
+  animation: copie-scan 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copie-ui *,
+  .copie-ui *::before,
+  .copie-ui *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
