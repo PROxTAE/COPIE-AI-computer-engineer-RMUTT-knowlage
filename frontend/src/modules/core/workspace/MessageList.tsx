@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import type { AgentResponse, ChatMessage } from "@/types/contract";
 import { ResponseRenderer, type AssessmentAnswer } from "@/modules/renderer";
@@ -11,6 +11,7 @@ type MessageListProps = {
   disabled?: boolean;
   onAsk?: (text: string) => void;
   onSubmitAssessment?: (answers: AssessmentAnswer[], formResponse: AgentResponse) => Promise<void>;
+  onBack?: () => void;
   renderAssistantFooter?: (message: Extract<ChatMessage, { role: "assistant" }>) => ReactNode;
 };
 
@@ -23,12 +24,19 @@ export function MessageList({
   disabled = false,
   onAsk,
   onSubmitAssessment,
+  onBack,
   renderAssistantFooter,
 }: MessageListProps) {
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length, liveMessageId]);
+
   return (
     <div className="flex flex-col gap-6" role="log" aria-label="บทสนทนากับ COPIE" aria-live="polite">
       {messages.map((message) => message.role === "user" ? (
-        <p key={message.id} className="ml-auto max-w-[90%] rounded-2xl border border-cyber-line bg-cyber-paper px-4 py-3 text-cyber-ink">
+        <p key={message.id} className="ml-auto max-w-[90%] rounded-2xl border border-cyber-line bg-cyber-paper px-4 py-3 text-cyber-ink shadow-xs">
           {message.content}
         </p>
       ) : (
@@ -37,12 +45,14 @@ export function MessageList({
             response={message.response}
             onAsk={onAsk ?? unavailableAsk}
             onSubmitAssessment={onSubmitAssessment ? (answers) => onSubmitAssessment(answers, message.response) : unavailableAssessment}
+            onBack={onBack}
             disabled={disabled || !onAsk || !onSubmitAssessment}
             animate={message.id === liveMessageId}
           />
           {renderAssistantFooter?.(message)}
         </div>
       ))}
+      <div ref={bottomRef} className="h-1" aria-hidden="true" />
     </div>
   );
 }

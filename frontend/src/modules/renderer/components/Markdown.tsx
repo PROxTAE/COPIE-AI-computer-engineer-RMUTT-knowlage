@@ -82,14 +82,16 @@ export function Markdown({ children, className, onCitationClick, citationCount =
 // หัวข้อคำตอบ: แถบฟ้าด้านซ้าย + เส้น streak ทางขวาตามม็อกอัพ
 function Heading({ level, children }: { level: 1 | 2; children: ReactNode }) {
   const Tag = level === 1 ? "h1" : "h2";
-  const size = level === 1 ? "text-3xl" : "text-2xl";
+  const size = level === 1 ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl";
   return (
-    <div className="flex items-center gap-3">
-      <span aria-hidden="true" className="h-8 w-1 shrink-0 rounded-full bg-copie-teal" />
-      <Tag className={`copie-heading font-display ${size} font-bold text-deep-navy`}>{children}</Tag>
+    <div className="relative flex flex-wrap items-center gap-3 my-2">
+      <span aria-hidden="true" className="h-8 w-1.5 shrink-0 rounded-full bg-[#00d4ff]" />
+      <Tag className={`copie-heading font-display ${size} font-black italic tracking-tight text-[#080b12]`}>
+        {children}
+      </Tag>
       <span
         aria-hidden="true"
-        className="copie-streak h-px min-w-6 flex-1 bg-gradient-to-r from-copie-teal/50 to-transparent"
+        className="inline-block w-28 h-6 bg-[url('/copie-ui/effects/data-streak.svg')] bg-contain bg-no-repeat pointer-events-none opacity-80 shrink-0"
       />
     </div>
   );

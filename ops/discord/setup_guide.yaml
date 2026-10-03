@@ -1,0 +1,98 @@
+# คู่มือเริ่มงานที่ปักหมุดในห้องของแต่ละคน — โพสต์ด้วย post_setup_guide.py
+# 1 part = 1 ข้อความ (ทุก part ถูกปักหมุด · รันซ้ำ = แก้ข้อความเดิม ไม่โพสต์ซ้ำ)
+#
+# ตัวแปร (จาก config.yaml → workstreams[].dev): {key} {person} {modules} {folder} {folders}
+#   {stack} {stack_label} {install} {run} {check} {open_url} {notes} {extra_block}
+#   {branch_first} {default_branch} {repo}
+# ใช้ {ch:<channel>} {role:<key>} ได้เหมือน summary.yaml
+
+parts:
+  # ─────────────────────────────── 1/3 ───────────────────────────────
+  - title: "🛠️ เครื่องมือที่ {person} ต้องมี — 1/3 ติดตั้งครั้งเดียว"
+    color: 0x00B8D9
+    thumbnail: assets/web-ui/mascot/states/copie-front-laptop.png
+    description: |
+      **ส่วนที่คุณดูแล:** {stack_label} · โค้ดอยู่ที่ `{folder}`
+
+      **ติดตั้งลงเครื่อง (ครั้งเดียว)**
+      • **Git** — ถ้าพิมพ์ `git --version` แล้วไม่ขึ้น ให้โหลดจาก git-scm.com
+      • **Node.js 22 LTS** (ถ้าทำ frontend) — nodejs.org · เช็ก `node -v` ต้องขึ้น v22.x
+      • **Python 3.11** (ถ้าทำ backend) — python.org · **ตอนติดตั้งติ๊ก "Add python.exe to PATH"** · เช็ก `python --version`
+      • **VS Code** + ส่วนขยาย: ESLint, Prettier, Python, Pylance
+      • **บัญชี GitHub** ที่ถูกเชิญเข้า repo แล้ว (ถ้ายังไม่ได้รับคำเชิญ บอกใน {ch:help})
+
+      **โคลนโปรเจกต์ + ตั้งค่า git (ครั้งเดียว)**
+      ```bash
+      git clone {repo}.git
+      cd COPIE-AI-computer-engineer-RMUTT-knowlage
+      git config core.hooksPath .githooks     # ⚠️ บังคับ — hook กันลายน้ำ AI และชื่อ branch ผิด
+      git config user.name "ชื่อของคุณ"
+      git config user.email "อีเมลที่ใช้กับ GitHub"
+      cp .env.example .env                    # PowerShell: Copy-Item .env.example .env
+      ```
+      แล้วเปิด `.env` เติมค่าที่ต้องใช้ (ขอค่าที่เป็นความลับจากหัวหน้า) — **ห้าม commit `.env` เด็ดขาด**
+
+      **ตั้งค่าเครื่องมือ AI ของตัวเอง (ถ้าใช้)**
+      กติกาข้อ 9: ห้ามมีลายน้ำ AI ใน commit/PR/code และห้าม commit `.claude/` `.cursor/` `CLAUDE.md` ฯลฯ
+      → ปิดการเติม "Co-Authored-By" / "Generated with ..." ในเครื่องมือของคุณตั้งแต่วันนี้ · hook + CI ตรวจทุก push
+
+  # ─────────────────────────────── 2/3 ───────────────────────────────
+  - title: "▶️ รันโปรเจกต์ — 2/3 ({stack_label})"
+    color: 0x00B8D9
+    description: |
+      **ติดตั้ง dependency (ครั้งแรก และทุกครั้งที่มีคนเพิ่ม library)**
+      ```bash
+      {install}
+      ```
+
+      **รันเพื่อพัฒนา**
+      ```bash
+      {run}
+      ```
+      เปิดดูงานของคุณที่ {open_url}
+
+      **เช็กก่อน push ทุกครั้ง** (CI รันชุดเดียวกัน ถ้าตรงนี้ผ่าน CI ก็ผ่าน)
+      ```bash
+      {check}
+      ```
+      {extra_block}
+      💡 {notes}
+
+  # ─────────────────────────────── 3/3 ───────────────────────────────
+  - title: "🚀 วงจรทำงานประจำวัน — 3/3 (branch → PR → merge)"
+    color: 0x10B981
+    thumbnail: assets/web-ui/mascot/states/copie-success.png
+    description: |
+      **เริ่มงานใหม่ทุกครั้ง**
+      ```bash
+      git switch {default_branch}
+      git pull --ff-only origin {default_branch}
+      git switch -c {branch_first}          # ชื่อ = <module>/<feature> ของคุณเท่านั้น
+      ```
+
+      **ระหว่างทำ** — commit บ่อย ๆ เป็นก้อนเล็ก ข้อความเป็นภาษาอังกฤษบอกว่าทำอะไร
+      ```bash
+      git status
+      git add <ไฟล์ที่ตั้งใจ>                 # อย่าใช้ git add . มันจะดูดไฟล์คนอื่น/ไฟล์ลับเข้ามา
+      git commit -m "add hybrid search for department knowledge"
+      ```
+
+      **ก่อน 17:00 (PR Cutoff) ทุกวัน**
+      ```bash
+      git fetch origin && git rebase origin/{default_branch}
+      # แก้ conflict (ถ้ามี) → รันคำสั่งเช็กใน part 2 ให้ผ่าน
+      git push -u origin {branch_first}
+      ```
+      แล้วเปิด PR เข้า **`{default_branch}`** · กรอก template ให้ครบ · ขอ reviewer 1 คน · แปะลิงก์ใน {ch:pull-requests} ถ้าเร่ง
+
+      **ถ้า CI แดง** → บอทจะแจ้งใน {ch:ci-status} พร้อมลิงก์ log · แก้แล้ว push ทับ branch เดิม
+      **ถ้า conflict หลังคนอื่น merge** → บอทแจ้งใน {ch:merge-conflicts} พร้อมคำสั่ง rebase
+      **ติดเกิน 1 ชั่วโมง** → {ch:blockers} + tag คนที่เกี่ยวข้อง อย่านั่งติดเงียบ ๆ
+      **21:00** รายงานใน {ch:status} ตามฟอร์ม 🟢/🟡/🔴
+
+      **ปัญหาที่เจอบ่อย**
+      • `git push` แล้วโดน hook ปฏิเสธ → อ่านข้อความที่ hook บอก มักเป็นชื่อ branch ผิดหรือมีลายน้ำ AI ใน commit message
+      • `npm run dev` ไม่ขึ้น / module not found → `npm ci` ใหม่ (มีคนเพิ่ม library)
+      • `uvicorn` ไม่เจอ / ImportError → ลืม activate venv หรือยังไม่ `pip install -r requirements.txt`
+      • แก้โค้ดแล้วหน้าเว็บไม่เปลี่ยน → ดูว่ารันอยู่คนละ terminal/port หรือลืม save · ลอง Ctrl+C แล้วรันใหม่
+      • เผลอทำงานบน `{default_branch}` → `git switch -c {branch_first}` แล้ว commit ใหม่ได้เลย (ยังไม่ push ไม่มีปัญหา)

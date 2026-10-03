@@ -74,6 +74,7 @@ def test_google_verifier_uses_configured_audience_without_requiring_email_verifi
         "google-id-token",
         ANY,
         "client-id.apps.googleusercontent.com",
+        clock_skew_in_seconds=10,
     )
 
 

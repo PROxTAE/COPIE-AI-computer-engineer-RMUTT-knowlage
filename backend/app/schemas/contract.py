@@ -48,10 +48,23 @@ class SkillScores(BaseModel):
     cybersecurity: int = Field(ge=0, le=100)
 
 
+class SkillDimension(BaseModel):
+    key: str
+    label: str
+    short_label: Optional[str] = None
+    score: int = Field(ge=0, le=100)
+    description: Optional[str] = None
+
+
 class SkillProfile(BaseModel):
     scores: SkillScores
     top_skills: list[SkillKey]
     taken_at: str
+    topic: Optional[str] = None
+    score: Optional[int] = None
+    title: Optional[str] = None
+    dimensions: Optional[list[SkillDimension]] = None
+    custom_top_skills: Optional[list[str]] = None
 
 
 # ---------- Curriculum ----------
@@ -107,6 +120,10 @@ class SkillRadarData(BaseModel):
     top_skills: list[SkillKey]
     summary: str
     taken_at: str
+    topic: Optional[str] = None
+    title: Optional[str] = None
+    dimensions: Optional[list[SkillDimension]] = None
+    custom_top_skills: Optional[list[str]] = None
 
 
 class ErrorData(BaseModel):

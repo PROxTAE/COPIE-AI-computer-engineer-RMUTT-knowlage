@@ -20,14 +20,14 @@ export function SourceViewer({ sources, activeIndex, onActiveChange }: SourceVie
   if (sources.length === 0) return null;
 
   return (
-    <section className="copie-panel flex flex-col gap-3" aria-label="แหล่งอ้างอิง">
+    <section className="copie-panel flex flex-col gap-3.5 p-4 sm:p-6" aria-label="แหล่งอ้างอิง">
       <h2 className="flex items-center gap-2 font-display text-base font-semibold text-deep-navy">
         <BookOpen aria-hidden="true" className="size-5 text-copie-teal" />
         แหล่งอ้างอิง
         <span className="text-sm font-normal text-muted tabular-nums">({sources.length})</span>
       </h2>
 
-      <ul className="grid gap-3 @lg:grid-cols-2 @3xl:grid-cols-3">
+      <ul className="grid gap-3.5 @lg:grid-cols-2 @3xl:grid-cols-3">
         {sources.map((source, position) => (
           <SourceCard
             key={`${source.doc_id}-${position}`}
@@ -75,8 +75,8 @@ function SourceCard({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: order * 0.04 }}
-      className={`flex flex-col rounded-lg border bg-surface transition ${
-        open ? "border-copie-teal" : "border-deep-navy/12"
+      className={`flex flex-col rounded-xl border bg-white transition ${
+        open ? "border-copie-teal shadow-xs ring-1 ring-copie-teal/25" : "border-deep-navy/12 hover:border-deep-navy/25"
       }`}
     >
       <button
@@ -84,13 +84,13 @@ function SourceCard({
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex items-start gap-2 rounded-lg p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
+        className="flex items-start gap-2.5 rounded-xl p-3.5 text-left transition-colors hover:bg-slate-50/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
       >
         <FileText aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-copie-teal" />
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-medium text-deep-navy">{source.title}</span>
-          <span className="block text-xs text-muted">
-            <span className="tabular-nums">[{index}]</span>
+          <span className="block text-xs text-muted mt-0.5">
+            <span className="tabular-nums font-semibold text-copie-teal">[{index}]</span>
             {source.section ? ` · ${source.section}` : ""}
           </span>
         </span>
@@ -101,7 +101,7 @@ function SourceCard({
       </button>
 
       {open && (
-        <div id={panelId} className="flex flex-col gap-2 border-t border-deep-navy/10 p-3">
+        <div id={panelId} className="flex flex-col gap-2.5 border-t border-deep-navy/10 p-4 bg-slate-50/50 rounded-b-xl">
           <p className="text-sm leading-6 text-ink">{source.snippet}</p>
           {source.url ? (
             <a
