@@ -3,18 +3,19 @@
 from datetime import datetime, timezone
 
 from fastapi import HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, delete, select
 
-from app.modules.user.models import Conversation, Feedback, Message, utc_now
+from app.modules.user.models import Conversation, Feedback, Message, Project, utc_now
 from app.schemas.contract import (
     AgentResponse,
     ChatMessage,
     ConversationDetail,
     ConversationSummary,
+    ConversationUpdate,
 )
 
 
-def _iso_utc(value: datetime) -> str:
+def iso_utc(value: datetime) -> str:
     if value.tzinfo is None:
         value = value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -97,10 +98,60 @@ def list_conversations(db: Session, user_id: str) -> list[ConversationSummary]:
         .where(Conversation.user_id == user_id)
         .order_by(Conversation.updated_at.desc(), Conversation.id.desc())
     )
-    return [
-        ConversationSummary(id=row.id, title=row.title, updated_at=_iso_utc(row.updated_at))
-        for row in db.exec(statement).all()
-    ]
+    return [_summary(row) for row in db.exec(statement).all()]
+
+
+def _summary(row: Conversation) -> ConversationSummary:
+    return ConversationSummary(
+        id=row.id,
+        title=row.title,
+        updated_at=iso_utc(row.updated_at),
+        project_id=row.project_id,
+    )
+
+
+def _owned_conversation(db: Session, user_id: str, conversation_id: str) -> Conversation:
+    conversation = db.get(Conversation, conversation_id)
+    if conversation is None:
+        raise HTTPException(status_code=404, detail="ไม่พบบทสนทนานี้")
+    if conversation.user_id != user_id:
+        raise HTTPException(status_code=403, detail="ไม่มีสิทธิ์เข้าถึงบทสนทนานี้")
+    return conversation
+
+
+def update_conversation(
+    db: Session,
+    user_id: str,
+    conversation_id: str,
+    changes: ConversationUpdate,
+) -> ConversationSummary:
+    """Rename a chat and/or move it in or out of a project. Its place in the list (updated_at) stays."""
+    conversation = _owned_conversation(db, user_id, conversation_id)
+    if "title" in changes.model_fields_set:
+        title = (changes.title or "").strip()
+        if not title:
+            raise HTTPException(status_code=422, detail="ชื่อบทสนทนาต้องไม่ว่าง")
+        conversation.title = title
+    if "project_id" in changes.model_fields_set:
+        if changes.project_id is not None:
+            project = db.get(Project, changes.project_id)
+            if project is None or project.user_id != user_id:
+                raise HTTPException(status_code=404, detail="ไม่พบโปรเจกต์นี้")
+        conversation.project_id = changes.project_id
+    db.add(conversation)
+    db.commit()
+    db.refresh(conversation)
+    return _summary(conversation)
+
+
+def delete_conversation(db: Session, user_id: str, conversation_id: str) -> None:
+    """Delete a chat with its messages and the feedback given on them."""
+    conversation = _owned_conversation(db, user_id, conversation_id)
+    message_ids = select(Message.id).where(Message.conversation_id == conversation.id)
+    db.exec(delete(Feedback).where(Feedback.message_id.in_(message_ids)))
+    db.exec(delete(Message).where(Message.conversation_id == conversation.id))
+    db.delete(conversation)
+    db.commit()
 
 
 def get_conversation_detail(
@@ -108,11 +159,7 @@ def get_conversation_detail(
     user_id: str,
     conversation_id: str,
 ) -> ConversationDetail:
-    conversation = db.get(Conversation, conversation_id)
-    if conversation is None:
-        raise HTTPException(status_code=404, detail="ไม่พบบทสนทนานี้")
-    if conversation.user_id != user_id:
-        raise HTTPException(status_code=403, detail="ไม่มีสิทธิ์เข้าถึงบทสนทนานี้")
+    conversation = _owned_conversation(db, user_id, conversation_id)
 
     statement = (
         select(Message)
@@ -133,7 +180,7 @@ def get_conversation_detail(
 
     messages: list[ChatMessage] = []
     for row in rows:
-        created_at = _iso_utc(row.created_at)
+        created_at = iso_utc(row.created_at)
         if row.role == "user":
             messages.append(
                 ChatMessage(

@@ -40,12 +40,25 @@ class User(SQLModel, table=True):
     created_at: datetime = Field(default_factory=utc_now)
 
 
+class Project(SQLModel, table=True):
+    """A user-owned folder that groups conversations."""
+
+    __tablename__ = "projects"
+
+    id: str = Field(default_factory=new_id, primary_key=True)
+    user_id: str = Field(foreign_key="users.id", index=True)
+    name: str
+    created_at: datetime = Field(default_factory=utc_now)
+    updated_at: datetime = Field(default_factory=utc_now)
+
+
 class Conversation(SQLModel, table=True):
     __tablename__ = "conversations"
 
     id: str = Field(default_factory=new_id, primary_key=True)
     user_id: str = Field(foreign_key="users.id", index=True)
     title: str
+    project_id: str | None = Field(default=None, foreign_key="projects.id", index=True)
     created_at: datetime = Field(default_factory=utc_now)
     updated_at: datetime = Field(default_factory=utc_now, index=True)
 
