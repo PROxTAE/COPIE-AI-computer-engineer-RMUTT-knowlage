@@ -4,7 +4,7 @@
 "use client";
 
 import { useState } from "react";
-import { BarChart3, ChevronDown, ChevronRight, FileText } from "lucide-react";
+import { ArrowLeft, BarChart3, ChevronDown, ChevronRight, FileText, Info } from "lucide-react";
 import { motion } from "motion/react";
 import type { Course, CourseTableData } from "@/types/contract";
 
@@ -28,7 +28,7 @@ export function CourseTable({
   animate?: boolean;
 }) {
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(data.courses[1]?.code ?? data.courses[0]?.code ?? null);
 
   const courses = sort ? sortCourses(data.courses, sort.key, sort.direction) : data.courses;
   const selectedCourse = courses.find((course) => course.code === selected) ?? null;
@@ -42,15 +42,19 @@ export function CourseTable({
 
   const heading = `รายวิชา ปี ${data.year} เทอม ${data.semester}`;
 
-  // API จริงอาจคืนเทอมที่ไม่มีรายวิชา อย่าปล่อยให้ผู้ใช้เห็นหัวตารางเปล่า ๆ
   if (data.courses.length === 0) {
     return (
-      <section className="copie-panel flex flex-col gap-4" aria-label={heading}>
-        <h2 className="copie-heading flex items-center gap-3 font-display text-2xl font-bold text-deep-navy">
-          <span aria-hidden="true" className="h-8 w-1 shrink-0 rounded-full bg-copie-teal" />
+      <section className="flex flex-col gap-4 rounded-2xl border border-cyber-edge bg-white/95 p-6 shadow-sm" aria-label={heading}>
+        <div className="flex items-center gap-2">
+          <span className="size-2 bg-cyber-blue" />
+          <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
+            AI RESPONSE
+          </span>
+        </div>
+        <h2 className="copie-heading font-display text-2xl font-black italic text-cyber-strong">
           {heading}
         </h2>
-        <p className="rounded-xl border border-deep-navy/12 bg-surface px-4 py-6 text-center text-muted">
+        <p className="rounded-xl border border-cyber-edge bg-slate-50 px-4 py-6 text-center text-cyber-subtle">
           ไม่พบรายวิชาของปีและเทอมนี้ในเล่มหลักสูตร
         </p>
       </section>
@@ -58,25 +62,50 @@ export function CourseTable({
   }
 
   return (
-    <section className="copie-panel flex flex-col gap-4" aria-label={`รายวิชา ปี ${data.year} เทอม ${data.semester}`}>
-      <h2 className="copie-heading flex items-center gap-3 font-display text-2xl font-bold text-deep-navy">
-        <span aria-hidden="true" className="h-8 w-1 shrink-0 rounded-full bg-copie-teal" />
-        รายวิชา ปี {data.year} เทอม {data.semester}
-      </h2>
+    <section className="flex flex-col gap-5 rounded-2xl border border-cyber-edge bg-white/95 p-6 sm:p-8 shadow-sm backdrop-blur-sm" aria-label={heading}>
+      {/* Top Header */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="size-2 bg-cyber-blue" />
+            <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
+              AI RESPONSE
+            </span>
+          </div>
+          <span className="hidden sm:inline font-label text-[10px] font-bold tracking-[0.2em] text-cyber-subtle uppercase">
+            KNOWLEDGE TODAY // A BRIGHTER TOMORROW
+          </span>
+        </div>
 
-      {/* เดสก์ท็อป: ตารางจริง เลื่อนแนวนอนในกล่องตัวเองได้เมื่อจอแคบ */}
-      <div className="hidden overflow-x-auto rounded-xl border border-deep-navy/12 @2xl:block">
+        <div>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-block w-1.5 h-8 bg-cyber-glow rounded-full mr-1 shrink-0" />
+            <h1 className="copie-heading font-display text-3xl sm:text-4xl font-black italic tracking-tight text-cyber-strong">
+              {heading}
+            </h1>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-cyber-blue/30 bg-blue-50 px-3 py-1 text-xs font-semibold text-cyber-blue">
+              <span className="size-1.5 rounded-full bg-cyber-blue" />
+              ข้อมูลตัวอย่างสำหรับออกแบบ
+            </span>
+          </div>
+
+          <div className="text-sm font-medium text-cyber-subtle mt-2 leading-relaxed">
+            <p>ต่อไปนี้เป็นตัวอย่างรายวิชาของปี {data.year} เทอม {data.semester} เพื่อใช้สำหรับการออกแบบหน้าจอเท่านั้น</p>
+            <p>รายวิชาและหน่วยกิตอาจแตกต่างกันตามหลักสูตรและสถาบันการศึกษา โปรดตรวจสอบข้อมูลจากคณะ/มหาวิทยาลัยของคุณอีกครั้ง</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-cyber-edge bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="bg-mist/60">
+            <tr className="bg-slate-50/80 border-b border-cyber-edge">
               {COLUMNS.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
-                  aria-sort={
-                    sort?.key === column.key ? (sort.direction === "asc" ? "ascending" : "descending") : "none"
-                  }
-                  className={`px-4 py-3 font-semibold text-deep-navy ${
+                  className={`px-5 py-3.5 font-display text-sm font-bold text-cyber-strong ${
                     column.align === "right" ? "text-right" : "text-left"
                   }`}
                 >
@@ -84,19 +113,19 @@ export function CourseTable({
                     type="button"
                     onClick={() => toggleSort(column.key)}
                     disabled={disabled}
-                    className="inline-flex items-center gap-1 rounded disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
+                    className="inline-flex items-center gap-1 rounded cursor-pointer disabled:opacity-50"
                   >
                     {column.label}
                     <ChevronDown
                       aria-hidden="true"
                       className={`size-3.5 transition-transform ${
-                        sort?.key === column.key ? "text-copie-teal" : "text-muted"
+                        sort?.key === column.key ? "text-cyber-blue" : "text-cyber-subtle"
                       } ${sort?.key === column.key && sort.direction === "desc" ? "rotate-180" : ""}`}
                     />
                   </button>
                 </th>
               ))}
-              <th scope="col" className="w-10 px-2 py-3">
+              <th scope="col" className="w-10 px-3 py-3.5">
                 <span className="sr-only">ดูรายละเอียด</span>
               </th>
             </tr>
@@ -112,41 +141,37 @@ export function CourseTable({
                   transition={{ duration: 0.2, delay: animate ? index * 0.04 : 0 }}
                   onClick={() => toggleRow(course.code)}
                   data-selected={active}
-                  className={`cursor-pointer border-t border-deep-navy/8 transition ${
-                    active ? "bg-copie-teal/8" : "hover:bg-mist/50"
+                  className={`cursor-pointer border-t border-cyber-edge/60 transition-all ${
+                    active
+                      ? "bg-blue-50/70 border-cyber-blue shadow-xs"
+                      : "hover:bg-slate-50/60"
                   }`}
                 >
-                  <td className="relative whitespace-nowrap px-4 py-3 tabular-nums text-ink">
-                    {active && <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-copie-teal" />}
-                    <span className={active ? "font-semibold text-deep-navy" : ""}>{course.code}</span>
+                  <td className="relative whitespace-nowrap px-5 py-3.5 font-bold tabular-nums text-cyber-strong">
+                    {active && <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-cyber-glow" />}
+                    <span className={active ? "text-cyber-blue" : ""}>{course.code}</span>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className={`block ${active ? "font-semibold text-deep-navy" : "text-ink"}`}>
+                  <td className="px-5 py-3.5">
+                    <span className={`block font-semibold ${active ? "text-cyber-blue" : "text-cyber-strong"}`}>
                       {course.name_th}
                     </span>
-                    <span className="block text-xs text-muted">{course.name_en}</span>
+                    {course.name_en && (
+                      <span className="block text-xs text-cyber-subtle">{course.name_en}</span>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-ink">{course.credits}</td>
-                  <td className="px-4 py-3 text-ink">{course.category ?? "—"}</td>
-                  <td className="px-2 py-3 text-right">
-                    {/* ปุ่มจริงเพื่อให้กดด้วยคีย์บอร์ดได้ — แถวทั้งแถวกดได้เฉพาะด้วยเมาส์ */}
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        toggleRow(course.code);
-                      }}
-                      aria-expanded={active}
-                      aria-label={`ดูรายละเอียด ${course.name_th}`}
-                      className="rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal"
-                    >
-                      <ChevronRight
-                        aria-hidden="true"
-                        className={`inline size-4 transition-transform ${
-                          active ? "rotate-90 text-copie-teal" : "text-muted"
-                        }`}
-                      />
-                    </button>
+                  <td className="px-5 py-3.5 text-right font-display font-bold tabular-nums text-cyber-strong">
+                    {course.credits}
+                  </td>
+                  <td className="px-5 py-3.5 text-sm font-medium text-cyber-strong/80">
+                    {course.category ?? "—"}
+                  </td>
+                  <td className="px-3 py-3.5 text-right">
+                    <ChevronRight
+                      aria-hidden="true"
+                      className={`inline size-4.5 transition-transform ${
+                        active ? "text-cyber-blue" : "text-cyber-subtle"
+                      }`}
+                    />
                   </td>
                 </motion.tr>
               );
@@ -155,8 +180,8 @@ export function CourseTable({
         </table>
       </div>
 
-      {/* มือถือ: การ์ดต่อหนึ่งวิชา กดที่การ์ดเพื่อกางรายละเอียด */}
-      <ul className="flex flex-col gap-2 @2xl:hidden">
+      {/* Mobile Cards */}
+      <ul className="flex flex-col gap-2.5 md:hidden">
         {courses.map((course, index) => {
           const active = course.code === selected;
           return (
@@ -170,58 +195,57 @@ export function CourseTable({
                 type="button"
                 onClick={() => toggleRow(course.code)}
                 aria-expanded={active}
-                className={`flex w-full flex-col gap-1 rounded-lg border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copie-teal ${
-                  active ? "border-copie-teal bg-copie-teal/8" : "border-deep-navy/12 bg-surface"
+                className={`flex w-full flex-col gap-1 rounded-xl border p-4 text-left transition-all ${
+                  active ? "border-cyber-blue bg-blue-50/70 shadow-xs" : "border-cyber-edge bg-white"
                 }`}
               >
-                <span className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold tabular-nums text-deep-navy">{course.code}</span>
-                  <span className="text-sm tabular-nums text-ink">{course.credits} หน่วยกิต</span>
-                </span>
-                <span className="text-sm text-ink">{course.name_th}</span>
-                <span className="text-xs text-muted">{course.name_en}</span>
-                {course.category && <span className="text-xs text-muted">{course.category}</span>}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-display font-bold tabular-nums text-cyber-blue">{course.code}</span>
+                  <span className="font-display font-bold tabular-nums text-cyber-strong">{course.credits} หน่วยกิต</span>
+                </div>
+                <span className="font-semibold text-sm text-cyber-strong">{course.name_th}</span>
+                {course.name_en && <span className="text-xs text-cyber-subtle">{course.name_en}</span>}
+                {course.category && <span className="text-xs font-medium text-cyber-blue mt-1">{course.category}</span>}
               </button>
             </motion.li>
           );
         })}
       </ul>
 
-      {selectedCourse && <CourseDetail course={selectedCourse} />}
+      {/* Selected Course Detail Box matching Mockup 07 */}
+      {selectedCourse && (
+        <div className="flex gap-4 rounded-xl border border-cyber-edge bg-white p-5 shadow-xs">
+          <div className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-cyber-blue shrink-0">
+            <FileText className="size-6" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-display font-bold tabular-nums text-cyber-blue text-lg">{selectedCourse.code}</span>
+              <span className="font-display font-bold text-cyber-strong text-lg">{selectedCourse.name_th}</span>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-cyber-strong/90 font-medium">
+              {selectedCourse.description ?? "ศึกษาแนวคิดพื้นฐานของรายวิชา การออกแบบ และการประยุกต์ใช้งานในระบบสารสนเทศและเทคโนโลยีที่เกี่ยวข้อง"}
+            </p>
+          </div>
+        </div>
+      )}
 
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-copie-teal/25 bg-copie-teal/8 px-4 py-3">
-        <BarChart3 aria-hidden="true" className="size-5 text-copie-teal" />
-        <span className="font-display font-semibold text-deep-navy">รวมหน่วยกิตทั้งสิ้น</span>
-        <span className="copie-index font-display text-3xl font-bold italic tabular-nums text-copie-teal">
-          {data.total_credits}
-        </span>
-        <span className="text-deep-navy">หน่วยกิต</span>
-        <span className="ml-auto text-xs text-muted tabular-nums">{data.courses.length} รายวิชา</span>
+      {/* Total Credits Summary Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-cyber-blue/25 bg-blue-50/60 px-5 py-3.5 shadow-xs">
+        <div className="flex items-center gap-3">
+          <BarChart3 aria-hidden="true" className="size-5 text-cyber-blue" />
+          <span className="font-display font-bold text-cyber-strong text-base">รวมหน่วยกิตทั้งสิ้น</span>
+          <span className="font-display text-3xl font-black italic tabular-nums text-cyber-blue">
+            {data.total_credits}
+          </span>
+          <span className="font-display font-bold text-cyber-strong text-base">หน่วยกิต</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-cyber-subtle">
+          <span>ที่มา: ข้อมูลตัวอย่างสำหรับออกแบบ</span>
+          <Info className="size-3.5 text-cyber-subtle" />
+        </div>
       </div>
     </section>
-  );
-}
-
-function CourseDetail({ course }: { course: Course }) {
-  return (
-    <div className="flex gap-3 rounded-xl border border-deep-navy/12 bg-surface p-4">
-      <FileText aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-copie-teal" />
-      <div className="min-w-0">
-        <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-display font-bold tabular-nums text-deep-navy">{course.code}</span>
-          <span className="font-display font-semibold text-deep-navy">{course.name_th}</span>
-          <span className="text-sm text-muted">{course.name_en}</span>
-        </p>
-        <p className="mt-1 text-sm leading-6 text-ink">
-          {course.description ?? "ยังไม่มีคำอธิบายรายวิชาในเล่มหลักสูตร"}
-        </p>
-        <p className="mt-2 text-xs text-muted tabular-nums">
-          {course.credits} หน่วยกิต
-          {course.credit_detail ? ` · ${course.credit_detail}` : ""}
-          {course.category ? ` · ${course.category}` : ""}
-        </p>
-      </div>
-    </div>
   );
 }
 
@@ -229,7 +253,6 @@ function sortCourses(courses: Course[], key: SortKey, direction: SortDirection):
   const factor = direction === "asc" ? 1 : -1;
   return [...courses].sort((a, b) => {
     if (key === "credits") return (a.credits - b.credits) * factor;
-    // category เป็น null ได้ — ดันไปท้ายตารางเสมอไม่ว่าจะเรียงทางไหน
     const left = a[key] ?? "";
     const right = b[key] ?? "";
     if (left === right) return 0;

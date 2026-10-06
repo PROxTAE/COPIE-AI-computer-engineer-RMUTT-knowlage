@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <radialGradient id="cyan"><stop stop-color="#00BED1" stop-opacity=".18"/><stop offset="1" stop-color="#00BED1" stop-opacity="0"/></radialGradient>
+    <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#65E3D3" fill-opacity=".14"/></pattern>
+    <pattern id="lines" width="96" height="96" patternUnits="userSpaceOnUse"><path d="M96 0H0V96" stroke="#70B5C7" stroke-opacity=".07"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#081820"/>
+  <ellipse cx="1290" cy="460" rx="600" ry="620" fill="url(#cyan)"/>
+  <rect width="1600" height="900" fill="url(#lines)"/>
+  <rect width="1600" height="900" fill="url(#dots)"/>
+  <g stroke="#46C9C7" stroke-opacity=".23" stroke-width="1.5"><path d="M0 240h246l64 64h260M0 290h195l72 72h177M1600 682h-264l-80-80h-260M1600 733h-206l-65-65h-139"/><path d="M42 64h82M42 64v82M1558 836h-82M1558 836v-82"/></g>
+  <g fill="#6CF0D6" fill-opacity=".55"><circle cx="310" cy="304" r="4"/><circle cx="1256" cy="602" r="4"/><circle cx="267" cy="362" r="3"/><circle cx="1329" cy="668" r="3"/></g>
+</svg>

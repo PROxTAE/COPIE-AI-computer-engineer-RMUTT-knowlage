@@ -1,0 +1,263 @@
+/*
+ * Interaction modes (normal | devil | developer). Owner: P1.
+ * `data-copie-mode` sits on <html> and on the `.copie-ui` root of /chat, so portals
+ * (history drawer, dialogs) follow the mode too. Colours come from assets/web-ui/MODES.md.
+ *
+ * Components use tokens instead of hex: text-cyber-strong, bg-cyber-blue, border-cyber-edge ...
+ * Tailwind palette colours still used by older components (bg-white, bg-blue-50, bg-slate-50,
+ * text-red-700 ...) are remapped per mode below, so they never keep the light theme on a dark page.
+ */
+
+:root {
+  --copie-ink-strong: #080b12;
+  --copie-ink-subtle: #6b82a6;
+  --copie-edge: #d2e0f5;
+  --copie-glow: #00d4ff;
+  --copie-field-line: #a9bee0;
+  --copie-accent-deep: #0f5ff0;
+  --copie-accent-hover: #0b50d8;
+  --copie-accent-ink: #ffffff;
+  --copie-accent-rgb: 21 95 242;
+  --copie-stage-glow: rgb(69 207 233 / 22%);
+  --copie-shadow-rgb: 21 45 110;
+  --copie-bubble-bg: rgb(255 255 255 / 95%);
+  --copie-scroll-thumb: linear-gradient(180deg, rgb(21 95 242 / 55%), rgb(0 212 255 / 55%));
+  --copie-mode-grid: url("/copie-ui/backgrounds/grid-light.svg");
+  --copie-mode-halo: url("/copie-ui/backgrounds/mascot-halo.svg");
+  --copie-mode-effect: url("/copie-ui/effects/data-streak.svg");
+  --copie-mode-wash:
+    radial-gradient(ellipse 80% 55% at 50% 100%, rgb(195 238 255 / 55%) 0%, rgb(225 246 255 / 30%) 50%, transparent 80%),
+    linear-gradient(180deg, transparent 35%, rgb(235 247 255 / 25%) 65%, rgb(205 240 255 / 45%) 100%);
+  --copie-floor-filter: none;
+}
+
+[data-copie-mode="devil"] {
+  color-scheme: dark;
+  --copie-cyber-white: #0c1023;
+  --copie-cyber-paper: #141935;
+  --copie-cyber-ink: #f8f3ff;
+  --copie-cyber-muted: #b9a8d0;
+  --copie-cyber-blue: #f66cac;
+  --copie-cyber-cyan: #b98bff;
+  --copie-cyber-line: #634567;
+  --copie-cyber-focus: #ff8cc6;
+  --copie-cyber-shadow: 0 10px 32px rgb(0 0 0 / 35%);
+
+  --copie-ink-strong: #fff6fc;
+  --copie-ink-subtle: #bfaed6;
+  --copie-edge: #4a3459;
+  --copie-glow: #c88bff;
+  --copie-field-line: #7a5584;
+  --copie-accent-deep: #e24f95;
+  --copie-accent-hover: #ff87c0;
+  --copie-accent-ink: #1b0b1d;
+  --copie-accent-rgb: 246 108 172;
+  --copie-stage-glow: rgb(246 108 172 / 28%);
+  --copie-shadow-rgb: 0 0 0;
+  --copie-bubble-bg: rgb(28 21 54 / 95%);
+  --copie-scroll-thumb: linear-gradient(180deg, rgb(246 108 172 / 60%), rgb(185 139 255 / 60%));
+  --copie-mode-grid: url("/copie-ui/backgrounds/devil-grid.svg");
+  --copie-mode-halo: url("/copie-ui/backgrounds/devil-halo.svg");
+  --copie-mode-effect: url("/copie-ui/effects/devil-energy.svg");
+  --copie-mode-wash:
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgb(118 45 141 / 38%) 0%, transparent 75%),
+    radial-gradient(ellipse 45% 40% at 12% 8%, rgb(246 108 172 / 12%) 0%, transparent 70%);
+  --copie-floor-filter: hue-rotate(105deg) saturate(1.6) brightness(1.3);
+
+  --color-white: #171c3b;
+  --color-blue-50: #2a1d40;
+  --color-blue-100: #3a2752;
+  --color-blue-500: #f66cac;
+  --color-blue-600: #ff8cc6;
+  --color-blue-700: #ffa6d2;
+  --color-cyan-50: #24183a;
+  --color-indigo-50: #2a1d44;
+  --color-slate-50: #1b2044;
+  --color-slate-100: #242a52;
+  --color-slate-200: #3d3159;
+  --color-slate-950: #04050d;
+  --color-red-50: #3b1426;
+  --color-red-100: #4b1a31;
+  --color-red-200: #6e2741;
+  --color-red-300: #8c3352;
+  --color-red-500: #ff6b8e;
+  --color-red-600: #ff8aa6;
+  --color-red-700: #ffa3b9;
+  --color-emerald-50: #10302a;
+  --color-emerald-200: #1f5a4c;
+  --color-emerald-500: #34d399;
+  --color-emerald-600: #5ee0b0;
+  --color-emerald-700: #7ff0c4;
+  --color-amber-500: #f5b544;
+  --color-amber-600: #fbbf24;
+}
+
+[data-copie-mode="developer"] {
+  color-scheme: dark;
+  --copie-cyber-white: #081820;
+  --copie-cyber-paper: #0d222b;
+  --copie-cyber-ink: #e8fff8;
+  --copie-cyber-muted: #9cc6bf;
+  --copie-cyber-blue: #65e8d6;
+  --copie-cyber-cyan: #5cc8ff;
+  --copie-cyber-line: #35656c;
+  --copie-cyber-focus: #8ff5e6;
+  --copie-cyber-shadow: 0 10px 32px rgb(0 0 0 / 35%);
+
+  --copie-ink-strong: #f0fffb;
+  --copie-ink-subtle: #96c0b9;
+  --copie-edge: #24474e;
+  --copie-glow: #5cc8ff;
+  --copie-field-line: #3f7a80;
+  --copie-accent-deep: #3fd0bd;
+  --copie-accent-hover: #8af2e3;
+  --copie-accent-ink: #04161b;
+  --copie-accent-rgb: 101 232 214;
+  --copie-stage-glow: rgb(101 232 214 / 24%);
+  --copie-shadow-rgb: 0 0 0;
+  --copie-bubble-bg: rgb(11 33 41 / 95%);
+  --copie-scroll-thumb: linear-gradient(180deg, rgb(101 232 214 / 60%), rgb(92 200 255 / 60%));
+  --copie-mode-grid: url("/copie-ui/backgrounds/developer-grid.svg");
+  --copie-mode-halo: url("/copie-ui/backgrounds/developer-halo.svg");
+  --copie-mode-effect: url("/copie-ui/effects/developer-signal.svg");
+  --copie-mode-wash:
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgb(0 190 209 / 22%) 0%, transparent 75%),
+    radial-gradient(ellipse 45% 40% at 88% 10%, rgb(101 232 214 / 10%) 0%, transparent 70%);
+  --copie-floor-filter: hue-rotate(-28deg) saturate(1.4) brightness(1.4);
+
+  --color-white: #0f2530;
+  --color-blue-50: #12333a;
+  --color-blue-100: #18414a;
+  --color-blue-500: #65e8d6;
+  --color-blue-600: #7deedd;
+  --color-blue-700: #9ff5e8;
+  --color-cyan-50: #0f2d35;
+  --color-indigo-50: #132b3a;
+  --color-slate-50: #10272f;
+  --color-slate-100: #163240;
+  --color-slate-200: #24474e;
+  --color-slate-950: #02080b;
+  --color-red-50: #361720;
+  --color-red-100: #46202b;
+  --color-red-200: #6a2c3a;
+  --color-red-300: #86384a;
+  --color-red-500: #ff7a8a;
+  --color-red-600: #ff94a1;
+  --color-red-700: #ffadb7;
+  --color-emerald-50: #0d3029;
+  --color-emerald-200: #1d5a4b;
+  --color-emerald-500: #34d399;
+  --color-emerald-600: #5ee0b0;
+  --color-emerald-700: #7ff0c4;
+  --color-amber-500: #f5b544;
+  --color-amber-600: #fbbf24;
+}
+
+/* Re-resolve derived variables wherever the mode is set (custom properties inherit resolved values). */
+[data-copie-mode] {
+  --background: var(--copie-cyber-white);
+  --foreground: var(--copie-cyber-ink);
+  --muted: var(--copie-cyber-muted);
+  --accent: var(--copie-cyber-blue);
+  --accent-foreground: var(--copie-accent-ink);
+  --accent-hover: var(--copie-accent-hover);
+  --focus: var(--copie-cyber-focus);
+  --link: var(--copie-cyber-blue);
+  --border: var(--copie-cyber-line);
+  --separator: var(--copie-cyber-line);
+  --surface: var(--color-white);
+  --surface-secondary: var(--copie-cyber-paper);
+  --overlay: var(--color-white);
+  --field-background: var(--color-white);
+  --field-foreground: var(--copie-cyber-ink);
+  --field-border: var(--copie-field-line);
+  --field-border-hover: var(--copie-cyber-blue);
+  --field-border-focus: var(--copie-cyber-focus);
+  --color-copie-teal: var(--copie-cyber-blue);
+  --color-copie-teal-hover: var(--copie-accent-hover);
+  --color-deep-navy: var(--copie-cyber-ink);
+  --color-ink: var(--copie-cyber-ink);
+  --color-muted: var(--copie-cyber-muted);
+  --color-surface: var(--color-white);
+  --color-mist: var(--copie-cyber-line);
+  scrollbar-color: rgb(var(--copie-accent-rgb) / 50%) transparent;
+}
+
+/* ---- kit pieces that hardcode the light theme ---- */
+.copie-ui[data-copie-mode] {
+  background: var(--copie-cyber-white);
+  color: var(--copie-cyber-ink);
+  transition: background-color 400ms ease, color 400ms ease;
+}
+
+.copie-ui[data-copie-mode]::before {
+  background-image: var(--copie-mode-grid);
+}
+
+.copie-ui[data-copie-mode]::after {
+  background: var(--copie-mode-wash);
+}
+
+.copie-ui[data-copie-mode] .copie-halo {
+  background-image: var(--copie-mode-halo);
+}
+
+.copie-ui[data-copie-mode] .copie-floor {
+  filter: var(--copie-floor-filter);
+}
+
+.copie-ui[data-copie-mode] .copie-wordmark,
+.copie-ui[data-copie-mode] .copie-heading {
+  color: var(--copie-ink-strong);
+}
+
+.copie-ui[data-copie-mode] .copie-panel {
+  background: color-mix(in srgb, var(--color-white) 90%, transparent);
+}
+
+.copie-ui[data-copie-mode] .copie-input,
+.copie-ui[data-copie-mode] .copie-button,
+.copie-ui[data-copie-mode] .copie-icon-button {
+  background: var(--color-white);
+}
+
+.copie-ui[data-copie-mode] .copie-button--primary {
+  background: var(--copie-cyber-blue);
+  color: var(--copie-accent-ink);
+}
+
+.copie-ui[data-copie-mode] .copie-mode-effect {
+  width: min(100%, 260px);
+  height: 26px;
+  background: var(--copie-mode-effect) center / contain no-repeat;
+  pointer-events: none;
+}
+
+[data-copie-mode] ::-webkit-scrollbar-thumb,
+[data-copie-mode] .copie-scroll::-webkit-scrollbar-thumb {
+  background: var(--copie-scroll-thumb);
+}
+
+[data-copie-mode] .copie-scroll {
+  scrollbar-color: rgb(var(--copie-accent-rgb) / 55%) rgb(var(--copie-accent-rgb) / 4%);
+}
+
+/* ---- switching modes: the new theme grows as a circle from the mode button ---- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: copie-mode-reveal 680ms cubic-bezier(.2, .8, .2, 1);
+}
+
+@keyframes copie-mode-reveal {
+  from { clip-path: circle(0 at var(--copie-reveal-x, 50%) var(--copie-reveal-y, 0)); }
+  to { clip-path: circle(var(--copie-reveal-r, 150vmax) at var(--copie-reveal-x, 50%) var(--copie-reveal-y, 0)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) { animation: none; }
+}

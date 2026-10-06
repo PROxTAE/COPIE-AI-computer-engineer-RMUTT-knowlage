@@ -48,10 +48,23 @@ class SkillScores(BaseModel):
     cybersecurity: int = Field(ge=0, le=100)
 
 
+class SkillDimension(BaseModel):
+    key: str
+    label: str
+    short_label: Optional[str] = None
+    score: int = Field(ge=0, le=100)
+    description: Optional[str] = None
+
+
 class SkillProfile(BaseModel):
     scores: SkillScores
     top_skills: list[SkillKey]
     taken_at: str
+    topic: Optional[str] = None
+    score: Optional[int] = None
+    title: Optional[str] = None
+    dimensions: Optional[list[SkillDimension]] = None
+    custom_top_skills: Optional[list[str]] = None
 
 
 # ---------- Curriculum ----------
@@ -107,6 +120,10 @@ class SkillRadarData(BaseModel):
     top_skills: list[SkillKey]
     summary: str
     taken_at: str
+    topic: Optional[str] = None
+    title: Optional[str] = None
+    dimensions: Optional[list[SkillDimension]] = None
+    custom_top_skills: Optional[list[str]] = None
 
 
 class ErrorData(BaseModel):
@@ -134,10 +151,15 @@ class Action(BaseModel):
     payload: ActionPayload
 
 
+# Persona/theme chosen in the chat UI. Changes the tone of the answer only, never facts, scores or sources.
+InteractionMode = Literal["normal", "devil", "developer"]
+
+
 class ResponseMeta(BaseModel):
     intent: Intent
     tool: Optional[str] = None
     latency_ms: int = 0
+    interaction_mode: InteractionMode = "normal"  # history saved before this field reads as "normal"
 
 
 ResponseType = Literal["text", "course_table", "cards", "assessment_form", "skill_radar", "error"]
@@ -158,6 +180,7 @@ class AgentResponse(BaseModel):
 class ChatRequest(BaseModel):
     conversation_id: Optional[str] = None
     message: str = Field(min_length=1, max_length=1000)
+    interaction_mode: InteractionMode = "normal"
 
 
 class AssessmentAnswer(BaseModel):
@@ -169,6 +192,7 @@ class AssessmentSubmit(BaseModel):
     conversation_id: str
     assessment_id: str
     answers: list[AssessmentAnswer]
+    interaction_mode: InteractionMode = "normal"
 
 
 class FeedbackRequest(BaseModel):
@@ -183,6 +207,28 @@ class ConversationSummary(BaseModel):
     id: str
     title: str
     updated_at: str
+    project_id: Optional[str] = None  # None = not in a project
+
+
+class ConversationUpdate(BaseModel):
+    """PATCH body: send only the fields to change. `project_id: null` removes the chat from its project."""
+
+    title: Optional[str] = Field(default=None, min_length=1, max_length=80)
+    project_id: Optional[str] = None
+
+
+class Project(BaseModel):
+    """A user's folder that groups related conversations."""
+
+    id: str
+    name: str
+    created_at: str
+    updated_at: str
+    conversation_count: int = 0
+
+
+class ProjectInput(BaseModel):
+    name: str = Field(min_length=1, max_length=60)
 
 
 class ChatMessage(BaseModel):

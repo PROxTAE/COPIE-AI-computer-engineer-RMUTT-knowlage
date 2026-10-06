@@ -7,17 +7,25 @@
   ],
   "backgrounds": [
     "backgrounds/cyan-wash.svg",
+    "backgrounds/developer-grid.svg",
+    "backgrounds/developer-halo.svg",
+    "backgrounds/devil-grid.svg",
+    "backgrounds/devil-halo.svg",
     "backgrounds/floor-perspective.svg",
     "backgrounds/grid-light.svg",
     "backgrounds/mascot-halo.svg"
   ],
   "frames": [
     "frames/corner-accent.svg",
+    "frames/developer-corner.svg",
+    "frames/devil-corner.svg",
     "frames/response-rule.svg",
     "frames/side-rail.svg"
   ],
   "effects": [
     "effects/data-streak.svg",
+    "effects/developer-signal.svg",
+    "effects/devil-energy.svg",
     "effects/signal-dots.svg"
   ],
   "icons": [
@@ -35,6 +43,8 @@
     "icons/history.svg",
     "icons/info.svg",
     "icons/menu.svg",
+    "icons/mode-developer.svg",
+    "icons/mode-devil.svg",
     "icons/profile.svg",
     "icons/refresh.svg",
     "icons/search.svg",
@@ -53,11 +63,38 @@
     "mascot/states/copie-no-answer.png",
     "mascot/states/copie-skill-guide.png"
   ],
+  "mascot_modes": {
+    "devil": [
+      "mascot/modes/devil/states/copie-front-laptop.png",
+      "mascot/modes/devil/states/copie-idle.png",
+      "mascot/modes/devil/states/copie-listening.png",
+      "mascot/modes/devil/states/copie-thinking.png",
+      "mascot/modes/devil/states/copie-responding.png",
+      "mascot/modes/devil/states/copie-success.png",
+      "mascot/modes/devil/states/copie-no-answer.png",
+      "mascot/modes/devil/states/copie-skill-guide.png"
+    ],
+    "developer": [
+      "mascot/modes/developer/states/copie-front-laptop.png",
+      "mascot/modes/developer/states/copie-idle.png",
+      "mascot/modes/developer/states/copie-listening.png",
+      "mascot/modes/developer/states/copie-thinking.png",
+      "mascot/modes/developer/states/copie-responding.png",
+      "mascot/modes/developer/states/copie-success.png",
+      "mascot/modes/developer/states/copie-no-answer.png",
+      "mascot/modes/developer/states/copie-skill-guide.png"
+    ]
+  },
   "styles": [
     "styles/tokens.css",
     "styles/copie-ui.css",
     "styles/motion.css"
   ],
   "guide": "ASSET_GUIDE.md",
-  "preview": "preview.html"
+  "preview": "preview.html",
+  "mode_guide": "MODES.md",
+  "mode_preview": "mode-preview.html",
+  "mode_preview_image": "mode-preview.png",
+  "mascot_modes_preview": "mascot/modes/states-preview.html",
+  "mascot_modes_preview_image": "mascot/modes/states-preview.png"
 }

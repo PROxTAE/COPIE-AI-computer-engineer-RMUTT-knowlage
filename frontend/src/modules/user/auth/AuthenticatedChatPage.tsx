@@ -15,7 +15,7 @@ type AuthenticatedChatPageProps = { debug?: boolean };
 function ChatWithUser({ debug }: AuthenticatedChatPageProps) {
   const user = useUserStore((state) => state.user);
   const messages = useChatStore((state) => state.messages);
-  const [desktopHistoryOpen, setDesktopHistoryOpen] = useState(true);
+  const [desktopHistoryOpen, setDesktopHistoryOpen] = useState(false);
   const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
   if (!user) return null;
 
@@ -33,6 +33,7 @@ function ChatWithUser({ debug }: AuthenticatedChatPageProps) {
       <HistorySidebar
         desktopOpen={desktopHistoryOpen}
         mobileOpen={mobileHistoryOpen}
+        onCloseDesktop={() => setDesktopHistoryOpen(false)}
         onCloseMobile={() => setMobileHistoryOpen(false)}
         refreshKey={latestAssistant?.id ?? ""}
       />
@@ -45,7 +46,11 @@ function ChatWithUser({ debug }: AuthenticatedChatPageProps) {
           profileControl={<ProfileControl user={user} />}
           onOpenHistory={openHistory}
           renderAssistantFooter={(message) => (
-            <FeedbackBar messageId={message.id} initialFeedback={message.feedback} />
+            <FeedbackBar
+              messageId={message.id}
+              initialFeedback={message.feedback}
+              messageContent={message.response?.message}
+            />
           )}
         />
       </div>

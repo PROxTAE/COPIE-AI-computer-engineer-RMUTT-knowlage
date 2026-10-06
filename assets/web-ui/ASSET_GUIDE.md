@@ -16,11 +16,16 @@
 | [frames](frames/) | side-rail.svg | เส้นแบ่งแถบด้านขวาในโหมดอ่าน ตาราง การ์ด และ Radar |
 | [effects](effects/) | data-streak.svg | เส้นแสงสั้นหลังหัวข้อขณะคำตอบปรากฏ |
 | [effects](effects/) | signal-dots.svg | ลายจุดสำหรับพื้นที่เล็ก ๆ ไม่ควรปูทั้งหน้า |
-| [icons](icons/) | SVG 21 ชิ้น | โปรไฟล์ History ส่งข้อความ ค้นหา นำทาง แหล่งอ้างอิง Feedback และปุ่มอื่น ๆ |
+| [icons](icons/) | SVG 23 ชิ้น | โปรไฟล์ History ส่งข้อความ ค้นหา นำทาง แหล่งอ้างอิง Feedback และปุ่มเลือกโหมด |
 | [mascot/states](mascot/states/) | PNG โปร่งใส 8 ท่า | สถานะ idle, listening, thinking, responding, success, no-answer, skill-guide และภาพหน้าตรงถือแล็ปท็อป |
+| [mascot/modes](mascot/modes/) | PNG โปร่งใส 16 ภาพ | Devil Mode และ Developer Mode อย่างละ 8 สถานะ ใช้ท่าเดิมของ COPIE |
 | [styles](styles/) | tokens.css, copie-ui.css, motion.css | สี ฟอนต์ กรอบ ช่องพิมพ์ ปุ่ม และแอนิเมชันที่เคารพ reduced motion |
 
 ไฟล์ [manifest.json](manifest.json) เป็นรายการไฟล์สำหรับงานพัฒนา และ [preview.html](preview.html) เป็นหน้าเปิดดูองค์ประกอบของชุดนี้
+
+## ชุดตกแต่งสำหรับโหมดเพิ่มเติม
+
+ชุด Devil Mode และ Developer Mode อยู่ในโฟลเดอร์ backgrounds, frames, effects, icons และ mascot/modes เพื่อให้ `scripts/sync_ui_assets.py` คัดลอกไปใช้ได้ตามเดิม ดูไฟล์ที่ต้องใช้ สีแนะนำ และข้อควรระวังใน [MODES.md](MODES.md) หรือเปิด [mode-preview.html](mode-preview.html) เพื่อดูภาพรวม (`mode-preview.png` เป็นภาพตัวอย่างพร้อมเปิดดู) ทั้งสองชุดยังเป็นมาสคอต COPIE ตัวเดิม ท่าทางเดิม แต่เปลี่ยนไฟและเอฟเฟกต์ให้เข้ากับโหมด
 
 ## การเลือกใช้ตามหน้าจอ
 

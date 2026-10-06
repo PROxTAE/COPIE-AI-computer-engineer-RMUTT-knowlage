@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type KeyboardEvent } from "react";
-import { Button, TextArea } from "@heroui/react";
-
-import { Icon } from "./Icon";
+import { Search, SendHorizontal } from "lucide-react";
 
 type ChatInputProps = {
   onSend?: (text: string) => void | Promise<void>;
@@ -13,7 +11,13 @@ type ChatInputProps = {
   onDraftChange?: (hasDraft: boolean) => void;
 };
 
-export function ChatInput({ onSend, pending = false, disabled = false, placeholder = "พิมพ์คำถามของคุณ...", onDraftChange }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  pending = false,
+  disabled = false,
+  placeholder = "พิมพ์คำถามของคุณ...",
+  onDraftChange,
+}: ChatInputProps) {
   const [text, setText] = useState("");
   const canSend = text.trim().length > 0 && !pending && !disabled && Boolean(onSend);
 
@@ -25,7 +29,7 @@ export function ChatInput({ onSend, pending = false, disabled = false, placehold
     void onSend?.(message);
   }
 
-  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault();
       event.currentTarget.form?.requestSubmit();
@@ -33,10 +37,11 @@ export function ChatInput({ onSend, pending = false, disabled = false, placehold
   }
 
   return (
-    <form onSubmit={submit} className="w-full max-w-[720px]" aria-label="ถาม COPIE">
-      <div className="copie-input relative z-10 w-full">
-        <Icon name="search" size={22} className="text-cyber-ink" />
-        <TextArea
+    <form onSubmit={submit} className="w-full max-w-[760px]" aria-label="ถาม COPIE">
+      <div className="relative flex items-center gap-3 rounded-full border-2 border-cyber-blue/80 bg-white px-5 py-2.5 shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.12)] focus-within:border-cyber-blue focus-within:shadow-[0_10px_32px_rgb(var(--copie-accent-rgb)/0.22)] transition-all">
+        <Search className="size-5 text-cyber-blue shrink-0" />
+        <input
+          type="text"
           aria-label="พิมพ์คำถาม"
           placeholder={placeholder}
           value={text}
@@ -46,15 +51,18 @@ export function ChatInput({ onSend, pending = false, disabled = false, placehold
           }}
           onKeyDown={handleKeyDown}
           maxLength={1000}
-          rows={1}
           disabled={pending || disabled}
-          className="max-h-32 min-h-7 w-full flex-1 resize-none border-0 bg-transparent p-0 font-sans text-base text-cyber-ink shadow-none outline-none placeholder:text-cyber-muted"
+          className="flex-1 min-w-0 border-0 bg-transparent font-sans text-base font-medium text-cyber-strong outline-none placeholder:text-cyber-subtle"
         />
-        <Button type="submit" variant="primary" isIconOnly isDisabled={!canSend} aria-label="ส่งคำถาม" className="h-11 w-11 rounded-full">
-          <Icon name="send" size={21} />
-        </Button>
+        <button
+          type="submit"
+          disabled={!canSend}
+          aria-label="ส่งคำถาม"
+          className="flex size-10 items-center justify-center rounded-full bg-gradient-to-r from-cyber-blue-deep to-cyber-blue text-cyber-on-accent shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none shrink-0"
+        >
+          <SendHorizontal className="size-5" />
+        </button>
       </div>
-      {!disabled && <p className="mt-2 pl-5 text-xs text-cyber-muted">กด Enter เพื่อส่ง · Shift+Enter เพื่อขึ้นบรรทัดใหม่</p>}
     </form>
   );
 }

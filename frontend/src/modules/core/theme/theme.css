@@ -7,7 +7,15 @@
 /* ---- Tailwind utilities: bg-cyber-blue, text-cyber-ink, font-display, font-label ... ---- */
 @theme inline {
   --color-cyber-blue: var(--copie-cyber-blue);
-  --color-cyber-blue-hover: #0b50d8;
+  --color-cyber-blue-hover: var(--copie-accent-hover);
+  --color-cyber-blue-deep: var(--copie-accent-deep);
+  --color-cyber-on-accent: var(--copie-accent-ink);
+  --color-cyber-strong: var(--copie-ink-strong);
+  --color-cyber-subtle: var(--copie-ink-subtle);
+  --color-cyber-edge: var(--copie-edge);
+  --color-cyber-glow: var(--copie-glow);
+  --color-cyber-field: var(--copie-field-line);
+  --color-cyber-surface: var(--color-white);
   --color-cyber-cyan: var(--copie-cyber-cyan);
   --color-cyber-ink: var(--copie-cyber-ink);
   --color-cyber-muted: var(--copie-cyber-muted);
@@ -15,6 +23,17 @@
   --color-cyber-paper: var(--copie-cyber-paper);
   --color-cyber-focus: var(--copie-cyber-focus);
 
+  /* Renderer component colors */
+  --color-copie-teal: var(--copie-cyber-blue);
+  --color-copie-teal-hover: var(--copie-accent-hover);
+  --color-deep-navy: var(--copie-cyber-ink);
+  --color-ink: var(--copie-cyber-ink);
+  --color-muted: var(--copie-cyber-muted);
+  --color-surface: var(--copie-cyber-white);
+  --color-surface-secondary: var(--copie-cyber-paper);
+  --color-mist: #eef5ff;
+  --color-danger: #dc2626;
+  --color-success: #16a34a;
 }
 
 @theme inline {
@@ -50,6 +69,15 @@
   --field-border-width: 1px;
   --radius: 0.625rem;
   --field-radius: 0.75rem;
+
+  /* Custom variables for charts and SVGs */
+  --color-copie-teal: var(--copie-cyber-blue);
+  --color-copie-teal-hover: #0b50d8;
+  --color-deep-navy: var(--copie-cyber-ink);
+  --color-ink: var(--copie-cyber-ink);
+  --color-muted: var(--copie-cyber-muted);
+  --color-surface: var(--copie-cyber-white);
+  --color-mist: var(--copie-cyber-line);
 }
 
 body {
@@ -91,3 +119,57 @@ body {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---- Custom White Cyberism Scrollbars ---- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(21, 95, 242, 0.45), rgba(0, 212, 255, 0.45));
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #155ff2, #00d4ff);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(21, 95, 242, 0.45) transparent;
+}
+
+.copie-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(21, 95, 242, 0.5) rgba(21, 95, 242, 0.03);
+}
+
+.copie-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.copie-scroll::-webkit-scrollbar-track {
+  background: rgba(21, 95, 242, 0.03);
+  border-radius: 9999px;
+  margin: 6px 0;
+}
+
+.copie-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(21, 95, 242, 0.55), rgba(0, 212, 255, 0.55));
+  border-radius: 9999px;
+  box-shadow: 0 0 6px rgba(21, 95, 242, 0.15);
+  transition: background 0.2s ease;
+}
+
+.copie-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #155ff2, #00d4ff);
+}
+

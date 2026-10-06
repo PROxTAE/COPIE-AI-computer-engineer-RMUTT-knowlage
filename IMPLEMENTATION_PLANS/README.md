@@ -34,6 +34,7 @@
 | 08 | `08_EXPORT_QA_EVAL.md` | P8 | Copy/Export + Eval set/script + QA + README |
 | 09 | `09_INTEGRATION_ACCEPTANCE_RUNBOOK.md` | P1 + P8 + ทุกคน | วิธีรวมระบบ, Demo 1–6, failure tests, release sign-off |
 | 10 | `10_WORK_COMPLETION_REPORT_TEMPLATE.md` | ทุกคน | รายงานจบงาน / handoff |
+| 11 | `11_INTERACTION_MODES_AND_MASCOT_MOTION.md` | งานต่อยอด | โหมดบุคลิก/ธีม, มาสคอตตามโหมด และ motion interaction |
 | AI | `AI_EXECUTION_INSTRUCTIONS.md` | ทุกคน | prompt สำหรับให้ AI ช่วยเขียนโดยไม่ทิ้งลายน้ำ |
 | PR | `PR_TEMPLATE.md` | ทุกคน | เนื้อหาที่ต้องกรอกใน PR (GitHub เติมให้อัตโนมัติ) |
 

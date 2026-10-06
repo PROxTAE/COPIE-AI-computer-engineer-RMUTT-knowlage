@@ -1,5 +1,6 @@
 """Verify Google ID tokens and extract the identity claims used by COPIE."""
 
+import logging
 from typing import TypedDict
 
 from google.auth.exceptions import GoogleAuthError
@@ -7,6 +8,8 @@ from google.auth.transport.requests import Request
 from google.oauth2 import id_token as google_id_token
 
 from app.core.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 class GoogleIdentity(TypedDict):
@@ -30,8 +33,11 @@ def verify_google_id_token(token: str) -> GoogleIdentity:
         raise GoogleAuthConfigurationError("GOOGLE_CLIENT_ID must be configured")
 
     try:
-        claims = google_id_token.verify_oauth2_token(token, Request(), client_id)
+        claims = google_id_token.verify_oauth2_token(
+            token, Request(), client_id, clock_skew_in_seconds=10
+        )
     except (GoogleAuthError, ValueError) as exc:
+        logger.warning("Google ID token verification failed: %s: %s", type(exc).__name__, exc)
         raise InvalidGoogleTokenError("Google ID token verification failed") from exc
 
     sub = claims.get("sub")
@@ -39,6 +45,7 @@ def verify_google_id_token(token: str) -> GoogleIdentity:
     name = claims.get("name")
     picture = claims.get("picture")
     if not all(isinstance(value, str) and value.strip() for value in (sub, email, name)):
+        logger.warning("Google ID token missing claims: sub=%r, email=%r, name=%r", sub, email, name)
         raise InvalidGoogleTokenError("Google ID token is missing required claims")
     if picture is not None and not isinstance(picture, str):
         raise InvalidGoogleTokenError("Google ID token contains an invalid picture claim")

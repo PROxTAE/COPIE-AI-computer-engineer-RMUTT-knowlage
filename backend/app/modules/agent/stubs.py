@@ -120,15 +120,36 @@ def get_recent_messages(db, conversation_id: str, limit: int = 6) -> list[dict]:
     return _conversations.get(conversation_id, {"messages": []})["messages"][-limit:]
 
 
+_user_skills_list: dict[str, list[SkillProfile]] = {}
+
+
 def save_skill_profile(db, user_id: str, scores: SkillScores, answers: list[AssessmentAnswer]) -> SkillProfile:
+    extra_data = getattr(scores, "_extra_data", None)
     profile = SkillProfile(
         scores=scores,
         top_skills=top_skills(scores),
         taken_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        topic=extra_data.get("topic") if extra_data else None,
+        score=extra_data.get("score") if extra_data else None,
+        title=extra_data.get("title") if extra_data else None,
+        dimensions=extra_data.get("dimensions") if extra_data else None,
+        custom_top_skills=extra_data.get("custom_top_skills") if extra_data else None,
     )
     _skills[user_id] = profile
+    _user_skills_list.setdefault(user_id, []).append(profile)
     return profile
 
 
 def get_latest_skill(db, user_id: str) -> SkillProfile | None:
     return _skills.get(user_id)
+
+
+def get_all_user_skills(db, user_id: str) -> list[SkillProfile]:
+    return _user_skills_list.get(user_id, [_skills[user_id]] if user_id in _skills else [])
+
+
+def get_skill_by_topic(db, user_id: str, topic: str) -> SkillProfile | None:
+    for p in get_all_user_skills(db, user_id):
+        if p.topic and p.topic.strip().lower() == topic.strip().lower():
+            return p
+    return None

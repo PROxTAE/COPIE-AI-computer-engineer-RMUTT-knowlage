@@ -1,6 +1,10 @@
 // LOCKED: change only via a contract/* PR approved by P1 + P3.
 // Keep in sync with backend/app/schemas/contract.py
 
+// ---------- Interaction mode ----------
+// Persona + theme of COPIE. Changes tone only; facts, sources and scores stay the same.
+export type InteractionMode = "normal" | "devil" | "developer";
+
 // ---------- User ----------
 export type UserType = "prospective" | "current_student" | "near_graduate";
 export type AgeRange = "under_18" | "18_20" | "21_23" | "24_plus";
@@ -34,10 +38,23 @@ export interface ProfileUpdate {
 export type SkillKey = "frontend" | "backend" | "network" | "embedded" | "ai_data" | "cybersecurity";
 export type SkillScores = Record<SkillKey, number>; // integer 0-100
 
+export interface SkillDimension {
+  key: string;
+  label: string;
+  short_label?: string | null;
+  score: number; // 0-100
+  description?: string | null;
+}
+
 export interface SkillProfile {
   scores: SkillScores;
   top_skills: SkillKey[];
   taken_at: string; // ISO 8601
+  topic?: string | null;
+  score?: number | null;
+  title?: string | null;
+  dimensions?: SkillDimension[] | null;
+  custom_top_skills?: string[] | null;
 }
 
 // ---------- Curriculum ----------
@@ -82,6 +99,10 @@ export interface SkillRadarData {
   top_skills: SkillKey[];
   summary: string; // markdown, written by LLM from the computed scores
   taken_at: string;
+  topic?: string | null;
+  title?: string | null;
+  dimensions?: SkillDimension[] | null;
+  custom_top_skills?: string[] | null;
 }
 
 export interface ErrorData { code: "llm_unavailable" | "tool_failed" | "unknown" }
@@ -112,7 +133,7 @@ interface BaseResponse {
   message: string; // markdown, what COPIE says
   sources: Source[]; // render SourceViewer whenever non-empty
   actions: Action[]; // follow-up chips
-  meta: { intent: Intent; tool: string | null; latency_ms: number };
+  meta: { intent: Intent; tool: string | null; latency_ms: number; interaction_mode?: InteractionMode }; // missing in old history = "normal"
 }
 
 export type AgentResponse =
@@ -126,12 +147,17 @@ export type AgentResponse =
 export type ResponseType = AgentResponse["response_type"];
 
 // ---------- Requests ----------
-export interface ChatRequest { conversation_id: string | null; message: string }
+export interface ChatRequest {
+  conversation_id: string | null;
+  message: string;
+  interaction_mode?: InteractionMode; // server default "normal"
+}
 
 export interface AssessmentSubmit {
   conversation_id: string;
   assessment_id: string;
   answers: { question_id: string; value: number }[];
+  interaction_mode?: InteractionMode; // server default "normal"
 }
 
 export type FeedbackReason = "incorrect" | "off_topic" | "hard_to_read" | "incomplete" | "other";
@@ -143,7 +169,28 @@ export interface FeedbackRequest {
 }
 
 // ---------- History ----------
-export interface ConversationSummary { id: string; title: string; updated_at: string }
+export interface ConversationSummary {
+  id: string;
+  title: string;
+  updated_at: string;
+  last_message?: string | null;
+  snippet?: string | null;
+  project_id?: string | null; // null/missing = not in a project
+}
+
+// PATCH /api/conversations/{id}: send only what changes; project_id: null removes it from its project
+export interface ConversationUpdate { title?: string; project_id?: string | null }
+
+// A user's folder that groups related conversations
+export interface Project {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  conversation_count: number;
+}
+
+export interface ProjectInput { name: string } // 1-60 chars
 
 export type ChatMessage =
   | { id: string; role: "user"; content: string; created_at: string }

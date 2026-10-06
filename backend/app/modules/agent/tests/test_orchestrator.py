@@ -110,10 +110,12 @@ def agent(monkeypatch):
     monkeypatch.setattr(g, "explain_skill", lambda *a: "สรุปจาก LLM")
     monkeypatch.setattr(g, "general_answer", lambda *a: "สวัสดีครับ")
 
-    def run(route: RouteResult, message: str = "ข้อความ", user: User = STUDENT, skill=None) -> AgentResponse:
+    def run(
+        route: RouteResult, message: str = "ข้อความ", user: User = STUDENT, skill=None, mode: str = "normal"
+    ) -> AgentResponse:
         monkeypatch.setattr(s, "get_user_context", lambda db, uid: {"user": user, "skill": skill})
         monkeypatch.setattr(orchestrator.intent_router, "route", lambda *a: route)
-        response = orchestrator.handle_chat(None, user, ChatRequest(message=message))
+        response = orchestrator.handle_chat(None, user, ChatRequest(message=message, interaction_mode=mode))
         AgentResponse.model_validate(response.model_dump())
         assert saved[-1] is response
         return response

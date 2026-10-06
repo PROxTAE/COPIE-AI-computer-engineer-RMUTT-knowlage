@@ -1,0 +1,91 @@
+{
+  "guild_id": "1549627122841165904",
+  "bot_id": "1550524849351426229",
+  "role_ids": {
+    "lead": "1549700266113114193",
+    "p1-core-mascot": "1552953119686791168",
+    "p2-user": "1552953121502658580",
+    "p3-agent": "1552953123549745244",
+    "p4-rag": "1552953125130993684",
+    "p5-tools": "1552953134115065888",
+    "p6-renderer": "1552953136635711509",
+    "p7-suggest-ml": "1552953138745450509",
+    "p8-export-qa": "1552953140670758982"
+  },
+  "channel_ids": {
+    "announcements": "1552953285504401430",
+    "project-summary": "1552953288343818271",
+    "general": "1552953290096910369",
+    "status": "1552953291783278705",
+    "blockers": "1552953293850804329",
+    "help": "1552953296107339786",
+    "role-draw": "1552953298724589658",
+    "p1-core-mascot": "1552953305251061780",
+    "p2-user": "1552953307700658326",
+    "p3-agent": "1552953309642362961",
+    "p4-rag": "1552953313660633178",
+    "p5-tools": "1552953316198060042",
+    "p6-renderer": "1552953319121494067",
+    "p7-suggest-ml": "1552953321021513758",
+    "p8-export-qa": "1552953323026382969",
+    "pull-requests": "1552953327841706045",
+    "ci-status": "1552953330324742184",
+    "merge-conflicts": "1552953333394968606",
+    "contract": "1552953335877865502"
+  },
+  "module_map": {
+    "agent": [
+      "p3-agent"
+    ],
+    "contract": [
+      "p1-core-mascot",
+      "p3-agent"
+    ],
+    "core": [
+      "p1-core-mascot"
+    ],
+    "docs": [
+      "lead"
+    ],
+    "export": [
+      "p8-export-qa"
+    ],
+    "hotfix": [
+      "lead"
+    ],
+    "intent-ml": [
+      "p7-suggest-ml"
+    ],
+    "mascot": [
+      "p1-core-mascot"
+    ],
+    "qa": [
+      "p8-export-qa"
+    ],
+    "rag": [
+      "p4-rag"
+    ],
+    "release": [
+      "lead"
+    ],
+    "renderer": [
+      "p6-renderer"
+    ],
+    "suggest": [
+      "p7-suggest-ml"
+    ],
+    "tools": [
+      "p5-tools"
+    ],
+    "user": [
+      "p2-user"
+    ]
+  },
+  "webhooks": {
+    "announcements": "https://discord.com/api/webhooks/1552953525896749157/H6W59bwEuhBYFrhh6ld8u4dO2JwgCwVO2JgXsdFVyB1ktXFdkCyMPlJGHGKyBOq5Z2Zr",
+    "pull-requests": "https://discord.com/api/webhooks/1552953536646619137/ajUReB5_89Pg3ZsGJSNj0YsGdrqJkaa2FtqhWE8NAVq_CIc9cjhC7ZNy2S1TQXje2uB3",
+    "ci-status": "https://discord.com/api/webhooks/1552953545295142942/-0cDk3Vp5hwu4natiLOpZ8U7PNRxKTHLQPpDzUI1Acx9Lig6EzQxoLv8eeD_X4iv4jmC",
+    "merge-conflicts": "https://discord.com/api/webhooks/1552953551871938631/TmdJXNUTD1X-Clk0TS5CUxuoaGM-h9hoeBh836LO549AaiZI_Jcwgz31J_bGeE0MryZJ",
+    "contract": "https://discord.com/api/webhooks/1552953559425749013/uR4uEY4Ul2FUsoxFVTN7OqEJV23geei89vVTJVITUqMSBwvkRLFteI3Llbklz96JxKUe"
+  }
+}

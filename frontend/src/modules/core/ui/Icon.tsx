@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 export const ICON_NAMES = [
   "arrow-left", "book-open", "calendar", "chart-bars", "chevron-right",
   "close", "copy", "document", "eye-off", "filter", "graduation-cap",
-  "history", "info", "menu", "profile", "refresh", "search", "send",
+  "history", "info", "menu", "mode-developer", "mode-devil", "profile", "refresh", "search", "send",
   "spark", "thumb-down", "thumb-up",
 ] as const;
 

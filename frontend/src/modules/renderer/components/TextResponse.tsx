@@ -34,11 +34,13 @@ export function TextResponse({
   return (
     <section className="copie-response flex flex-col gap-4">
       {showEyebrow && (
-        <p className="copie-eyebrow flex items-center gap-2 text-xs font-semibold tracking-[0.2em] text-copie-teal">
-          <span aria-hidden="true" className="inline-block h-2 w-2 bg-copie-teal" />
-          AI AGENT RESPONSE
-          <span aria-hidden="true" className="copie-response-rule h-px flex-1 bg-copie-teal/25" />
-        </p>
+        <div className="flex items-center gap-2">
+          <span className="size-2 bg-cyber-blue" />
+          <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
+            AI AGENT RESPONSE
+          </span>
+          <span aria-hidden="true" className="h-px flex-1 bg-gradient-to-r from-cyber-blue/25 to-transparent ml-2" />
+        </div>
       )}
 
       {/* ระหว่างพิมพ์ คลิกที่ใดก็ได้ในคำตอบเพื่อแสดงข้อความเต็มทันที */}
