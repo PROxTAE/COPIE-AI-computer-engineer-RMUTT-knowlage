@@ -6,3 +6,4 @@
 @import "../modules/core/theme/theme.css";
 @import "../modules/core/theme/modes.css";
 @import "../modules/mascot/mascot-stage.css";
+@import "../modules/user/auth/login.css";

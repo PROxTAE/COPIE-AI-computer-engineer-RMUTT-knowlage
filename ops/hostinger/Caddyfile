@@ -1,0 +1,8 @@
+tntproduction.tech {
+    encode zstd gzip
+    reverse_proxy web:3000
+}
+
+www.tntproduction.tech {
+    redir https://tntproduction.tech{uri} permanent
+}

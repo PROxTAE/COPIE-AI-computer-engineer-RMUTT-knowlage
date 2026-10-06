@@ -185,6 +185,9 @@
 
 /* ---- kit pieces that hardcode the light theme ---- */
 .copie-ui[data-copie-mode] {
+  /* clip, not hidden: decorative layers overflow the page, and a hidden overflow can still be
+     scrolled by focus/scrollIntoView, which shifts the whole page out of place. */
+  overflow: clip;
   background: var(--copie-cyber-white);
   color: var(--copie-cyber-ink);
   transition: background-color 400ms ease, color 400ms ease;
@@ -260,4 +263,25 @@
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(root) { animation: none; }
+}
+
+/* ---- HUD corner brackets (CyberHudFrame) ---- */
+.copie-hud-corner {
+  position: absolute;
+  display: none;
+  width: 24px;
+  height: 24px;
+  border-color: var(--copie-cyber-blue);
+}
+
+@media (min-width: 768px) {
+  .copie-hud-corner { display: block; }
+}
+
+.copie-hud-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--copie-glow);
+  box-shadow: 0 0 8px var(--copie-glow);
 }

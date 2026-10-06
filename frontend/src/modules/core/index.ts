@@ -6,7 +6,7 @@ export { WorkspaceLayout } from "./workspace/WorkspaceLayout";
 export { MessageList } from "./workspace/MessageList";
 export { useChatStore, layoutFromResponse, mascotStateFromResponse } from "./chatStore";
 export type { WorkspaceMode } from "./chatStore";
-export { AppHeader, ChatInput, CyberHudFrame, HistoryButton, Icon, ICON_NAMES, StatusLabel } from "./ui";
+export { AppHeader, ChatInput, CyberHudFrame, HistoryButton, Icon, ICON_NAMES, MODE_INFO, ModeSwitcher, StatusLabel } from "./ui";
 
 export type { IconName } from "./ui";
 export { api, chatApi, configureApiAuth, notifyApiAuthChanged, subscribeApiAuth, getApiAuthSnapshot, ApiError } from "./api";
