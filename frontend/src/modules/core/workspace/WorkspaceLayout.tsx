@@ -60,7 +60,9 @@ export function WorkspaceLayout({
   const showMascot = layout !== "hidden";
   const showReadButton = hasResponse && Boolean(onRead);
   // Height kept free below COPIE for the status label, the mode line and the "read answer" button.
-  const mascotReserve = 3 + (interactionMode !== "normal" ? 2 : 0) + (showReadButton ? 3.5 : 0);
+  // The button's 3.5rem is always reserved (the button itself is pinned to the stage bottom), so
+  // showing or hiding it never resizes the mascot or moves anything else.
+  const mascotReserve = 3 + (interactionMode !== "normal" ? 2 : 0) + 3.5;
 
   return (
     <MotionConfig reducedMotion="user">
@@ -135,11 +137,6 @@ export function WorkspaceLayout({
               </motion.div>
               <StatusLabel label={`COPIE / ${copieState}`} className="relative mt-2 text-[10px] sm:text-xs" />
               {interactionMode !== "normal" && <div className="copie-mode-effect relative mt-1" aria-hidden="true" />}
-              {showReadButton && (
-                <Button variant="outline" onPress={onRead} className="relative mt-3 rounded-full border-cyber-blue/40 bg-cyber-surface text-cyber-strong shadow-sm font-semibold text-xs sm:text-sm hover:border-cyber-blue hover:text-cyber-blue">
-                  {isInteractive ? "ดูผลวิเคราะห์ทักษะ" : "อ่านคำตอบ"}
-                </Button>
-              )}
             </div>
           ) : (
             <motion.div
@@ -158,6 +155,19 @@ export function WorkspaceLayout({
               />
             </motion.div>
           )
+        )}
+        {/* Pinned to the bottom of the stage, just above the input: out of the flow, so it can
+            never push the mascot or the top bar. */}
+        {layout === "center" && showReadButton && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-2 z-20 flex justify-center px-4">
+            <Button
+              variant="outline"
+              onPress={onRead}
+              className="pointer-events-auto rounded-full border-cyber-blue/40 bg-cyber-surface text-cyber-strong shadow-md font-semibold text-xs sm:text-sm hover:border-cyber-blue hover:text-cyber-blue"
+            >
+              {isInteractive ? "ดูผลวิเคราะห์ทักษะ" : "อ่านคำตอบ"}
+            </Button>
+          </div>
         )}
       </section>
     </MotionConfig>
