@@ -3,7 +3,13 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.modules.agent import generator, orchestrator
-from app.modules.agent.prompts import RAG_SYSTEM, STYLE_INSTRUCTIONS, with_style
+from app.modules.agent.prompts import (
+    DYNAMIC_SKILL_EXPLAIN_SYSTEM,
+    PERSONA,
+    RAG_SYSTEM,
+    STYLE_INSTRUCTIONS,
+    with_style,
+)
 from app.modules.agent.tests.test_orchestrator import (  # noqa: F401 - fixtures
     CHUNK,
     SKILL,
@@ -26,17 +32,24 @@ def test_normal_mode_keeps_the_original_prompt() -> None:
 
 
 @pytest.mark.parametrize("mode", ["devil", "developer"])
-def test_style_comes_after_the_accuracy_rules(mode: str) -> None:
+def test_mode_swaps_persona_and_keeps_task_rules_first(mode: str) -> None:
     system = with_style(RAG_SYSTEM, mode)
-    assert system.startswith(RAG_SYSTEM.rstrip())
-    assert system.index("ห้ามเดา") < system.index("[สไตล์การตอบ")
+    assert PERSONA not in system  # the polite default persona is replaced, not just appended to
+    assert RAG_SYSTEM[len(PERSONA):].strip() in system
+    assert system.index("ห้ามเดา") < system.index("[บุคลิก")
     assert "ห้ามเปลี่ยนข้อเท็จจริง" in system
 
 
-def test_devil_style_forbids_personal_attacks() -> None:
+def test_soft_tone_rules_are_dropped_outside_normal() -> None:
+    assert "ให้กำลังใจผู้ใช้" in with_style(DYNAMIC_SKILL_EXPLAIN_SYSTEM, "normal")
+    assert "ให้กำลังใจผู้ใช้" not in with_style(DYNAMIC_SKILL_EXPLAIN_SYSTEM, "devil")
+
+
+def test_devil_is_harsh_on_excuses_but_not_on_the_person() -> None:
     devil = STYLE_INSTRUCTIONS["devil"]
-    assert "ห้ามโจมตีตัวตน" in devil
-    assert "ห้ามดูถูก" in devil
+    assert "ห้ามคำหยาบ" in devil
+    assert "ห้ามบอกให้เลิกเรียน" in devil
+    assert "ทำร้ายตัวเอง" in devil  # crisis is the only reason to drop the harsh tone
 
 
 @pytest.fixture
@@ -55,15 +68,26 @@ def test_generator_uses_the_mode_of_the_block(captured) -> None:
     with generator.interaction_mode("developer"):
         generator.general_answer("debug ยังไง", "current_student", 2, [])
     assert "Developer Mode" in captured["system"]
+    assert "Developer Mode" in captured["prompt"]  # reminder at the end of the user prompt
     generator.general_answer("debug ยังไง", "current_student", 2, [])
     assert "Developer Mode" not in captured["system"]
+    assert captured["prompt"].endswith("ข้อความ: debug ยังไง")
+
+
+def test_devil_answers_with_more_temperature(monkeypatch) -> None:
+    seen: list[float] = []
+    monkeypatch.setattr(generator, "generate_text", lambda system, prompt, *, temperature=0.3: seen.append(temperature) or "ok")
+    generator.general_answer("x", None, None, [])
+    with generator.interaction_mode("devil"):
+        generator.general_answer("x", None, None, [])
+    assert seen[1] > seen[0]
 
 
 def test_unknown_mode_falls_back_to_normal(captured) -> None:
     with generator.interaction_mode("root"):
         assert generator.current_interaction_mode() == "normal"
         generator.general_answer("สวัสดี", None, None, [])
-    assert "[สไตล์การตอบ" not in captured["system"]
+    assert "[บุคลิก" not in captured["system"]
 
 
 def test_fallback_template_follows_the_mode() -> None:

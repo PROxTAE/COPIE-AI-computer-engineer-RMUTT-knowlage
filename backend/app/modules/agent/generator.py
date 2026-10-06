@@ -14,6 +14,8 @@ from app.modules.agent.prompts import (
     DYNAMIC_SKILL_EXPLAIN_SYSTEM,
     FALLBACK_NUDGE,
     GENERAL_SYSTEM,
+    MODE_REMINDERS,
+    MODE_TEMPERATURE_BOOST,
     OVERVIEW_SYNTHESIS_SYSTEM,
     RAG_SYSTEM,
     SKILL_INQUIRY_SYSTEM,
@@ -42,8 +44,15 @@ def current_interaction_mode() -> str:
     return _interaction_mode.get()
 
 
-def _styled(system: str) -> str:
-    return with_style(system, _interaction_mode.get())
+def _generate(system: str, prompt: str, *, temperature: float = 0.3) -> str:
+    """generate_text with the current mode applied: persona/style in the system prompt, a short
+    reminder at the end of the user prompt, and a per-mode temperature boost."""
+    mode = _interaction_mode.get()
+    return generate_text(
+        with_style(system, mode),
+        prompt + MODE_REMINDERS.get(mode, ""),
+        temperature=min(1.0, temperature + MODE_TEMPERATURE_BOOST.get(mode, 0.0)),
+    )
 
 
 def answer_from_rag(
@@ -63,13 +72,13 @@ def answer_from_rag(
     if skill_context:
         user_info += f"{skill_context}\n"
     prefix = f"{user_info}\n" if user_info else ""
-    return generate_text(_styled(RAG_SYSTEM), f"{prefix}เอกสาร:\n{documents}\n\nคำถาม: {question}")
+    return _generate(RAG_SYSTEM, f"{prefix}เอกสาร:\n{documents}\n\nคำถาม: {question}")
 
 
 def explain_skill(scores: SkillScores, top: list[str], user_type: str | None, study_year: int | None) -> str:
     lines = "\n".join(f"- {SKILL_NAMES_TH.get(k, k)}: {v}" for k, v in scores.model_dump().items())
-    return generate_text(
-        _styled(SKILL_SYSTEM),
+    return _generate(
+        SKILL_SYSTEM,
         f"ผู้ใช้: {_who(user_type, study_year)}\nคะแนน:\n{lines}\n"
         f"ด้านเด่น: {', '.join(SKILL_NAMES_TH.get(k, k) for k in top)}",
     )
@@ -98,7 +107,7 @@ def explain_dynamic_skill(
         f"{dim_lines}\n"
         f"ประเมินและให้คำแนะนำในการพัฒนาทักษะ {topic} โดยเชื่อมโยงด้านที่ทำได้ดีและด้านที่สามารถพัฒนาต่อยอดได้"
     )
-    return generate_text(_styled(DYNAMIC_SKILL_EXPLAIN_SYSTEM), prompt)
+    return _generate(DYNAMIC_SKILL_EXPLAIN_SYSTEM, prompt)
 
 
 def answer_skill_inquiry(
@@ -115,7 +124,7 @@ def answer_skill_inquiry(
         f"บทสนทนาล่าสุด:\n{history}\n\n"
         f"คำถามของผู้ใช้: {message}"
     )
-    return generate_text(_styled(SKILL_INQUIRY_SYSTEM), prompt, temperature=0.4)
+    return _generate(SKILL_INQUIRY_SYSTEM, prompt, temperature=0.4)
 
 
 def general_answer(
@@ -127,8 +136,8 @@ def general_answer(
 ) -> str:
     history = "\n".join(f"{m.get('role')}: {m.get('text')}" for m in recent) or "-"
     skill_part = f"\n{skill_context}" if skill_context else ""
-    return generate_text(
-        _styled(GENERAL_SYSTEM),
+    return _generate(
+        GENERAL_SYSTEM,
         f"ผู้ใช้: {_who(user_type, study_year)}{skill_part}\nบทสนทนาล่าสุด:\n{history}\n\nข้อความ: {message}",
         temperature=0.5,
     )
@@ -152,7 +161,7 @@ def synthesize_curriculum_intro(
         f"ตัวอย่างรายวิชา: {course_list}\n"
         f"เขียนข้อความเกริ่นนำ แนะนำภาพรวมเทอมนี้และวิชาสำคัญอย่างเป็นกันเอง"
     )
-    return generate_text(_styled(CURRICULUM_SYNTHESIS_SYSTEM), prompt, temperature=0.3)
+    return _generate(CURRICULUM_SYNTHESIS_SYSTEM, prompt, temperature=0.3)
 
 
 def synthesize_curriculum_overview(
@@ -167,7 +176,7 @@ def synthesize_curriculum_overview(
         f"หลักสูตรวิศวกรรมคอมพิวเตอร์ 4 ปี\n"
         f"เขียนข้อความสรุปภาพรวมการเรียนการสอนตลอด 4 ปีสั้นๆ ให้น่าสนใจ"
     )
-    return generate_text(_styled(OVERVIEW_SYNTHESIS_SYSTEM), prompt, temperature=0.3)
+    return _generate(OVERVIEW_SYNTHESIS_SYSTEM, prompt, temperature=0.3)
 
 
 def synthesize_course_detail(
@@ -184,7 +193,7 @@ def synthesize_course_detail(
         f"คำอธิบาย: {course.description or '-'}\n"
         f"เขียนสรุปแนะนำวิชานี้และทักษะที่จะได้รับอย่างเป็นกันเองและกระชับ"
     )
-    return generate_text(_styled(COURSE_SYNTHESIS_SYSTEM), prompt, temperature=0.3)
+    return _generate(COURSE_SYNTHESIS_SYSTEM, prompt, temperature=0.3)
 
 
 def skill_summary_template(top: list[str]) -> str:
