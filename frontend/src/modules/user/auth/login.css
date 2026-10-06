@@ -1,0 +1,52 @@
+/* Login page backdrop and accents (LoginPage.tsx). Owner: P2. Colours follow the mode tokens. */
+
+.copie-login {
+  --spot-x: 70vw;
+  --spot-y: 40vh;
+}
+
+/* Two slow colour clouds drifting behind everything. */
+.copie-login-aurora {
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 32% at 72% 38%, rgb(var(--copie-accent-rgb) / 14%), transparent 70%),
+    radial-gradient(30% 28% at 22% 72%, color-mix(in srgb, var(--copie-glow) 16%, transparent), transparent 70%);
+  filter: blur(8px);
+  animation: copie-login-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes copie-login-drift {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to { transform: translate3d(3%, 2%, 0) scale(1.06); }
+}
+
+/* Soft light under the cursor. */
+.copie-login-spot {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(520px circle at var(--spot-x) var(--spot-y), rgb(var(--copie-accent-rgb) / 9%), transparent 65%);
+}
+
+.copie-login-gradient {
+  background: linear-gradient(100deg, var(--copie-cyber-blue) 0%, var(--copie-glow) 55%, var(--copie-cyber-blue) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: copie-login-shine 6s ease-in-out infinite;
+}
+
+@keyframes copie-login-shine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copie-login-aurora,
+  .copie-login-gradient { animation: none; }
+}
