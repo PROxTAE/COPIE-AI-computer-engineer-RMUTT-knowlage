@@ -138,7 +138,7 @@ export function ChatPage({
 
   return (
     <MascotModeProvider value={interactionMode}>
-      <main className="copie-ui flex h-dvh min-h-0 flex-col relative overflow-clip" data-copie-mode={interactionMode}>
+      <main className="copie-ui flex h-full min-h-0 flex-col relative overflow-clip" data-copie-mode={interactionMode}>
         <CyberHudFrame />
         <div className="copie-floor" aria-hidden="true" />
         <div data-dock-guard="top" className="relative z-30">
