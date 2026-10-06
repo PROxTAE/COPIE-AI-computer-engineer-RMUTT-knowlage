@@ -8,39 +8,30 @@ interface CyberHudFrameProps {
 export function CyberHudFrame({ children, showStatusFooter = true }: CyberHudFrameProps) {
   return (
     <div className="pointer-events-none fixed inset-0 z-20 overflow-hidden" aria-hidden="true">
-      {/* Top-Left Corner Bracket */}
-      <div className="absolute top-4 left-4 sm:top-6 sm:left-8 hidden md:block">
-        <div className="h-2 w-2 bg-cyber-glow shadow-[0_0_8px_var(--copie-glow)]" />
-        <div className="mt-1 h-8 w-8 sm:h-12 sm:w-12 rounded-tl-xl border-t-2 border-l-2 border-cyber-blue" />
+      {/* Corner brackets live in the outer 12px margin (arms 24px), clear of header and footer text
+          that starts at 48px from the edge. */}
+      <div className="copie-hud-corner left-3 top-3 rounded-tl-lg border-l-2 border-t-2">
+        <span className="copie-hud-dot -left-[3px] -top-[3px]" />
       </div>
-
-      {/* Top-Right Corner Bracket */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-8 hidden md:flex flex-col items-end">
-        <div className="h-2 w-2 bg-cyber-glow shadow-[0_0_8px_var(--copie-glow)]" />
-        <div className="mt-1 h-8 w-8 sm:h-12 sm:w-12 rounded-tr-xl border-t-2 border-r-2 border-cyber-blue" />
+      <div className="copie-hud-corner right-3 top-3 rounded-tr-lg border-r-2 border-t-2">
+        <span className="copie-hud-dot -right-[3px] -top-[3px]" />
       </div>
-
-      {/* Bottom-Left Corner Bracket */}
-      <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-8 hidden md:flex flex-col justify-end">
-        <div className="mb-1 h-8 w-8 sm:h-12 sm:w-12 rounded-bl-xl border-b-2 border-l-2 border-cyber-blue" />
-        <div className="h-2 w-2 bg-cyber-glow shadow-[0_0_8px_var(--copie-glow)]" />
+      <div className="copie-hud-corner bottom-3 left-3 rounded-bl-lg border-b-2 border-l-2">
+        <span className="copie-hud-dot -bottom-[3px] -left-[3px]" />
       </div>
-
-      {/* Bottom-Right Corner Bracket */}
-      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-8 hidden md:flex flex-col items-end justify-end">
-        <div className="mb-1 h-8 w-8 sm:h-12 sm:w-12 rounded-br-xl border-b-2 border-r-2 border-cyber-blue" />
-        <div className="h-2 w-2 bg-cyber-glow shadow-[0_0_8px_var(--copie-glow)]" />
+      <div className="copie-hud-corner bottom-3 right-3 rounded-br-lg border-b-2 border-r-2">
+        <span className="copie-hud-dot -bottom-[3px] -right-[3px]" />
       </div>
 
       {/* Left side notch & ticks */}
-      <div className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
         <div className="h-4 w-1 bg-cyber-blue/70 rounded-full" />
         <div className="h-1.5 w-1.5 bg-cyber-glow" />
         <div className="h-1.5 w-1.5 bg-cyber-blue/40" />
       </div>
 
       {/* Right side dotted rail (from mockups) */}
-      <div className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-2">
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-2">
         <div className="h-1.5 w-1.5 rounded-full bg-cyber-blue" />
         <div className="h-1.5 w-1.5 rounded-full bg-cyber-glow" />
         <div className="h-1.5 w-1.5 rounded-full bg-cyber-blue/70" />

@@ -1,8 +1,12 @@
 "use client";
 
 import { EyeOff, BookOpen, Lightbulb, ListPlus, Compass } from "lucide-react";
+import { motion } from "motion/react";
+
 import { MascotStage, type CopieMascotState } from "@/modules/mascot";
 import type { InteractionMode } from "@/types/contract";
+
+import { MASCOT_LAYOUT_ID, MASCOT_MORPH } from "./mascotMorph";
 
 interface MascotSidebarProps {
   copieState: CopieMascotState;
@@ -70,6 +74,7 @@ export function MascotSidebar({
       <div className="relative flex flex-col items-center justify-center flex-1 w-full min-h-0 my-auto py-2">
         {/* Mascot on its interactive stage (halo, parallax, reactions) */}
         <div className="relative z-10 flex items-center justify-center">
+          <motion.div layoutId={MASCOT_LAYOUT_ID} transition={MASCOT_MORPH} className="relative">
           <MascotStage
             state={copieState}
             mode={interactionMode}
@@ -78,6 +83,7 @@ export function MascotSidebar({
             haloClassName="max-w-[280px] xl:max-w-[320px] aspect-square opacity-90"
             imageClassName="max-h-[min(30dvh,240px)] xl:max-h-[min(35dvh,280px)] w-auto! drop-shadow-[0_12px_24px_rgb(var(--copie-accent-rgb)/0.15)]"
           />
+          </motion.div>
         </div>
 
         {/* Mascot Quote & Tagline */}

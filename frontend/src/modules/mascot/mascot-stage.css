@@ -264,3 +264,10 @@
   .copie-dock-figure,
   .copie-dock-ground { animation: none; }
 }
+
+/* Light behind COPIE that follows the pointer. The mask fades its own edges, so even when the
+   light moves to the side its box never shows as a hard cut against the background. */
+.copie-stage-glow {
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 55%, transparent 100%);
+}

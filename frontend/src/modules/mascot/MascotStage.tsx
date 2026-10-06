@@ -29,6 +29,12 @@ type MascotStageProps = {
   haloClassName?: string;
   /** Let COPIE drop an occasional hint in its bubble when the page is quiet. */
   chatter?: boolean;
+  /** Line shown in the bubble when the stage first appears. */
+  greeting?: string;
+  /** Replaces the mode's idle hints (keep the array stable, e.g. a module constant). */
+  idleLines?: readonly string[];
+  /** Say something from outside: a new `id` shows `text` in the bubble. */
+  message?: { id: string | number; text: string } | null;
 };
 
 type Bubble = { id: number; text: string };
@@ -75,6 +81,9 @@ export function MascotStage({
   imageClassName = "",
   haloClassName = "",
   chatter = false,
+  greeting,
+  idleLines,
+  message = null,
 }: MascotStageProps) {
   const reduced = useReducedMotion() ?? false;
   const personality = PERSONALITY[mode];
@@ -90,7 +99,8 @@ export function MascotStage({
   const prevState = useRef(state);
   const prevMode = useRef(mode);
 
-  const [bubble, setBubble] = useState<Bubble | null>(null);
+  const [bubble, setBubble] = useState<Bubble | null>(() => (greeting ? { id: 1, text: greeting } : null));
+  const [seenMessage, setSeenMessage] = useState(message?.id);
   const [seenMode, setSeenMode] = useState(mode);
   const [seenState, setSeenState] = useState(state);
 
@@ -98,6 +108,10 @@ export function MascotStage({
   if (seenMode !== mode) {
     setSeenMode(mode);
     setBubble({ id: (bubble?.id ?? 0) + 1, text: personality.greet });
+  }
+  if (message && message.id !== seenMessage) {
+    setSeenMessage(message.id);
+    setBubble({ id: (bubble?.id ?? 0) + 1, text: message.text });
   }
   if (seenState !== state) {
     setSeenState(state);
@@ -372,7 +386,7 @@ export function MascotStage({
 
   // ---- an occasional hint when the page is quiet ----
   useEffect(() => {
-    if (!chatter || state !== "idle") return;
+    if (!chatter || (state !== "idle" && state !== "welcome")) return;
     let lastActivity = performance.now();
     let shown = 0;
     const touch = () => { lastActivity = performance.now(); };
@@ -380,7 +394,7 @@ export function MascotStage({
       if (document.hidden || shown >= CHATTER_MAX || performance.now() - lastActivity < CHATTER_AFTER_MS) return;
       shown += 1;
       lastActivity = performance.now();
-      const text = pick(PERSONALITY[mode].idle, lastLine.current);
+      const text = pick(idleLines ?? PERSONALITY[mode].idle, lastLine.current);
       lastLine.current = text;
       setBubble((current) => ({ id: (current?.id ?? 0) + 1, text }));
     }, 5000);
@@ -391,7 +405,7 @@ export function MascotStage({
       window.removeEventListener("pointerdown", touch);
       window.removeEventListener("keydown", touch);
     };
-  }, [chatter, state, mode]);
+  }, [chatter, state, mode, idleLines]);
 
   const isRail = layout === "rail";
 
@@ -407,7 +421,7 @@ export function MascotStage({
         <div className={`copie-halo copie-halo-spin ${haloClassName}`} />
       </motion.div>
       <motion.div
-        className="pointer-events-none absolute inset-[-12%] rounded-full"
+        className="copie-stage-glow pointer-events-none absolute inset-[-12%] rounded-full"
         style={{ backgroundImage: glow, opacity: glowOpacity }}
         aria-hidden="true"
       />
