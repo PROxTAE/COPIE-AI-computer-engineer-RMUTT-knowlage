@@ -9,7 +9,7 @@ type AppHeaderProps = {
 
 export function AppHeader({ profile, historyAction, status = "AI // ACTIVE", modeControl }: AppHeaderProps) {
   return (
-    <header className="relative z-10 flex items-center justify-between gap-3 px-4 py-4 sm:px-12 sm:py-5">
+    <header className="relative z-10 flex items-center justify-between gap-3 copie-safe-top px-4 py-4 sm:px-12 sm:py-5">
       {/* Brand Logo & Subtitle */}
       <div className="flex min-w-0 items-center gap-3 sm:gap-4">
         <span className="copie-wordmark text-2xl sm:text-4xl font-black text-cyber-strong tracking-tighter">
