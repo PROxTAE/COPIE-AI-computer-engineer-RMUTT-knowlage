@@ -29,7 +29,7 @@ function ChatWithUser({ debug }: AuthenticatedChatPageProps) {
   };
 
   return (
-    <div className="flex h-dvh min-h-0 overflow-hidden">
+    <div className="fixed inset-0 flex min-h-0 overflow-hidden">
       <HistorySidebar
         desktopOpen={desktopHistoryOpen}
         mobileOpen={mobileHistoryOpen}
@@ -37,7 +37,7 @@ function ChatWithUser({ debug }: AuthenticatedChatPageProps) {
         onCloseMobile={() => setMobileHistoryOpen(false)}
         refreshKey={latestAssistant?.id ?? ""}
       />
-      <div className="min-w-0 flex-1">
+      <div className="min-h-0 min-w-0 flex-1">
         <ChatPage
           debug={debug}
           userType={user.user_type}

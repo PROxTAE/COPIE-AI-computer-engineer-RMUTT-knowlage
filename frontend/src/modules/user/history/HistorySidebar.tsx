@@ -347,7 +347,7 @@ export function HistorySidebar({
   return (
     <>
       {desktopOpen && (
-        <aside className="relative z-40 hidden h-dvh w-84 max-w-[340px] shrink-0 flex-col overflow-hidden border-r border-cyber-edge bg-white p-5 shadow-lg lg:flex">
+        <aside className="relative z-40 hidden h-full w-84 max-w-[340px] shrink-0 flex-col overflow-hidden border-r border-cyber-edge bg-white p-5 shadow-lg lg:flex">
           {renderContent(false)}
         </aside>
       )}
