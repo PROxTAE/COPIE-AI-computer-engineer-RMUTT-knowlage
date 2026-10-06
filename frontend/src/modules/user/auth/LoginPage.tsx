@@ -122,7 +122,7 @@ export function LoginPage() {
           <CyberHudFrame showStatusFooter={false} />
           <div className="copie-floor" aria-hidden="true" />
 
-          <header className="relative z-30 flex items-center justify-between px-6 py-6 sm:px-12">
+          <header className="copie-safe-top relative z-30 flex items-center justify-between px-6 pb-6 sm:px-12">
             <div className="flex items-center gap-4">
               <span className="copie-wordmark text-3xl sm:text-4xl font-black text-cyber-strong tracking-tighter">COPIE</span>
               <span className="hidden sm:block border-l-2 border-cyber-blue pl-4 font-label text-[10px] sm:text-[11px] font-bold uppercase leading-tight tracking-[0.16em] text-cyber-subtle">

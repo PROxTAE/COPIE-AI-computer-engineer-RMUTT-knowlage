@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Chakra_Petch, IBM_Plex_Sans_Thai, Kanit, Unbounded } from "next/font/google";
 import "./globals.css";
 
@@ -33,6 +33,14 @@ export const metadata: Metadata = {
   description: "AI Assistant ภาควิชาวิศวกรรมคอมพิวเตอร์ มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี",
 };
 
+// viewport-fit=cover lets env(safe-area-inset-*) report the real notch / status bar sizes.
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
+
+// In-app browsers (Discord, LINE, Instagram, Facebook ...) draw their own bar over the top of the
+// page without reporting a safe area, which hid the header. Flag them so CSS can leave a gap.
+// iOS in-app webviews have no "Safari/" token; Android ones add "wv" or the app's name.
+const IN_APP_SCRIPT = `(function(){var u=navigator.userAgent;var ios=/iPhone|iPad|iPod/.test(u)&&!/Safari\//.test(u)&&!/CriOS|FxiOS|EdgiOS/.test(u);var app=/FBAN|FBAV|Instagram|Line\/|Discord|; wv\)|MicroMessenger|TikTok|Snapchat|Twitter/i.test(u);if(ios||app)document.documentElement.setAttribute('data-inapp','1');})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -40,7 +48,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-theme="light"
       className={`light ${heading.variable} ${body.variable} ${label.variable} ${wordmark.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="min-h-full font-sans">
+        <script dangerouslySetInnerHTML={{ __html: IN_APP_SCRIPT }} />
+        {children}
+      </body>
     </html>
   );
 }

@@ -285,3 +285,20 @@
   background: var(--copie-glow);
   box-shadow: 0 0 8px var(--copie-glow);
 }
+
+/* ---- Top safe area ----
+   Real notch / status bar sizes where the browser reports them; inside in-app browsers (flagged on
+   <html data-inapp> by the root layout) that cover the page top without reporting it, keep a fixed
+   gap so the logo, mode switcher and History button stay reachable. */
+.copie-safe-top {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+html[data-inapp] .copie-safe-top {
+  padding-top: max(4rem, env(safe-area-inset-top));
+}
+
+@media (min-width: 640px) {
+  .copie-safe-top { padding-top: max(1.25rem, env(safe-area-inset-top)); }
+  html[data-inapp] .copie-safe-top { padding-top: max(1.25rem, env(safe-area-inset-top)); }
+}
