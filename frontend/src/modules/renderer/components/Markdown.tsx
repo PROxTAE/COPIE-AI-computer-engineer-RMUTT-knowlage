@@ -85,8 +85,8 @@ function Heading({ level, children }: { level: 1 | 2; children: ReactNode }) {
   const size = level === 1 ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl";
   return (
     <div className="relative flex flex-wrap items-center gap-3 my-2">
-      <span aria-hidden="true" className="h-8 w-1.5 shrink-0 rounded-full bg-[#00d4ff]" />
-      <Tag className={`copie-heading font-display ${size} font-black italic tracking-tight text-[#080b12]`}>
+      <span aria-hidden="true" className="h-8 w-1.5 shrink-0 rounded-full bg-cyber-glow" />
+      <Tag className={`copie-heading font-display ${size} font-black italic tracking-tight text-cyber-strong`}>
         {children}
       </Tag>
       <span

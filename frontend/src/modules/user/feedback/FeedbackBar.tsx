@@ -74,14 +74,14 @@ export function FeedbackBar({ messageId, initialFeedback, messageContent }: Feed
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-[#d2e0f5]/60 mt-1" aria-label="ให้ feedback คำตอบนี้">
+    <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-cyber-edge/60 mt-1" aria-label="ให้ feedback คำตอบนี้">
       {/* Copy Button matching Mockup 05 */}
       {messageContent && (
         <>
           <button
             type="button"
             onClick={() => { void copyToClipboard(); }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#d2e0f5] bg-white px-4 py-1.5 text-xs font-semibold text-[#080b12] hover:border-[#155ff2]/50 hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-2 rounded-full border border-cyber-edge bg-white px-4 py-1.5 text-xs font-semibold text-cyber-strong hover:border-cyber-blue/50 hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
           >
             {copied ? (
               <>
@@ -90,17 +90,17 @@ export function FeedbackBar({ messageId, initialFeedback, messageContent }: Feed
               </>
             ) : (
               <>
-                <Copy className="size-3.5 text-[#155ff2]" />
+                <Copy className="size-3.5 text-cyber-blue" />
                 <span>คัดลอก</span>
               </>
             )}
           </button>
-          <span className="h-4 w-px bg-[#d2e0f5]" />
+          <span className="h-4 w-px bg-cyber-edge" />
         </>
       )}
 
       {/* Feedback Rating */}
-      <span className="text-xs font-medium text-[#6b82a6]">ข้อความนี้มีประโยชน์หรือไม่?</span>
+      <span className="text-xs font-medium text-cyber-subtle">ข้อความนี้มีประโยชน์หรือไม่?</span>
       <button
         type="button"
         onClick={sendUp}
@@ -108,8 +108,8 @@ export function FeedbackBar({ messageId, initialFeedback, messageContent }: Feed
         aria-label="ชอบคำตอบนี้"
         className={`flex size-8 items-center justify-center rounded-full border transition-all cursor-pointer ${
           selected === "up"
-            ? "border-[#155ff2] bg-blue-50 text-[#155ff2]"
-            : "border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:text-[#155ff2]"
+            ? "border-cyber-blue bg-blue-50 text-cyber-blue"
+            : "border-cyber-edge bg-white text-cyber-subtle hover:border-cyber-blue/50 hover:text-cyber-blue"
         }`}
       >
         <ThumbsUp className="size-3.5" />
@@ -123,13 +123,13 @@ export function FeedbackBar({ messageId, initialFeedback, messageContent }: Feed
         className={`flex size-8 items-center justify-center rounded-full border transition-all cursor-pointer ${
           selected === "down"
             ? "border-red-500 bg-red-50 text-red-600"
-            : "border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-red-300 hover:text-red-600"
+            : "border-cyber-edge bg-white text-cyber-subtle hover:border-red-300 hover:text-red-600"
         }`}
       >
         <ThumbsDown className="size-3.5" />
       </button>
 
-      {pending && <span className="text-xs text-[#6b82a6]" role="status">กำลังบันทึก...</span>}
+      {pending && <span className="text-xs text-cyber-subtle" role="status">กำลังบันทึก...</span>}
       {error && !dialogOpen && <span className="text-xs text-red-700" role="alert">{error}</span>}
 
       <ReasonDialog

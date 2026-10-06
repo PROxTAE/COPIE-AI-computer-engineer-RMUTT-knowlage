@@ -3,6 +3,9 @@
 Every response is synthesized with conversational fluency via the LLM, incorporating
 user profile and stored skill context. When LLM is down, robust template fallbacks ensure
 continuity without 500 errors.
+
+The request's interaction mode (normal | devil | developer) only changes the tone of prose:
+routing, tool calls, data, scores and sources are produced exactly as in normal mode.
 """
 import logging
 import time
@@ -21,6 +24,7 @@ from app.modules.agent.dynamic_skill import (
     score_dynamic_assessment,
 )
 from app.modules.agent.llm_client import LLMError
+from app.modules.agent.prompts import SKILL_NAMES_TH
 from app.modules.agent.types import RouteResult
 from app.schemas.contract import (
     Action,
@@ -62,12 +66,27 @@ def ask(label: str, text: str) -> Action:
     return Action(type="ask", label=label, payload=ActionPayload(text=text))
 
 
-def error_reply(code: str, intent: str, tool: str | None = None) -> Reply:
-    messages = {
+ERROR_MESSAGES = {
+    "normal": {
         "llm_unavailable": "ขออภัยครับ ตอนนี้ระบบตอบคำถามขัดข้องชั่วคราว ลองใหม่อีกครั้งนะครับ",
         "tool_failed": "ขออภัยครับ ดึงข้อมูลไม่สำเร็จ ลองใหม่อีกครั้งนะครับ",
         "unknown": "ขออภัยครับ เกิดข้อผิดพลาดบางอย่าง ลองใหม่อีกครั้งนะครับ",
-    }
+    },
+    "devil": {
+        "llm_unavailable": "ระบบตอบคำถามขัดข้องชั่วคราวครับ ระหว่างนี้ลองคิดคำถามให้คมขึ้นอีกนิด แล้วส่งมาใหม่ครับ",
+        "tool_failed": "ดึงข้อมูลไม่สำเร็จครับ ไม่ใช่ความผิดของคุณ ลองส่งอีกครั้งครับ",
+        "unknown": "เกิดข้อผิดพลาดบางอย่างครับ ลองใหม่อีกครั้ง อย่าเพิ่งยอมแพ้ครับ",
+    },
+    "developer": {
+        "llm_unavailable": "`503` ระบบตอบคำถามขัดข้องชั่วคราวครับ ลอง retry อีกครั้งในอีกสักครู่ครับ",
+        "tool_failed": "`tool_failed` ดึงข้อมูลไม่สำเร็จครับ ลอง retry อีกครั้งครับ",
+        "unknown": "`unknown_error` เกิดข้อผิดพลาดบางอย่างครับ ลองใหม่อีกครั้งครับ",
+    },
+}
+
+
+def error_reply(code: str, intent: str, tool: str | None = None) -> Reply:
+    messages = ERROR_MESSAGES.get(generator.current_interaction_mode(), ERROR_MESSAGES["normal"])
     return Reply(messages[code], intent, "error", ErrorData(code=code), tool)
 
 
@@ -89,14 +108,15 @@ def handle_chat(db, user: User, req: ChatRequest) -> AgentResponse:
     skill_context = format_user_skills_context(all_skills)
 
     route = intent_router.route(req.message, profile.user_type, profile.study_year, recent)
-    log.info("route intent=%s source=%s", route.intent, route.source)
-    try:
-        reply = dispatch(db, route, req.message, profile, latest_skill, all_skills, skill_context, recent)
-    except Exception:  # a failing tool must not become an HTTP 500
-        log.exception("tool failed for intent=%s", route.intent)
-        reply = error_reply("tool_failed", route.intent)
+    log.info("route intent=%s source=%s mode=%s", route.intent, route.source, req.interaction_mode)
+    with generator.interaction_mode(req.interaction_mode):
+        try:
+            reply = dispatch(db, route, req.message, profile, latest_skill, all_skills, skill_context, recent)
+        except Exception:  # a failing tool must not become an HTTP 500
+            log.exception("tool failed for intent=%s", route.intent)
+            reply = error_reply("tool_failed", route.intent)
 
-    response = build_response(conversation_id, reply, started)
+    response = build_response(conversation_id, reply, started, req.interaction_mode)
     try:
         services.add_assistant_message(db, conversation_id, response)
     except Exception:  # the answer is still valid if saving history fails
@@ -104,8 +124,13 @@ def handle_chat(db, user: User, req: ChatRequest) -> AgentResponse:
     return response
 
 
-def build_response(conversation_id: str, reply: Reply, started: float) -> AgentResponse:
-    meta = {"intent": reply.intent, "tool": reply.tool, "latency_ms": int((time.perf_counter() - started) * 1000)}
+def build_response(conversation_id: str, reply: Reply, started: float, interaction_mode: str = "normal") -> AgentResponse:
+    meta = {
+        "intent": reply.intent,
+        "tool": reply.tool,
+        "latency_ms": int((time.perf_counter() - started) * 1000),
+        "interaction_mode": interaction_mode,
+    }
     payload = {
         "conversation_id": conversation_id,
         "message_id": str(uuid4()),
@@ -206,7 +231,9 @@ def curriculum(route: RouteResult, message: str, profile: User, skill_context: s
             skill_context,
         )
     except Exception:
-        intro_msg = f"นี่คือรายวิชาของ **ปี {year} เทอม {semester}** รวม {table.total_credits} หน่วยกิตครับ"
+        intro_msg = generator.with_fallback_style(
+            f"นี่คือรายวิชาของ **ปี {year} เทอม {semester}** รวม {table.total_credits} หน่วยกิตครับ"
+        )
 
     return Reply(
         intro_msg,
@@ -232,7 +259,7 @@ def curriculum_overview(profile: User | None = None, skill_context: str | None =
             skill_context,
         )
     except Exception:
-        intro = "ภาพรวมหลักสูตรแต่ละชั้นปีครับ"
+        intro = generator.with_fallback_style("ภาพรวมหลักสูตรแต่ละชั้นปีครับ")
 
     return Reply(
         intro,
@@ -260,7 +287,7 @@ def course_detail(route: RouteResult, message: str, profile: User | None = None,
             skill_context,
         )
     except Exception:
-        intro = f"ข้อมูลวิชา **{course.code} {course.name_th}** ครับ"
+        intro = generator.with_fallback_style(f"ข้อมูลวิชา **{course.code} {course.name_th}** ครับ")
 
     return Reply(
         intro,
@@ -312,7 +339,7 @@ def department_info(query: str, profile: User | None = None, skill_context: str 
     except LLMError:
         log.warning("rag generator unavailable, showing the top document snippet")
         first = chunks[0]
-        message = (
+        message = generator.with_fallback_style(
             f"ตอนนี้ระบบสรุปคำตอบขัดข้อง ขอแสดงข้อความจากเอกสารที่เกี่ยวข้องที่สุดแทนครับ [1]\n\n"
             f"> {first.text[:SNIPPET_CHARS]}"
         )
@@ -450,6 +477,11 @@ def skill_radar(skill: SkillProfile, profile: User, tool: str) -> Reply:
 
 def handle_assessment_submit(db, user: User, req: AssessmentSubmit) -> AgentResponse:
     """Score answers (standard or dynamic), save to DB profile, return a radar / summary."""
+    with generator.interaction_mode(req.interaction_mode):
+        return _assessment_submit(db, user, req)
+
+
+def _assessment_submit(db, user: User, req: AssessmentSubmit) -> AgentResponse:
     started = time.perf_counter()
     conversation_id = services.get_or_create_conversation(db, user.id, req.conversation_id, SUBMIT_TEXT)
     services.add_user_message(db, conversation_id, SUBMIT_TEXT)
@@ -491,7 +523,9 @@ def handle_assessment_submit(db, user: User, req: AssessmentSubmit) -> AgentResp
                         profile.study_year,
                     )
             except LLMError:
-                summary = f"คุณได้คะแนนการประเมินทักษะ **{topic}** อยู่ที่ **{pct}/100** ครับ ผลการประเมินนี้ถูกบันทึกไว้ในระบบเรียบร้อยแล้ว"
+                summary = generator.with_fallback_style(
+                    f"คุณได้คะแนนการประเมินทักษะ **{topic}** อยู่ที่ **{pct}/100** ครับ ผลการประเมินนี้ถูกบันทึกไว้ในระบบเรียบร้อยแล้ว"
+                )
 
             data = SkillRadarData(
                 scores=scores,
@@ -519,7 +553,7 @@ def handle_assessment_submit(db, user: User, req: AssessmentSubmit) -> AgentResp
             form = services.get_assessment()
         except Exception:
             log.exception("get_assessment failed")
-            return build_response(conversation_id, error_reply("tool_failed", "skill_analysis"), started)
+            return build_response(conversation_id, error_reply("tool_failed", "skill_analysis"), started, req.interaction_mode)
 
         check_answers(req, {q.id for q in form.questions}, form.assessment_id)
         try:
@@ -530,7 +564,7 @@ def handle_assessment_submit(db, user: User, req: AssessmentSubmit) -> AgentResp
             log.exception("assessment submit failed")
             reply = error_reply("tool_failed", "skill_analysis")
 
-    response = build_response(conversation_id, reply, started)
+    response = build_response(conversation_id, reply, started, req.interaction_mode)
     try:
         services.add_assistant_message(db, conversation_id, response)
     except Exception:

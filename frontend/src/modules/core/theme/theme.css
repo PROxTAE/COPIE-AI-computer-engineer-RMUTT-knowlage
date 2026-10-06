@@ -7,7 +7,15 @@
 /* ---- Tailwind utilities: bg-cyber-blue, text-cyber-ink, font-display, font-label ... ---- */
 @theme inline {
   --color-cyber-blue: var(--copie-cyber-blue);
-  --color-cyber-blue-hover: #0b50d8;
+  --color-cyber-blue-hover: var(--copie-accent-hover);
+  --color-cyber-blue-deep: var(--copie-accent-deep);
+  --color-cyber-on-accent: var(--copie-accent-ink);
+  --color-cyber-strong: var(--copie-ink-strong);
+  --color-cyber-subtle: var(--copie-ink-subtle);
+  --color-cyber-edge: var(--copie-edge);
+  --color-cyber-glow: var(--copie-glow);
+  --color-cyber-field: var(--copie-field-line);
+  --color-cyber-surface: var(--color-white);
   --color-cyber-cyan: var(--copie-cyber-cyan);
   --color-cyber-ink: var(--copie-cyber-ink);
   --color-cyber-muted: var(--copie-cyber-muted);
@@ -17,7 +25,7 @@
 
   /* Renderer component colors */
   --color-copie-teal: var(--copie-cyber-blue);
-  --color-copie-teal-hover: #0b50d8;
+  --color-copie-teal-hover: var(--copie-accent-hover);
   --color-deep-navy: var(--copie-cyber-ink);
   --color-ink: var(--copie-cyber-ink);
   --color-muted: var(--copie-cyber-muted);

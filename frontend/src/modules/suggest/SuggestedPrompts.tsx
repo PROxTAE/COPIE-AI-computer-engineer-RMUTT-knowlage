@@ -22,7 +22,7 @@ export function SuggestedPrompts({ userType, studyYear, onAsk, compact = false }
             key={prompt.text}
             type="button"
             onClick={() => onAsk(prompt.text)}
-            className="shrink-0 rounded-full border border-[#155ff2]/20 bg-white/95 px-3.5 py-1.5 sm:px-4 sm:py-2 text-left text-xs sm:text-sm font-medium text-[#080b12] shadow-xs transition-all hover:border-[#155ff2] hover:bg-blue-50/60 active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#155ff2]"
+            className="shrink-0 rounded-full border border-cyber-blue/20 bg-white/95 px-3.5 py-1.5 sm:px-4 sm:py-2 text-left text-xs sm:text-sm font-medium text-cyber-strong shadow-xs transition-all hover:border-cyber-blue hover:bg-blue-50/60 active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyber-blue"
           >
             {prompt.label}
           </button>

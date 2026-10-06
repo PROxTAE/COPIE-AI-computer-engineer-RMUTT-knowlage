@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>COPIE mode asset preview</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;padding:28px;background:#e8edf5;color:#111a30;font:15px system-ui,sans-serif}h1{margin:0 0 8px}p{margin:0 0 24px;color:#566379}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}.card{position:relative;overflow:hidden;min-height:410px;border-radius:24px;border:1px solid #d7e5f8;isolation:isolate;background:#fff;color:#111a30}.card::before{content:"";position:absolute;inset:0;background:var(--back) center/cover no-repeat;z-index:-2}.card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 45%,var(--shade));z-index:-1}.card.dark{color:var(--text);border-color:var(--border)}.body{position:relative;padding:24px;height:410px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}h2{font-size:26px;margin:8px 0}.copy{max-width:240px;color:inherit;opacity:.82;line-height:1.5}.halo{position:absolute;width:300px;height:300px;right:-68px;bottom:-54px;background:var(--halo) center/contain no-repeat}.mascot{position:absolute;width:190px;right:0;bottom:-28px;filter:drop-shadow(0 14px 18px #0004)}.effect{position:absolute;left:24px;top:128px;width:240px;height:32px;background:var(--effect) left/contain no-repeat}.corner{position:absolute;right:22px;top:22px;width:44px;height:44px;background:var(--corner) center/contain no-repeat;transform:rotate(90deg)}.label{position:absolute;left:24px;bottom:24px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#ffffff17;color:inherit;font-size:12px}.normal{--back:url(backgrounds/grid-light.svg);--halo:url(backgrounds/mascot-halo.svg);--effect:url(effects/data-streak.svg);--corner:url(frames/corner-accent.svg);--shade:#ffffff75;--accent:#155ff2;--border:#d7e5f8}.devil{--back:url(backgrounds/devil-grid.svg);--halo:url(backgrounds/devil-halo.svg);--effect:url(effects/devil-energy.svg);--corner:url(frames/devil-corner.svg);--shade:#0c102375;--accent:#f66cac;--border:#634567;--text:#f8f3ff}.developer{--back:url(backgrounds/developer-grid.svg);--halo:url(backgrounds/developer-halo.svg);--effect:url(effects/developer-signal.svg);--corner:url(frames/developer-corner.svg);--shade:#08182075;--accent:#65e8d6;--border:#35656c;--text:#e8fff8}
+  </style>
+</head>
+<body>
+  <h1>COPIE — mode decoration kit</h1>
+  <p>ตัวอย่างการจับคู่ asset ตกแต่งกับมาสคอตตัวเดิม ยังไม่ใช่หน้าแชตจริง</p>
+  <div class="grid">
+    <section class="card normal"><div class="body"><div class="eyebrow">COPIE / ORIGINAL</div><h2>เรียนรู้ไปด้วยกัน</h2><div class="effect"></div><p class="copy">พื้นที่สว่าง อ่านง่าย เหมาะกับการค้นหาข้อมูลและถามคำถามทั่วไป</p><div class="corner"></div><div class="halo"></div><img class="mascot" src="mascot/states/copie-idle.png" alt="COPIE" /><span class="label">Normal mode</span></div></section>
+    <section class="card dark devil"><div class="body"><div class="eyebrow">COPIE / DEVIL</div><h2>ท้าทายความคิด</h2><div class="effect"></div><p class="copy">สีเข้มและแสงชมพู เพิ่มพลังให้การตั้งคำถามและผลักดันเป้าหมาย</p><div class="corner"></div><div class="halo"></div><img class="mascot" src="mascot/modes/devil/states/copie-idle.png" alt="COPIE Devil Mode" /><span class="label">Devil mode</span></div></section>
+    <section class="card dark developer"><div class="body"><div class="eyebrow">COPIE / DEVELOPER</div><h2>ลงมือแก้ปัญหา</h2><div class="effect"></div><p class="copy">กริดและเส้นวงจร เหมาะกับกิจกรรมเขียนโค้ดและทดลองระบบ</p><div class="corner"></div><div class="halo"></div><img class="mascot" src="mascot/modes/developer/states/copie-idle.png" alt="COPIE Developer Mode" /><span class="label">Developer mode</span></div></section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>COPIE mascot states by mode</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;padding:22px;background:#e8edf5;color:#111a30;font:15px system-ui,sans-serif}h1{margin:0 0 4px;font-size:24px}p{margin:0 0 18px;color:#5f7088}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.head{padding:10px 14px;border-radius:10px;font-weight:800}.head.normal{background:#fff;color:#155ff2}.head.devil{background:#18152c;color:#f66cac}.head.developer{background:#0c2630;color:#65e8d6}.card{height:236px;border-radius:14px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}.card.normal{background:#f8fbff}.card.devil{background:#101026}.card.developer{background:#092129}.card img{height:210px;width:auto;object-fit:contain}.label{position:absolute;left:10px;bottom:10px;border-radius:999px;padding:4px 9px;background:#ffffffd9;color:#182035;font-size:11px;font-weight:700}.card.devil .label,.card.developer .label{background:#ffffff1f;color:#fff}@media(max-width:700px){.grid{gap:4px}.card{height:150px}.card img{height:135px}.label{font-size:9px;padding:3px 5px}}
+  </style>
+</head>
+<body>
+  <h1>COPIE — states by mode</h1>
+  <p>แถวละหนึ่งสถานะ: ปกติ / Devil / Developer</p>
+  <div class="grid" id="grid"><div class="head normal">Normal</div><div class="head devil">Devil</div><div class="head developer">Developer</div></div>
+  <script>
+    const states = ['idle','listening','thinking','responding','success','no-answer','skill-guide','front-laptop'];
+    const labels = {'front-laptop':'welcome'};
+    const grid = document.getElementById('grid');
+    for (const state of states) for (const mode of ['normal','devil','developer']) {
+      const card = document.createElement('div'); card.className = `card ${mode}`;
+      const image = document.createElement('img'); image.alt = `COPIE ${mode} ${state}`;
+      image.src = mode === 'normal' ? `../states/copie-${state}.png` : `${mode}/states/copie-${state}.png`;
+      const label = document.createElement('span'); label.className = 'label'; label.textContent = labels[state] || state;
+      card.append(image,label); grid.append(card);
+    }
+  </script>
+</body>
+</html>

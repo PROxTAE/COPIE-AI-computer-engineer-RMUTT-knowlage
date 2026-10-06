@@ -35,11 +35,11 @@ export function TextResponse({
     <section className="copie-response flex flex-col gap-4">
       {showEyebrow && (
         <div className="flex items-center gap-2">
-          <span className="size-2 bg-[#155ff2]" />
-          <span className="font-label text-xs font-bold tracking-[0.2em] text-[#155ff2] uppercase">
+          <span className="size-2 bg-cyber-blue" />
+          <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
             AI AGENT RESPONSE
           </span>
-          <span aria-hidden="true" className="h-px flex-1 bg-gradient-to-r from-[#155ff2]/25 to-transparent ml-2" />
+          <span aria-hidden="true" className="h-px flex-1 bg-gradient-to-r from-cyber-blue/25 to-transparent ml-2" />
         </div>
       )}
 

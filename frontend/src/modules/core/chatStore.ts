@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 
-import type { AgentResponse, ChatMessage, ConversationDetail } from "@/types/contract";
+import type { AgentResponse, ChatMessage, ConversationDetail, InteractionMode } from "@/types/contract";
 import type { CopieMascotState } from "@/modules/mascot";
 import type { AssessmentAnswer } from "@/modules/renderer";
 
@@ -10,12 +10,51 @@ import { ApiError, chatApi, getApiAuthSnapshot } from "./api";
 
 export type WorkspaceMode = "center" | "split" | "rail" | "hidden";
 
+const INTERACTION_MODE_KEY = "copie.interactionMode.v1";
+const DEVIL_INTRO_KEY = "copie.devilIntroSeen.v1";
+const INTERACTION_MODES: readonly InteractionMode[] = ["normal", "devil", "developer"];
+
+function isInteractionMode(value: unknown): value is InteractionMode {
+  return typeof value === "string" && (INTERACTION_MODES as readonly string[]).includes(value);
+}
+
+function readStorage(key: string): string | null {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key: string, value: string) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // Private mode or blocked storage: the choice still applies for this visit.
+  }
+}
+
+function readSavedInteractionMode(): InteractionMode | null {
+  const saved = readStorage(INTERACTION_MODE_KEY);
+  return isInteractionMode(saved) ? saved : null;
+}
+
+export function hasSeenDevilIntro() {
+  return readStorage(DEVIL_INTRO_KEY) === "1";
+}
+
+export function markDevilIntroSeen() {
+  writeStorage(DEVIL_INTRO_KEY, "1");
+}
+
 type ChatState = {
   conversationId: string | null;
   messages: ChatMessage[];
   liveMessageId: string | null;
   copieState: CopieMascotState;
   layout: WorkspaceMode;
+  interactionMode: InteractionMode;
+  interactionModeReady: boolean;
   lastVisibleLayout: Exclude<WorkspaceMode, "hidden">;
   pending: boolean;
   error: string | null;
@@ -28,6 +67,10 @@ type ChatState = {
   newConversation: () => void;
   setLayout: (layout: WorkspaceMode) => void;
   setCopieState: (state: CopieMascotState) => void;
+  // Applies to the next request; a request already in flight keeps the mode it was sent with.
+  setInteractionMode: (mode: InteractionMode) => void;
+  /** Load the saved mode once, after hydration (from a layout effect, never during SSR). */
+  restoreInteractionMode: () => void;
 };
 
 const SHORT_ANSWER_LIMIT = 450;
@@ -85,6 +128,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
   liveMessageId: null,
   copieState: "idle",
   layout: "center",
+  interactionMode: "normal",
+  interactionModeReady: false,
   lastVisibleLayout: "center",
   pending: false,
   error: null,
@@ -110,12 +155,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
   send: async (text) => {
     if (!getApiAuthSnapshot()) return;
     const message = text.trim();
+    const interactionMode = get().interactionMode;
     if (!get().beginRequest(message)) return;
     const version = ++requestVersion;
     const controller = new AbortController();
     activeController = controller;
     try {
-      const response = await chatApi.send({ conversation_id: get().conversationId, message }, controller.signal);
+      const response = await chatApi.send(
+        { conversation_id: get().conversationId, message, interaction_mode: interactionMode },
+        controller.signal,
+      );
       if (version === requestVersion) get().receiveResponse(response);
     } catch (error) {
       if (version === requestVersion) get().failRequest(requestError(error));
@@ -139,6 +188,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         conversation_id: form.conversation_id,
         assessment_id: form.data.assessment_id,
         answers,
+        interaction_mode: get().interactionMode,
       }, controller.signal);
       if (version === requestVersion) get().receiveResponse(response);
     } catch (error) {
@@ -217,4 +267,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
     lastVisibleLayout: layout === "hidden" ? state.lastVisibleLayout : layout,
   })),
   setCopieState: (copieState) => set({ copieState }),
+  setInteractionMode: (interactionMode) => {
+    if (!isInteractionMode(interactionMode)) return;
+    writeStorage(INTERACTION_MODE_KEY, interactionMode);
+    set({ interactionMode, interactionModeReady: true });
+  },
+  restoreInteractionMode: () => {
+    if (get().interactionModeReady) return;
+    set({ interactionMode: readSavedInteractionMode() ?? get().interactionMode, interactionModeReady: true });
+  },
 }));

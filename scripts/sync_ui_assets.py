@@ -6,6 +6,7 @@ assets/web-ui/ stays the master copy from design. Run this after the kit changes
 
 - SVGs (brand, backgrounds, frames, effects, icons) -> frontend/public/copie-ui/
 - Mascot state PNGs -> WebP in frontend/public/copie-ui/mascot/ (needs Pillow)
+- Mode mascot PNGs -> WebP in frontend/public/copie-ui/mascot/modes/<mode>/
 - Kit CSS -> frontend/src/modules/core/theme/kit/ with URLs pointing at /copie-ui/
 - brand/favicon.svg -> frontend/src/app/icon.svg
 """
@@ -44,6 +45,14 @@ def sync_mascot() -> list[str]:
         with Image.open(png) as image:
             image.save(out, "WEBP", quality=88, method=6)
         written.append(f"{out.name} ({out.stat().st_size // 1024} KB)")
+    for mode in ("devil", "developer"):
+        mode_target = target / "modes" / mode
+        mode_target.mkdir(parents=True, exist_ok=True)
+        for png in sorted((KIT / "mascot" / "modes" / mode / "states").glob("*.png")):
+            out = mode_target / f"{png.stem}.webp"
+            with Image.open(png) as image:
+                image.save(out, "WEBP", quality=88, method=6)
+            written.append(f"{mode}/{out.name} ({out.stat().st_size // 1024} KB)")
     return written
 
 

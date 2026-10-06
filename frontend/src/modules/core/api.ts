@@ -65,6 +65,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
         : `Request failed (${response.status})`;
       throw new ApiError(response.status, detail);
     }
+    if (response.status === 204) return undefined as T; // DELETE endpoints have no body
     return (await response.json()) as T;
   } catch (error) {
     if (error instanceof ApiError) throw error;
