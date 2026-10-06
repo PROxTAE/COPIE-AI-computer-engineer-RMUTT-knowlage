@@ -44,7 +44,7 @@ export function GoogleSignInButton({ disabled = false, onAuthenticated, onOpenDe
     <div className="flex flex-col items-start gap-2">
       <div className={`relative inline-block ${disabled || pending ? "pointer-events-none opacity-60" : ""}`}>
         {/* Mockup 01-login-v2 Pill Button Design */}
-        <div className="group relative flex items-center gap-4 rounded-full border-2 border-[#155ff2] bg-white px-7 py-3.5 shadow-[0_8px_24px_rgba(21,95,242,0.12)] hover:shadow-[0_12px_28px_rgba(21,95,242,0.2)] hover:-translate-y-0.5 transition-all cursor-pointer">
+        <div className="group relative flex items-center gap-4 rounded-full border-2 border-cyber-blue bg-white px-7 py-3.5 shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.12)] hover:shadow-[0_12px_28px_rgb(var(--copie-accent-rgb)/0.2)] hover:-translate-y-0.5 transition-all cursor-pointer">
           {/* Google Multi-colored SVG Icon */}
           <svg className="size-6 shrink-0" viewBox="0 0 24 24">
             <path
@@ -66,15 +66,15 @@ export function GoogleSignInButton({ disabled = false, onAuthenticated, onOpenDe
           </svg>
 
           {/* Vertical Separator */}
-          <span className="h-6 w-px bg-[#d2e0f5]" />
+          <span className="h-6 w-px bg-cyber-edge" />
 
           {/* Label */}
-          <span className="font-display font-semibold text-base text-[#080b12]">
+          <span className="font-display font-semibold text-base text-cyber-strong">
             เข้าสู่ระบบด้วย Google
           </span>
 
           {/* Right Arrow */}
-          <ArrowRight className="size-5 text-[#155ff2] ml-2 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="size-5 text-cyber-blue ml-2 group-hover:translate-x-1 transition-transform" />
 
           {/* Overlay Google OAuth Login element if clientId is configured */}
           {clientId ? (

@@ -38,8 +38,8 @@ export function ChatInput({
 
   return (
     <form onSubmit={submit} className="w-full max-w-[760px]" aria-label="ถาม COPIE">
-      <div className="relative flex items-center gap-3 rounded-full border-2 border-[#155ff2]/80 bg-white px-5 py-2.5 shadow-[0_8px_24px_rgba(21,95,242,0.12)] focus-within:border-[#155ff2] focus-within:shadow-[0_10px_32px_rgba(21,95,242,0.22)] transition-all">
-        <Search className="size-5 text-[#155ff2] shrink-0" />
+      <div className="relative flex items-center gap-3 rounded-full border-2 border-cyber-blue/80 bg-white px-5 py-2.5 shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.12)] focus-within:border-cyber-blue focus-within:shadow-[0_10px_32px_rgb(var(--copie-accent-rgb)/0.22)] transition-all">
+        <Search className="size-5 text-cyber-blue shrink-0" />
         <input
           type="text"
           aria-label="พิมพ์คำถาม"
@@ -52,13 +52,13 @@ export function ChatInput({
           onKeyDown={handleKeyDown}
           maxLength={1000}
           disabled={pending || disabled}
-          className="flex-1 min-w-0 border-0 bg-transparent font-sans text-base font-medium text-[#080b12] outline-none placeholder:text-[#6b82a6]"
+          className="flex-1 min-w-0 border-0 bg-transparent font-sans text-base font-medium text-cyber-strong outline-none placeholder:text-cyber-subtle"
         />
         <button
           type="submit"
           disabled={!canSend}
           aria-label="ส่งคำถาม"
-          className="flex size-10 items-center justify-center rounded-full bg-gradient-to-r from-[#0f5ff0] to-[#155ff2] text-white shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none shrink-0"
+          className="flex size-10 items-center justify-center rounded-full bg-gradient-to-r from-cyber-blue-deep to-cyber-blue text-cyber-on-accent shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none shrink-0"
         >
           <SendHorizontal className="size-5" />
         </button>

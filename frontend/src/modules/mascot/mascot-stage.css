@@ -1,0 +1,266 @@
+/* Interactive 2.5D stage around COPIE (MascotStage.tsx). Owner: P1. Colours come from modes.css tokens. */
+
+.copie-stage {
+  isolation: isolate;
+}
+
+.copie-stage-hit {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 32%;
+}
+
+.copie-stage-hit:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--copie-cyber-focus) 70%, transparent);
+  outline-offset: 4px;
+}
+
+.copie-halo-spin {
+  animation: copie-halo-spin 90s linear infinite;
+}
+
+@keyframes copie-halo-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Contact shadow; breathes with .copie-mascot-breathe (4s) so COPIE feels like it floats. */
+.copie-stage-shadow {
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(var(--copie-shadow-rgb) / 30%), rgb(var(--copie-shadow-rgb) / 0%));
+  animation: copie-shadow-breathe 4s ease-in-out infinite;
+}
+
+[data-copie-mode="devil"] .copie-stage-shadow,
+[data-copie-mode="developer"] .copie-stage-shadow {
+  background: radial-gradient(closest-side, rgb(var(--copie-accent-rgb) / 30%), rgb(0 0 0 / 35%) 55%, transparent);
+}
+
+@keyframes copie-shadow-breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.84); opacity: 0.7; }
+}
+
+.copie-stage-ring {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 70%;
+  aspect-ratio: 1;
+  border: 2px solid var(--copie-cyber-blue);
+  border-radius: 50%;
+  box-shadow: 0 0 24px rgb(var(--copie-accent-rgb) / 45%), inset 0 0 24px rgb(var(--copie-accent-rgb) / 35%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.copie-ambient span {
+  position: absolute;
+  color: var(--copie-cyber-blue);
+  font: 700 0.8rem/1 var(--ff-label), ui-monospace, monospace;
+  opacity: 0.5;
+  text-shadow: 0 0 10px rgb(var(--copie-accent-rgb) / 60%);
+  animation: copie-ambient-float 6s ease-in-out infinite;
+}
+
+.copie-ambient span:nth-child(even) {
+  color: var(--copie-glow);
+  animation-duration: 7.5s;
+}
+
+@keyframes copie-ambient-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.35; }
+  50% { transform: translateY(-12px) rotate(8deg); opacity: 0.7; }
+}
+
+.copie-burst {
+  position: absolute;
+  font: 700 1rem/1 var(--ff-label), ui-monospace, monospace;
+  white-space: nowrap;
+  text-shadow: 0 0 12px currentColor;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Three dots orbiting COPIE's head while it thinks. */
+.copie-think-orbit {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 46%;
+  aspect-ratio: 3 / 1;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.copie-think-orbit i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px;
+  border-radius: 50%;
+  background: var(--copie-cyber-blue);
+  box-shadow: 0 0 12px var(--copie-cyber-blue);
+  animation: copie-orbit 1.8s linear infinite;
+}
+
+.copie-think-orbit i:nth-child(2) { animation-delay: -0.6s; background: var(--copie-glow); box-shadow: 0 0 12px var(--copie-glow); }
+.copie-think-orbit i:nth-child(3) { animation-delay: -1.2s; }
+
+@keyframes copie-orbit {
+  0% { transform: rotate(0deg) translateX(min(9vw, 110px)) scale(1); opacity: 1; }
+  25% { transform: rotate(90deg) translateX(min(9vw, 110px)) scale(0.6); opacity: 0.45; }
+  50% { transform: rotate(180deg) translateX(min(9vw, 110px)) scale(1); opacity: 1; }
+  75% { transform: rotate(270deg) translateX(min(9vw, 110px)) scale(1.3); opacity: 1; }
+  100% { transform: rotate(360deg) translateX(min(9vw, 110px)) scale(1); opacity: 1; }
+}
+
+[data-layout="rail"] .copie-think-orbit i {
+  animation-name: copie-orbit-rail;
+}
+
+@keyframes copie-orbit-rail {
+  from { transform: rotate(0deg) translateX(60px); }
+  to { transform: rotate(360deg) translateX(60px); }
+}
+
+/* Speech bubble */
+.copie-bubble-anchor {
+  position: absolute;
+  z-index: 30;
+  left: 60%;
+  top: 4%;
+  width: max-content;
+  max-width: min(260px, 44vw);
+  pointer-events: none;
+}
+
+.copie-bubble-anchor--rail {
+  left: 50%;
+  top: -6px;
+  max-width: 230px;
+  translate: -50% 0;
+}
+
+.copie-bubble {
+  position: relative;
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgb(var(--copie-accent-rgb) / 35%);
+  border-radius: 16px 16px 16px 4px;
+  background: var(--copie-bubble-bg);
+  color: var(--copie-cyber-ink);
+  box-shadow: 0 10px 28px rgb(var(--copie-accent-rgb) / 18%);
+  font: 600 0.82rem/1.45 var(--ff-body), "IBM Plex Sans Thai", sans-serif;
+  backdrop-filter: blur(6px);
+}
+
+.copie-bubble-anchor--rail .copie-bubble {
+  border-radius: 16px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .copie-bubble-anchor { left: 52%; top: 0; max-width: 46vw; }
+  .copie-bubble { font-size: 0.74rem; padding: 0.45rem 0.7rem; }
+}
+
+/* ---- Mini COPIE dock (MascotDock.tsx): the whole figure, small ---- */
+.copie-dock {
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 24px;
+}
+
+.copie-dock:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--copie-cyber-focus) 70%, transparent);
+  outline-offset: 2px;
+}
+
+.copie-dock-figure {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 6px 10px rgb(var(--copie-accent-rgb) / 35%));
+  animation: copie-dock-bob 2.6s ease-in-out infinite;
+}
+
+@keyframes copie-dock-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Glowing pad under the feet: reads as "pressable" and spins while COPIE is thinking. */
+.copie-dock-ground {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 86%;
+  height: 18px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgb(var(--copie-accent-rgb) / 45%), rgb(var(--copie-accent-rgb) / 0%));
+  box-shadow: 0 0 0 1.5px rgb(var(--copie-accent-rgb) / 55%);
+  animation: copie-dock-pad 2.6s ease-in-out infinite;
+}
+
+.copie-dock[data-busy] .copie-dock-ground {
+  background: conic-gradient(from 0deg, var(--copie-cyber-blue), transparent 40%, var(--copie-glow) 60%, transparent);
+  animation-duration: 0.9s;
+}
+
+@keyframes copie-dock-pad {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(0.9); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+}
+
+.copie-dock-badge {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-white);
+  border-radius: 9999px;
+  background: var(--copie-glow);
+  box-shadow: 0 0 10px var(--copie-glow);
+  animation: copie-status-pulse 1.6s ease-out infinite;
+}
+
+/* "Tap me" chip at the feet: shown briefly when the dock appears, then on hover/focus. */
+.copie-dock-hint {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid rgb(var(--copie-accent-rgb) / 40%);
+  border-radius: 9999px;
+  background: var(--copie-bubble-bg);
+  color: var(--copie-cyber-ink);
+  font: 700 10px/1.2 var(--ff-label), sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgb(var(--copie-accent-rgb) / 20%);
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  pointer-events: none;
+}
+
+.copie-dock[data-hint] .copie-dock-hint,
+.copie-dock[data-busy] .copie-dock-hint,
+.copie-dock:hover .copie-dock-hint,
+.copie-dock:focus-visible .copie-dock-hint {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copie-dock-figure,
+  .copie-dock-ground { animation: none; }
+}

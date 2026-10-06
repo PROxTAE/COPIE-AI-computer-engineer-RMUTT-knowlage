@@ -73,7 +73,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
           <button
             type="button"
             onClick={() => setStage("intro")}
-            className="inline-flex items-center gap-2 rounded-xl bg-cyber-blue px-5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-cyber-blue-hover active:scale-[0.98] cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xl bg-cyber-blue px-5 py-2.5 font-semibold text-cyber-on-accent shadow-sm transition hover:bg-cyber-blue-hover active:scale-[0.98] cursor-pointer"
           >
             เปิดแบบประเมินอีกครั้ง
           </button>
@@ -99,14 +99,14 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
           {/* Left Column: Heading & Subtitles */}
           <div className="lg:col-span-4 flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <span className="size-2 bg-[#155ff2]" />
-              <span className="font-label text-xs font-bold tracking-[0.2em] text-[#155ff2] uppercase">
+              <span className="size-2 bg-cyber-blue" />
+              <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
                 COPIE / AI RESPONSE
               </span>
             </div>
 
             <div className="relative">
-              <h1 className="copie-heading font-display text-4xl sm:text-5xl font-black italic tracking-tight text-[#080b12] leading-tight">
+              <h1 className="copie-heading font-display text-4xl sm:text-5xl font-black italic tracking-tight text-cyber-strong leading-tight">
                 มาสำรวจ<br />
                 <span className="relative inline-block">
                   ทักษะของคุณ
@@ -119,17 +119,17 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
               </h1>
             </div>
 
-            <div className="text-base text-[#080b12]/80 leading-relaxed font-medium">
+            <div className="text-base text-cyber-strong/80 leading-relaxed font-medium">
               <p>ตอบคำถามสั้น ๆ เพื่อเห็นภาพทักษะของคุณ</p>
-              <p className="text-[#6b82a6]">ไม่มีการให้คะแนนถูกหรือผิด</p>
+              <p className="text-cyber-subtle">ไม่มีการให้คะแนนถูกหรือผิด</p>
             </div>
 
             {/* Cyan dashed bar /////// */}
-            <div className="flex items-center gap-1.5 py-1 text-[#00d4ff] font-mono text-sm tracking-widest select-none">
-              ////////
+            <div className="flex items-center gap-1.5 py-1 text-cyber-glow font-mono text-sm tracking-widest select-none" aria-hidden="true">
+              {"////////"}
             </div>
 
-            <div className="mt-4 font-label text-[10px] font-bold tracking-[0.2em] text-[#6b82a6] uppercase">
+            <div className="mt-4 font-label text-[10px] font-bold tracking-[0.2em] text-cyber-subtle uppercase">
               <p>KNOW YOURSELF</p>
               <p>BUILD A BRIGHTER TOMORROW</p>
             </div>
@@ -142,7 +142,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
               <CopieMascot
                 state="welcome"
                 priority
-                className="max-h-[min(26dvh,220px)] sm:max-h-[min(36dvh,320px)] lg:max-h-[min(48dvh,400px)] w-auto! drop-shadow-[0_16px_32px_rgba(21,95,242,0.18)]"
+                className="max-h-[min(26dvh,220px)] sm:max-h-[min(36dvh,320px)] lg:max-h-[min(48dvh,400px)] w-auto! drop-shadow-[0_16px_32px_rgb(var(--copie-accent-rgb)/0.18)]"
               />
             </div>
           </div>
@@ -150,44 +150,44 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
           {/* Right Column: 3 Stat Cards & Actions */}
           <div className="lg:col-span-4 flex flex-col gap-4">
             {/* Stat 1: 12 Questions */}
-            <div className="flex items-center gap-4 rounded-2xl border border-[#d2e0f5]/80 bg-white/90 p-4 shadow-xs">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-[#155ff2] shrink-0">
+            <div className="flex items-center gap-4 rounded-2xl border border-cyber-edge/80 bg-white/90 p-4 shadow-xs">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-cyber-blue shrink-0">
                 <FileText className="size-6" />
               </div>
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="font-display text-2xl font-black italic text-[#155ff2]">{total}</span>
-                  <span className="font-display text-lg font-bold text-[#080b12]">คำถาม</span>
+                  <span className="font-display text-2xl font-black italic text-cyber-blue">{total}</span>
+                  <span className="font-display text-lg font-bold text-cyber-strong">คำถาม</span>
                 </div>
-                <p className="text-xs text-[#6b82a6] mt-0.5">คำถามสั้น ๆ ครอบคลุมหลากหลายสถานการณ์</p>
+                <p className="text-xs text-cyber-subtle mt-0.5">คำถามสั้น ๆ ครอบคลุมหลากหลายสถานการณ์</p>
               </div>
             </div>
 
             {/* Stat 2: 6 Skill Dimensions */}
-            <div className="flex items-center gap-4 rounded-2xl border border-[#d2e0f5]/80 bg-white/90 p-4 shadow-xs">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-[#155ff2] shrink-0">
+            <div className="flex items-center gap-4 rounded-2xl border border-cyber-edge/80 bg-white/90 p-4 shadow-xs">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-cyber-blue shrink-0">
                 <Layers className="size-6" />
               </div>
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="font-display text-2xl font-black italic text-[#155ff2]">6</span>
-                  <span className="font-display text-lg font-bold text-[#080b12]">ด้านทักษะ</span>
+                  <span className="font-display text-2xl font-black italic text-cyber-blue">6</span>
+                  <span className="font-display text-lg font-bold text-cyber-strong">ด้านทักษะ</span>
                 </div>
-                <p className="text-xs text-[#6b82a6] mt-0.5">ครอบคลุมทักษะที่จำเป็นในโลกการทำงานยุคใหม่</p>
+                <p className="text-xs text-cyber-subtle mt-0.5">ครอบคลุมทักษะที่จำเป็นในโลกการทำงานยุคใหม่</p>
               </div>
             </div>
 
             {/* Stat 3: 5 Minutes */}
-            <div className="flex items-center gap-4 rounded-2xl border border-[#d2e0f5]/80 bg-white/90 p-4 shadow-xs">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-[#155ff2] shrink-0">
+            <div className="flex items-center gap-4 rounded-2xl border border-cyber-edge/80 bg-white/90 p-4 shadow-xs">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-cyber-blue shrink-0">
                 <Clock className="size-6" />
               </div>
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="font-display text-sm font-semibold text-[#080b12]">ประมาณ</span>
-                  <span className="font-display text-2xl font-black italic text-[#155ff2]">5 นาที</span>
+                  <span className="font-display text-sm font-semibold text-cyber-strong">ประมาณ</span>
+                  <span className="font-display text-2xl font-black italic text-cyber-blue">5 นาที</span>
                 </div>
-                <p className="text-xs text-[#6b82a6] mt-0.5">ใช้เวลาไม่นาน ก็เห็นภาพรวมทักษะของคุณ</p>
+                <p className="text-xs text-cyber-subtle mt-0.5">ใช้เวลาไม่นาน ก็เห็นภาพรวมทักษะของคุณ</p>
               </div>
             </div>
 
@@ -197,7 +197,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
                 type="button"
                 onClick={() => setStage("questions")}
                 disabled={locked}
-                className="group flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#0f5ff0] to-[#155ff2] px-8 py-3.5 font-display text-base font-bold text-white shadow-[0_8px_24px_rgba(21,95,242,0.3)] hover:shadow-[0_12px_32px_rgba(21,95,242,0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+                className="group flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-cyber-blue-deep to-cyber-blue px-8 py-3.5 font-display text-base font-bold text-cyber-on-accent shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.3)] hover:shadow-[0_12px_32px_rgb(var(--copie-accent-rgb)/0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
               >
                 <span>เริ่มแบบประเมิน</span>
                 <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
@@ -207,7 +207,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
                 type="button"
                 onClick={() => setStage("later")}
                 disabled={locked}
-                className="font-display text-sm font-semibold text-[#155ff2] hover:underline underline-offset-4 cursor-pointer py-1"
+                className="font-display text-sm font-semibold text-cyber-blue hover:underline underline-offset-4 cursor-pointer py-1"
               >
                 ไว้ทีหลัง
               </button>
@@ -222,19 +222,19 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
   const percent = Math.round(((current + 1) / total) * 100);
 
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#d2e0f5] bg-white/95 p-6 sm:p-8 shadow-sm backdrop-blur-sm" aria-label="คำถามแบบประเมิน">
+    <section className="flex flex-col gap-6 rounded-2xl border border-cyber-edge bg-white/95 p-6 sm:p-8 shadow-sm backdrop-blur-sm" aria-label="คำถามแบบประเมิน">
       {/* Question Header & Progress */}
-      <div className="flex flex-col gap-3 pb-3 border-b border-[#d2e0f5]/60">
+      <div className="flex flex-col gap-3 pb-3 border-b border-cyber-edge/60">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="size-2 bg-[#155ff2]" />
-              <span className="font-label text-xs font-bold tracking-[0.2em] text-[#155ff2] uppercase">
+              <span className="size-2 bg-cyber-blue" />
+              <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
                 SKILL ASSESSMENT
               </span>
             </div>
             <div className="relative">
-              <h2 className="copie-heading font-display text-2xl sm:text-3xl font-black italic tracking-tight text-[#080b12]">
+              <h2 className="copie-heading font-display text-2xl sm:text-3xl font-black italic tracking-tight text-cyber-strong">
                 ประเมินทักษะ
                 <span
                   className="inline-block ml-4 w-28 h-6 bg-[url('/copie-ui/effects/data-streak.svg')] bg-contain bg-no-repeat align-middle pointer-events-none opacity-80"
@@ -242,16 +242,16 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
                 />
               </h2>
             </div>
-            <p className="text-sm font-medium text-[#6b82a6] mt-1">
+            <p className="text-sm font-medium text-cyber-subtle mt-1">
               ตอบคำถามทีละข้อ เพื่อให้เราเข้าใจทักษะของคุณมากขึ้น
             </p>
           </div>
 
           {/* Progress Counter & Sleek Bar */}
           <div className="flex flex-col items-end gap-1.5 shrink-0">
-            <p className="font-display text-xl sm:text-2xl font-black italic tabular-nums text-[#080b12]">
-              <span className="text-[#155ff2]">{current + 1}</span>{" "}
-              <span className="text-base font-normal text-[#6b82a6]">/ {total}</span>
+            <p className="font-display text-xl sm:text-2xl font-black italic tabular-nums text-cyber-strong">
+              <span className="text-cyber-blue">{current + 1}</span>{" "}
+              <span className="text-base font-normal text-cyber-subtle">/ {total}</span>
             </p>
             <div
               role="progressbar"
@@ -262,7 +262,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
               className="h-2 w-32 sm:w-44 overflow-hidden rounded-full bg-slate-100 border border-slate-200"
             >
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#155ff2] to-[#00d4ff] transition-all duration-300"
+                className="h-full rounded-full bg-gradient-to-r from-cyber-blue to-cyber-glow transition-all duration-300"
                 style={{ width: `${percent}%` }}
               />
             </div>
@@ -273,11 +273,11 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
       {/* Question & Options */}
       <fieldset className="flex flex-col gap-5 pt-1" disabled={locked}>
         <legend className="flex items-baseline gap-3 pb-2 w-full">
-          <span className="font-display text-2xl sm:text-3xl font-black italic text-[#155ff2] shrink-0">
+          <span className="font-display text-2xl sm:text-3xl font-black italic text-cyber-blue shrink-0">
             Q{current + 1}
           </span>
-          <span className="h-6 w-px bg-[#d2e0f5] shrink-0 self-center" />
-          <span className="font-display text-lg sm:text-xl font-bold text-[#080b12] leading-relaxed">
+          <span className="h-6 w-px bg-cyber-edge shrink-0 self-center" />
+          <span className="font-display text-lg sm:text-xl font-bold text-cyber-strong leading-relaxed">
             {question.text}
           </span>
         </legend>
@@ -291,22 +291,22 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
                 onClick={() => setAnswers((curr) => ({ ...curr, [question.id]: option.value }))}
                 className={`group flex cursor-pointer items-center gap-4 rounded-xl px-5 py-3.5 transition-all shadow-xs ${
                   selected
-                    ? "border-2 border-[#155ff2] bg-blue-50/80 text-[#080b12] shadow-[0_0_16px_rgba(21,95,242,0.18)]"
-                    : "border border-[#d2e0f5] bg-white hover:border-[#155ff2]/50 hover:bg-slate-50/60 text-[#080b12]"
+                    ? "border-2 border-cyber-blue bg-blue-50/80 text-cyber-strong shadow-[0_0_16px_rgb(var(--copie-accent-rgb)/0.18)]"
+                    : "border border-cyber-edge bg-white hover:border-cyber-blue/50 hover:bg-slate-50/60 text-cyber-strong"
                 }`}
               >
                 {/* Custom Radio Circle matching Mockup */}
                 <div
                   className={`size-5 rounded-full flex items-center justify-center shrink-0 transition-all ${
                     selected
-                      ? "border-2 border-[#155ff2] bg-white"
-                      : "border-2 border-[#a9bee0] bg-white group-hover:border-[#155ff2]"
+                      ? "border-2 border-cyber-blue bg-white"
+                      : "border-2 border-cyber-field bg-white group-hover:border-cyber-blue"
                   }`}
                 >
-                  {selected && <div className="size-2.5 rounded-full bg-[#155ff2]" />}
+                  {selected && <div className="size-2.5 rounded-full bg-cyber-blue" />}
                 </div>
 
-                <span className={`text-sm sm:text-base ${selected ? "font-bold text-[#080b12]" : "font-medium text-[#080b12]/80"}`}>
+                <span className={`text-sm sm:text-base ${selected ? "font-bold text-cyber-strong" : "font-medium text-cyber-strong/80"}`}>
                   {option.label}
                 </span>
               </label>
@@ -322,9 +322,9 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
       )}
 
       {/* Navigation Footer */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#d2e0f5]/60 mt-2">
-        <div className="flex items-center gap-2 text-xs font-medium text-[#6b82a6]">
-          <Info className="size-4 text-[#155ff2]" />
+      <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-cyber-edge/60 mt-2">
+        <div className="flex items-center gap-2 text-xs font-medium text-cyber-subtle">
+          <Info className="size-4 text-cyber-blue" />
           <span>ตอบตามประสบการณ์จริง ไม่มีถูกหรือผิด</span>
         </div>
 
@@ -334,7 +334,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
               type="button"
               onClick={() => setCurrent((index) => Math.max(0, index - 1))}
               disabled={locked}
-              className="inline-flex items-center gap-2 rounded-full border border-[#155ff2] bg-white px-6 py-2.5 font-display text-sm font-semibold text-[#155ff2] hover:bg-blue-50 transition-all cursor-pointer shadow-xs disabled:opacity-40"
+              className="inline-flex items-center gap-2 rounded-full border border-cyber-blue bg-white px-6 py-2.5 font-display text-sm font-semibold text-cyber-blue hover:bg-blue-50 transition-all cursor-pointer shadow-xs disabled:opacity-40"
             >
               <ArrowLeft className="size-4" />
               ย้อนกลับ
@@ -345,7 +345,7 @@ export function AssessmentForm({ data, onSubmit, onBack, disabled = false }: Ass
             type="button"
             onClick={isLast ? submit : () => setCurrent((index) => Math.min(total - 1, index + 1))}
             disabled={locked || answered === undefined}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0f5ff0] to-[#155ff2] px-7 py-2.5 font-display text-sm font-bold text-white shadow-[0_4px_16px_rgba(21,95,242,0.25)] hover:shadow-[0_6px_20px_rgba(21,95,242,0.35)] transition-all cursor-pointer disabled:opacity-40"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyber-blue-deep to-cyber-blue px-7 py-2.5 font-display text-sm font-bold text-cyber-on-accent shadow-[0_4px_16px_rgb(var(--copie-accent-rgb)/0.25)] hover:shadow-[0_6px_20px_rgb(var(--copie-accent-rgb)/0.35)] transition-all cursor-pointer disabled:opacity-40"
           >
             <span>{isLast ? (submitting ? "กำลังส่งข้อมูล..." : "ดูผลการวิเคราะห์") : "ข้อถัดไป"}</span>
             <ArrowRight className="size-4" />

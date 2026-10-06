@@ -85,13 +85,13 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
     <form className="grid gap-6" onSubmit={(event) => { void submit(event); }} noValidate>
       {/* Field 1: Name */}
       <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
-        <label className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
-          <UserIcon className="size-4.5 text-[#155ff2] shrink-0" />
+        <label className="flex items-center gap-2.5 font-display text-sm font-bold text-cyber-strong">
+          <UserIcon className="size-4.5 text-cyber-blue shrink-0" />
           ชื่อที่อยากให้เรียก
         </label>
         <div className="relative flex items-center">
           <input
-            className="w-full rounded-xl border border-[#a9bee0] bg-white px-4 py-3 pr-10 font-sans text-base text-[#080b12] outline-none focus:border-[#155ff2] focus:ring-2 focus:ring-[#155ff2]/20 transition-all shadow-xs"
+            className="w-full rounded-xl border border-cyber-field bg-white px-4 py-3 pr-10 font-sans text-base text-cyber-strong outline-none focus:border-cyber-blue focus:ring-2 focus:ring-cyber-blue/20 transition-all shadow-xs"
             value={displayName}
             onChange={(event) => setDisplayName(event.target.value)}
             autoComplete="nickname"
@@ -105,7 +105,7 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
             <button
               type="button"
               onClick={() => setDisplayName("")}
-              className="absolute right-3 text-[#6b82a6] hover:text-[#080b12] p-1 cursor-pointer"
+              className="absolute right-3 text-cyber-subtle hover:text-cyber-strong p-1 cursor-pointer"
               aria-label="ลบชื่อ"
             >
               <X className="size-4" />
@@ -116,8 +116,8 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
 
       {/* Field 2: Age Range */}
       <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
-        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
-          <Calendar className="size-4.5 text-[#155ff2] shrink-0" />
+        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-cyber-strong">
+          <Calendar className="size-4.5 text-cyber-blue shrink-0" />
           ช่วงอายุ
         </span>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -131,8 +131,8 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
                 disabled={pending}
                 className={`rounded-xl px-3 py-3 text-center text-sm font-semibold transition-all cursor-pointer shadow-xs ${
                   isSelected
-                    ? "border-2 border-[#155ff2] bg-white text-[#155ff2] shadow-[0_0_12px_rgba(21,95,242,0.15)]"
-                    : "border border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:bg-slate-50"
+                    ? "border-2 border-cyber-blue bg-white text-cyber-blue shadow-[0_0_12px_rgb(var(--copie-accent-rgb)/0.15)]"
+                    : "border border-cyber-edge bg-white text-cyber-subtle hover:border-cyber-blue/50 hover:bg-slate-50"
                 }`}
               >
                 {option.label}
@@ -144,8 +144,8 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
 
       {/* Field 3: User Status */}
       <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
-        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
-          <GraduationCap className="size-4.5 text-[#155ff2] shrink-0" />
+        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-cyber-strong">
+          <GraduationCap className="size-4.5 text-cyber-blue shrink-0" />
           สถานะผู้ใช้งาน
         </span>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -159,8 +159,8 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
                 disabled={pending}
                 className={`rounded-xl px-3 py-3 text-center text-sm font-semibold transition-all cursor-pointer shadow-xs ${
                   isSelected
-                    ? "border-2 border-[#155ff2] bg-[#155ff2] text-white shadow-[0_4px_14px_rgba(21,95,242,0.3)]"
-                    : "border border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:bg-slate-50"
+                    ? "border-2 border-cyber-blue bg-cyber-blue text-cyber-on-accent shadow-[0_4px_14px_rgb(var(--copie-accent-rgb)/0.3)]"
+                    : "border border-cyber-edge bg-white text-cyber-subtle hover:border-cyber-blue/50 hover:bg-slate-50"
                 }`}
               >
                 {option.label}
@@ -172,8 +172,8 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
 
       {/* Field 4: Study Year */}
       <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] items-center gap-3">
-        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-[#080b12]">
-          <BarChart2 className="size-4.5 text-[#155ff2] shrink-0" />
+        <span className="flex items-center gap-2.5 font-display text-sm font-bold text-cyber-strong">
+          <BarChart2 className="size-4.5 text-cyber-blue shrink-0" />
           ชั้นปี
         </span>
         <div className="grid grid-cols-5 gap-2">
@@ -187,8 +187,8 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
                 disabled={pending}
                 className={`rounded-xl px-2 py-3 text-center text-sm font-semibold transition-all cursor-pointer shadow-xs ${
                   isSelected
-                    ? "border-2 border-[#155ff2] bg-white text-[#155ff2] shadow-[0_0_12px_rgba(21,95,242,0.15)]"
-                    : "border border-[#d2e0f5] bg-white text-[#6b82a6] hover:border-[#155ff2]/50 hover:bg-slate-50"
+                    ? "border-2 border-cyber-blue bg-white text-cyber-blue shadow-[0_0_12px_rgb(var(--copie-accent-rgb)/0.15)]"
+                    : "border border-cyber-edge bg-white text-cyber-subtle hover:border-cyber-blue/50 hover:bg-slate-50"
                 }`}
               >
                 {option.label}
@@ -205,7 +205,7 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="group relative flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#0f5ff0] to-[#155ff2] px-8 py-4 font-display text-base font-bold text-white shadow-[0_8px_24px_rgba(21,95,242,0.3)] hover:shadow-[0_12px_32px_rgba(21,95,242,0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer disabled:opacity-50"
+          className="group relative flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-cyber-blue-deep to-cyber-blue px-8 py-4 font-display text-base font-bold text-cyber-on-accent shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.3)] hover:shadow-[0_12px_32px_rgb(var(--copie-accent-rgb)/0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer disabled:opacity-50"
         >
           <span>{pending ? "กำลังบันทึกข้อมูล..." : "เริ่มต้นใช้งาน COPIE"}</span>
           <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />

@@ -44,17 +44,17 @@ export function CourseTable({
 
   if (data.courses.length === 0) {
     return (
-      <section className="flex flex-col gap-4 rounded-2xl border border-[#d2e0f5] bg-white/95 p-6 shadow-sm" aria-label={heading}>
+      <section className="flex flex-col gap-4 rounded-2xl border border-cyber-edge bg-white/95 p-6 shadow-sm" aria-label={heading}>
         <div className="flex items-center gap-2">
-          <span className="size-2 bg-[#155ff2]" />
-          <span className="font-label text-xs font-bold tracking-[0.2em] text-[#155ff2] uppercase">
+          <span className="size-2 bg-cyber-blue" />
+          <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
             AI RESPONSE
           </span>
         </div>
-        <h2 className="copie-heading font-display text-2xl font-black italic text-[#080b12]">
+        <h2 className="copie-heading font-display text-2xl font-black italic text-cyber-strong">
           {heading}
         </h2>
-        <p className="rounded-xl border border-[#d2e0f5] bg-slate-50 px-4 py-6 text-center text-[#6b82a6]">
+        <p className="rounded-xl border border-cyber-edge bg-slate-50 px-4 py-6 text-center text-cyber-subtle">
           ไม่พบรายวิชาของปีและเทอมนี้ในเล่มหลักสูตร
         </p>
       </section>
@@ -62,34 +62,34 @@ export function CourseTable({
   }
 
   return (
-    <section className="flex flex-col gap-5 rounded-2xl border border-[#d2e0f5] bg-white/95 p-6 sm:p-8 shadow-sm backdrop-blur-sm" aria-label={heading}>
+    <section className="flex flex-col gap-5 rounded-2xl border border-cyber-edge bg-white/95 p-6 sm:p-8 shadow-sm backdrop-blur-sm" aria-label={heading}>
       {/* Top Header */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="size-2 bg-[#155ff2]" />
-            <span className="font-label text-xs font-bold tracking-[0.2em] text-[#155ff2] uppercase">
+            <span className="size-2 bg-cyber-blue" />
+            <span className="font-label text-xs font-bold tracking-[0.2em] text-cyber-blue uppercase">
               AI RESPONSE
             </span>
           </div>
-          <span className="hidden sm:inline font-label text-[10px] font-bold tracking-[0.2em] text-[#6b82a6] uppercase">
+          <span className="hidden sm:inline font-label text-[10px] font-bold tracking-[0.2em] text-cyber-subtle uppercase">
             KNOWLEDGE TODAY // A BRIGHTER TOMORROW
           </span>
         </div>
 
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-block w-1.5 h-8 bg-[#00d4ff] rounded-full mr-1 shrink-0" />
-            <h1 className="copie-heading font-display text-3xl sm:text-4xl font-black italic tracking-tight text-[#080b12]">
+            <span className="inline-block w-1.5 h-8 bg-cyber-glow rounded-full mr-1 shrink-0" />
+            <h1 className="copie-heading font-display text-3xl sm:text-4xl font-black italic tracking-tight text-cyber-strong">
               {heading}
             </h1>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#155ff2]/30 bg-blue-50 px-3 py-1 text-xs font-semibold text-[#155ff2]">
-              <span className="size-1.5 rounded-full bg-[#155ff2]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-cyber-blue/30 bg-blue-50 px-3 py-1 text-xs font-semibold text-cyber-blue">
+              <span className="size-1.5 rounded-full bg-cyber-blue" />
               ข้อมูลตัวอย่างสำหรับออกแบบ
             </span>
           </div>
 
-          <div className="text-sm font-medium text-[#6b82a6] mt-2 leading-relaxed">
+          <div className="text-sm font-medium text-cyber-subtle mt-2 leading-relaxed">
             <p>ต่อไปนี้เป็นตัวอย่างรายวิชาของปี {data.year} เทอม {data.semester} เพื่อใช้สำหรับการออกแบบหน้าจอเท่านั้น</p>
             <p>รายวิชาและหน่วยกิตอาจแตกต่างกันตามหลักสูตรและสถาบันการศึกษา โปรดตรวจสอบข้อมูลจากคณะ/มหาวิทยาลัยของคุณอีกครั้ง</p>
           </div>
@@ -97,15 +97,15 @@ export function CourseTable({
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-[#d2e0f5] bg-white shadow-xs">
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-cyber-edge bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="bg-slate-50/80 border-b border-[#d2e0f5]">
+            <tr className="bg-slate-50/80 border-b border-cyber-edge">
               {COLUMNS.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
-                  className={`px-5 py-3.5 font-display text-sm font-bold text-[#080b12] ${
+                  className={`px-5 py-3.5 font-display text-sm font-bold text-cyber-strong ${
                     column.align === "right" ? "text-right" : "text-left"
                   }`}
                 >
@@ -119,7 +119,7 @@ export function CourseTable({
                     <ChevronDown
                       aria-hidden="true"
                       className={`size-3.5 transition-transform ${
-                        sort?.key === column.key ? "text-[#155ff2]" : "text-[#6b82a6]"
+                        sort?.key === column.key ? "text-cyber-blue" : "text-cyber-subtle"
                       } ${sort?.key === column.key && sort.direction === "desc" ? "rotate-180" : ""}`}
                     />
                   </button>
@@ -141,35 +141,35 @@ export function CourseTable({
                   transition={{ duration: 0.2, delay: animate ? index * 0.04 : 0 }}
                   onClick={() => toggleRow(course.code)}
                   data-selected={active}
-                  className={`cursor-pointer border-t border-[#d2e0f5]/60 transition-all ${
+                  className={`cursor-pointer border-t border-cyber-edge/60 transition-all ${
                     active
-                      ? "bg-blue-50/70 border-[#155ff2] shadow-xs"
+                      ? "bg-blue-50/70 border-cyber-blue shadow-xs"
                       : "hover:bg-slate-50/60"
                   }`}
                 >
-                  <td className="relative whitespace-nowrap px-5 py-3.5 font-bold tabular-nums text-[#080b12]">
-                    {active && <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-[#00d4ff]" />}
-                    <span className={active ? "text-[#155ff2]" : ""}>{course.code}</span>
+                  <td className="relative whitespace-nowrap px-5 py-3.5 font-bold tabular-nums text-cyber-strong">
+                    {active && <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-cyber-glow" />}
+                    <span className={active ? "text-cyber-blue" : ""}>{course.code}</span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className={`block font-semibold ${active ? "text-[#155ff2]" : "text-[#080b12]"}`}>
+                    <span className={`block font-semibold ${active ? "text-cyber-blue" : "text-cyber-strong"}`}>
                       {course.name_th}
                     </span>
                     {course.name_en && (
-                      <span className="block text-xs text-[#6b82a6]">{course.name_en}</span>
+                      <span className="block text-xs text-cyber-subtle">{course.name_en}</span>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 text-right font-display font-bold tabular-nums text-[#080b12]">
+                  <td className="px-5 py-3.5 text-right font-display font-bold tabular-nums text-cyber-strong">
                     {course.credits}
                   </td>
-                  <td className="px-5 py-3.5 text-sm font-medium text-[#080b12]/80">
+                  <td className="px-5 py-3.5 text-sm font-medium text-cyber-strong/80">
                     {course.category ?? "—"}
                   </td>
                   <td className="px-3 py-3.5 text-right">
                     <ChevronRight
                       aria-hidden="true"
                       className={`inline size-4.5 transition-transform ${
-                        active ? "text-[#155ff2]" : "text-[#6b82a6]"
+                        active ? "text-cyber-blue" : "text-cyber-subtle"
                       }`}
                     />
                   </td>
@@ -196,16 +196,16 @@ export function CourseTable({
                 onClick={() => toggleRow(course.code)}
                 aria-expanded={active}
                 className={`flex w-full flex-col gap-1 rounded-xl border p-4 text-left transition-all ${
-                  active ? "border-[#155ff2] bg-blue-50/70 shadow-xs" : "border-[#d2e0f5] bg-white"
+                  active ? "border-cyber-blue bg-blue-50/70 shadow-xs" : "border-cyber-edge bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-display font-bold tabular-nums text-[#155ff2]">{course.code}</span>
-                  <span className="font-display font-bold tabular-nums text-[#080b12]">{course.credits} หน่วยกิต</span>
+                  <span className="font-display font-bold tabular-nums text-cyber-blue">{course.code}</span>
+                  <span className="font-display font-bold tabular-nums text-cyber-strong">{course.credits} หน่วยกิต</span>
                 </div>
-                <span className="font-semibold text-sm text-[#080b12]">{course.name_th}</span>
-                {course.name_en && <span className="text-xs text-[#6b82a6]">{course.name_en}</span>}
-                {course.category && <span className="text-xs font-medium text-[#155ff2] mt-1">{course.category}</span>}
+                <span className="font-semibold text-sm text-cyber-strong">{course.name_th}</span>
+                {course.name_en && <span className="text-xs text-cyber-subtle">{course.name_en}</span>}
+                {course.category && <span className="text-xs font-medium text-cyber-blue mt-1">{course.category}</span>}
               </button>
             </motion.li>
           );
@@ -214,16 +214,16 @@ export function CourseTable({
 
       {/* Selected Course Detail Box matching Mockup 07 */}
       {selectedCourse && (
-        <div className="flex gap-4 rounded-xl border border-[#d2e0f5] bg-white p-5 shadow-xs">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-[#155ff2] shrink-0">
+        <div className="flex gap-4 rounded-xl border border-cyber-edge bg-white p-5 shadow-xs">
+          <div className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-cyber-blue shrink-0">
             <FileText className="size-6" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="font-display font-bold tabular-nums text-[#155ff2] text-lg">{selectedCourse.code}</span>
-              <span className="font-display font-bold text-[#080b12] text-lg">{selectedCourse.name_th}</span>
+              <span className="font-display font-bold tabular-nums text-cyber-blue text-lg">{selectedCourse.code}</span>
+              <span className="font-display font-bold text-cyber-strong text-lg">{selectedCourse.name_th}</span>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-[#080b12]/90 font-medium">
+            <p className="mt-2 text-sm leading-relaxed text-cyber-strong/90 font-medium">
               {selectedCourse.description ?? "ศึกษาแนวคิดพื้นฐานของรายวิชา การออกแบบ และการประยุกต์ใช้งานในระบบสารสนเทศและเทคโนโลยีที่เกี่ยวข้อง"}
             </p>
           </div>
@@ -231,18 +231,18 @@ export function CourseTable({
       )}
 
       {/* Total Credits Summary Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#155ff2]/25 bg-blue-50/60 px-5 py-3.5 shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-cyber-blue/25 bg-blue-50/60 px-5 py-3.5 shadow-xs">
         <div className="flex items-center gap-3">
-          <BarChart3 aria-hidden="true" className="size-5 text-[#155ff2]" />
-          <span className="font-display font-bold text-[#080b12] text-base">รวมหน่วยกิตทั้งสิ้น</span>
-          <span className="font-display text-3xl font-black italic tabular-nums text-[#155ff2]">
+          <BarChart3 aria-hidden="true" className="size-5 text-cyber-blue" />
+          <span className="font-display font-bold text-cyber-strong text-base">รวมหน่วยกิตทั้งสิ้น</span>
+          <span className="font-display text-3xl font-black italic tabular-nums text-cyber-blue">
             {data.total_credits}
           </span>
-          <span className="font-display font-bold text-[#080b12] text-base">หน่วยกิต</span>
+          <span className="font-display font-bold text-cyber-strong text-base">หน่วยกิต</span>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-[#6b82a6]">
+        <div className="flex items-center gap-1.5 text-xs text-cyber-subtle">
           <span>ที่มา: ข้อมูลตัวอย่างสำหรับออกแบบ</span>
-          <Info className="size-3.5 text-[#6b82a6]" />
+          <Info className="size-3.5 text-cyber-subtle" />
         </div>
       </div>
     </section>
