@@ -47,7 +47,7 @@ export function GoogleSignInButton({ disabled = false, onAuthenticated, onOpenDe
     <div className="flex flex-col items-center gap-2 text-center lg:items-start lg:text-left">
       <div className={`relative inline-block ${disabled || pending ? "pointer-events-none opacity-60" : ""}`}>
         {clientId ? (
-          <div className="rounded-full p-1 shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.14)] transition-shadow hover:shadow-[0_12px_28px_rgb(var(--copie-accent-rgb)/0.24)]">
+          <div className="overflow-hidden rounded-full bg-white shadow-[0_8px_24px_rgb(var(--copie-accent-rgb)/0.14)] transition-shadow hover:shadow-[0_12px_28px_rgb(var(--copie-accent-rgb)/0.24)] [&_iframe]:block [&>div>div]:rounded-full">
             <GoogleOAuthProvider clientId={clientId}>
               <GoogleLogin
                 onSuccess={(response) => { void handleSuccess(response); }}
